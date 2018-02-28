@@ -58,4 +58,5 @@ docs/_build/
 target/
 
 # Project
-client_secret.json
+youtube_secret.json
+peertube_secret
