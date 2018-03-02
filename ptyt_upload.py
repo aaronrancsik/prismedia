@@ -5,17 +5,17 @@
 ptyt_upload - tool to upload videos to Peertube and Youtube
 
 Usage: 
-	ptyt_upload --file=/path/to/video [options]
-	ptyt_upload -h | --help
-	ptyt_upload --version
+  ptyt_upload.py --file=<FILE> [options]
+  ptyt_upload.py -h | --help
+  ptyt_upload.py --version
 
 Options:
-	--file=PATH 				Path to the video to upload.
-	--name=STRING				Name of the video to upload. (default to video file name)
-	-d --description=STRING		Description of the video.
-	-t --tags=STRING			Tags for the video. (comma separated)
-	--version					Show version.
-	-h --help					Show this help.
+  --name=NAME  Name of the video to upload. default to video file name
+  -d, --description=STRING  Description of the video.
+  -t, --tags=STRING  Tags for the video. comma separated
+  -h --help  Show this help.
+  --version  Show version.
+  
 
 
 """
@@ -46,30 +46,28 @@ def validateVideo(path):
 
 if __name__ == '__main__':
 
-	#Allows you to a relative import from the parent folder
-	import os.path, sys
-	sys.path.insert(0, os.path.dirname(os.path.realpath(__file__))+"/lib") 
+    #Allows you to a relative import from the parent folder
+    import os.path, sys
+    sys.path.insert(0, os.path.dirname(os.path.realpath(__file__))+"/lib") 
 
-	import yt_upload
-	import pt_upload
+    import yt_upload
+    import pt_upload
 
-	options = docopt(__doc__, version=VERSION)
+    options = docopt(__doc__, version=VERSION)
+    print options
 
-	schema = Schema({
-		'--file': And(str, lambda s: validateVideo(s), error='file is not supported, please use mp4'),
-		Optional('--name'): Or(None, And(str, lambda x: not x.isdigit(), error="The video name should be a string")),
-		Optional('--description'): Or(None, And(str, lambda x: not x.isdigit(), error="The video name should be a string")),
-		Optional('--d'): Or(None, And(str, lambda x: not x.isdigit(), error="The video name should be a string")),
-		Optional('--tags'): Or(None, And(str, lambda x: not x.isdigit(), error="Tags should be a string")),
-		Optional('--t'): Or(None, And(str, lambda x: not x.isdigit(), error="Tags should be a string")),
-		'-h': bool,
-		'--help': bool,
-		'--version': bool
-	})
+    schema = Schema({
+        '--file': And(str, lambda s: validateVideo(s), error='file is not supported, please use mp4'),
+        Optional('--name'): Or(None, And(str, lambda x: not x.isdigit(), error="The video name should be a string")),
+        Optional('--description'): Or(None, And(str, lambda x: not x.isdigit(), error="The video name should be a string")),
+        Optional('--tags'): Or(None, And(str, lambda x: not x.isdigit(), error="Tags should be a string")),
+        '--help': bool,
+        '--version': bool
+    })
 
-	try:
-		options = schema.validate(options)
-	except SchemaError as e:
-		exit(e)
-	
-	# yt_upload.run(args)
+    try:
+        options = schema.validate(options)
+    except SchemaError as e:
+        exit(e)
+    
+    yt_upload.run(options)
