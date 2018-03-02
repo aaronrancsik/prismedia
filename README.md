@@ -2,7 +2,7 @@
 
 A scripting way to upload videos to peertube and youtube
 
-##Dependencies
+## Dependencies
 Search in your package manager, otherwise use ``pip install --upgrade``
  - google-auth
  - google-auth-oauthlib
