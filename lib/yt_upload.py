@@ -46,19 +46,21 @@ def get_authenticated_service():
   return build(API_SERVICE_NAME, API_VERSION, credentials = credentials)
 
 def initialize_upload(youtube, options):
+  path = options.get('--file')
+  print options.get('--name')
   tags = None
-  if options.keywords:
-    tags = options.keywords.split(',')
+  if options.get('--tags'):
+    tags = options.get('--tags').split(',')
 
   body=dict(
     snippet=dict(
-      name=options.name,
-      description=options.description,
+      title=options.get('--name') or os.path.splitext(os.path.basename(path))[0],
+      description=options.get('--description') or "",
       tags=tags,
-      categoryId=options.category
+      categoryId=str(options.get('--category') or 1),
     ),
     status=dict(
-      privacyStatus=options.privacyStatus
+      privacyStatus=str(options.get('--privacy') or "private"),
     )
   )
 
@@ -66,7 +68,7 @@ def initialize_upload(youtube, options):
   insert_request = youtube.videos().insert(
     part=','.join(body.keys()),
     body=body,
-    media_body=MediaFileUpload(options.file, chunksize=-1, resumable=True)
+    media_body=MediaFileUpload(path, chunksize=-1, resumable=True)
   )
 
   resumable_upload(insert_request)
