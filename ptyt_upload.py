@@ -54,7 +54,6 @@ if __name__ == '__main__':
     import pt_upload
 
     options = docopt(__doc__, version=VERSION)
-    print options
 
     schema = Schema({
         '--file': And(str, lambda s: validateVideo(s), error='file is not supported, please use mp4'),

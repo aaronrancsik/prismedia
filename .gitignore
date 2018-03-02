@@ -60,3 +60,4 @@ target/
 # Project
 youtube_secret.json
 peertube_secret
+.youtube_credentials.json

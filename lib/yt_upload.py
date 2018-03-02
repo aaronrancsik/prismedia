@@ -8,9 +8,12 @@ import httplib2
 import os
 import random
 import time
+import copy
+import json
 
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
+
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from googleapiclient.http import MediaFileUpload
@@ -34,6 +37,7 @@ RETRIABLE_STATUS_CODES = [500, 502, 503, 504]
 
 
 CLIENT_SECRETS_FILE = 'youtube_secret.json'
+CREDENTIALS_PATH = ".youtube_credentials.json"
 SCOPES = ['https://www.googleapis.com/auth/youtube.upload']
 API_SERVICE_NAME = 'youtube'
 API_VERSION = 'v3'
@@ -42,7 +46,22 @@ API_VERSION = 'v3'
 # Authorize the request and store authorization credentials.
 def get_authenticated_service():
   flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRETS_FILE, SCOPES)
-  credentials = flow.run_console()
+  if os.path.exists(CREDENTIALS_PATH):
+    with open(CREDENTIALS_PATH, 'r') as f:
+        credential_params = json.load(f)
+        credentials = google.oauth2.credentials.Credentials(
+            credential_params["token"],
+            refresh_token=credential_params["_refresh_token"],
+            token_uri=credential_params["_token_uri"],
+            client_id=credential_params["_client_id"],
+            client_secret=credential_params["_client_secret"]
+        )
+  else:
+    credentials = flow.run_local_server()
+    with open(CREDENTIALS_PATH, 'w') as f:
+      p = copy.deepcopy(vars(credentials))
+      del p["expiry"]
+      json.dump(p, f)
   return build(API_SERVICE_NAME, API_VERSION, credentials = credentials)
 
 def initialize_upload(youtube, options):
