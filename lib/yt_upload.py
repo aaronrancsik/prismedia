@@ -38,8 +38,6 @@ SCOPES = ['https://www.googleapis.com/auth/youtube.upload']
 API_SERVICE_NAME = 'youtube'
 API_VERSION = 'v3'
 
-VALID_PRIVACY_STATUSES = ('public', 'private', 'unlisted')
-
 
 # Authorize the request and store authorization credentials.
 def get_authenticated_service():
@@ -54,7 +52,7 @@ def initialize_upload(youtube, options):
 
   body=dict(
     snippet=dict(
-      title=options.title,
+      name=options.name,
       description=options.description,
       tags=tags,
       categoryId=options.category
@@ -108,3 +106,10 @@ def resumable_upload(request):
       print 'Sleeping %f seconds and then retrying...' % sleep_seconds
       time.sleep(sleep_seconds)
 
+
+def run(options):
+  youtube = get_authenticated_service()
+  try:
+    initialize_upload(youtube, options)
+  except HttpError, e:
+    print 'An HTTP error %d occurred:\n%s' % (e.resp.status, e.content)
