@@ -66,7 +66,6 @@ def get_authenticated_service():
 
 def initialize_upload(youtube, options):
   path = options.get('--file')
-  print options.get('--name')
   tags = None
   if options.get('--tags'):
     tags = options.get('--tags').split(',')
