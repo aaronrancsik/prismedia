@@ -70,3 +70,4 @@ if __name__ == '__main__':
         exit(e)
     
     yt_upload.run(options)
+    pt_upload.run(options)
