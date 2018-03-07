@@ -11,6 +11,7 @@ Search in your package manager, otherwise use ``pip install --upgrade``
  - docopt
  - schema
  - magic
+ - requests-toolbelt
 
 ## How To
 Currently in heavy development
