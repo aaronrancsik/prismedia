@@ -40,7 +40,7 @@ Options:
 - [x] Youtube upload
 - [x] Peertube upload
 - [ ] Support of all videos arguments (description, tags, category, licence, ...)
-- [ ] Use file to retrieve videos arguments
+- [ ] Use a config file (NFO) file to retrieve videos arguments
 - [ ] Record and forget: put the video in a directory, and the script uploads it for you
 - [ ] Usable on Desktop (Linux and/or Windows and/or MacOS)
 - [ ] Graphical User Interface

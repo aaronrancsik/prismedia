@@ -6,6 +6,7 @@ import mimetypes
 import httplib
 import httplib2
 import json
+import array
 
 from ConfigParser import RawConfigParser
 from requests_oauthlib import OAuth2Session
@@ -37,19 +38,31 @@ def upload_video(oauth, config, options):
 
     path = options.get('--file')
     url = config.get('peertube', 'peertube_url')
-    fields = {
-        "name": options.get('--name') or os.path.splitext(os.path.basename(path))[0],
-        "category": str(options.get('--category') or 1),  # look at the list numbers at /videos/categories
-        "licence": str(options.get('--licence') or 1),  # look at the list numbers at /videos/licences
-        "description": options.get('--description') or "",
-        "privacy": str(options.get('--privacy') or 3),  # look at the list numbers at /videos/privacies
-        "nsfw": str(options.get('--nsfw') or 0),
-        "commentsEnabled": "1",
-        "channelId": get_userinfo(),
-        "videofile": get_videofile(path)  # beware, see validateVideo for supported types
-    }
+    tags = None
+    tags_tuple=[]
 
-    multipart_data = MultipartEncoder(fields=fields)
+    # We need to transform fields into tuple to deal with tags as MultipartEncoder does not support list
+    # refer https://github.com/requests/toolbelt/issues/190 and https://github.com/requests/toolbelt/issues/205
+    fields = [
+        ("name", options.get('--name') or os.path.splitext(os.path.basename(path))[0]),
+        ("category", str(options.get('--category') or 1)),  # look at the list numbers at /videos/categories
+        ("licence", str(options.get('--licence') or 1)),  # look at the list numbers at /videos/licences
+        ("description", options.get('--description') or "default description"),
+        ("privacy", str(options.get('--privacy') or 3)),  # look at the list numbers at /videos/privacies
+        ("nsfw", str(options.get('--nsfw') or 0)),
+        ("commentsEnabled", "1"),
+        ("channelId", get_userinfo()),
+        ("videofile", get_videofile(path))  # beware, see validateVideo for supported types
+    ]
+
+    if options.get('--tags'):
+        tags = options.get('--tags').split(',')
+        for strtags in tags:
+            fields.append(("tags", strtags))
+
+    # multipart_data = MultipartEncoder(fields=fields)
+    multipart_data = MultipartEncoder(fields)
+
     headers = {
         'Content-Type': multipart_data.content_type
     }
