@@ -3,10 +3,8 @@
 
 import os
 import mimetypes
-import httplib
-import httplib2
 import json
-import array
+from os.path import splitext, basename, abspath
 
 from ConfigParser import RawConfigParser
 from requests_oauthlib import OAuth2Session
@@ -15,44 +13,58 @@ from requests_toolbelt.multipart.encoder import MultipartEncoder
 
 PEERTUBE_SECRETS_FILE = 'peertube_secret'
 
+
 def get_authenticated_service(config):
-    oauth = OAuth2Session(client=LegacyApplicationClient(client_id=str(config.get('peertube', 'client_id'))))
-    oauth.fetch_token(token_url=str(config.get('peertube', 'peertube_url')) + '/api/v1/users/token',
-                      username=str(config.get('peertube', 'username').lower()), #lower as peertube does not store uppecase for pseudo
-                      password=str(config.get('peertube', 'password')),
-                      client_id=str(config.get('peertube', 'client_id')),
-                      client_secret=str(config.get('peertube', 'client_secret'))
-                      )
+    peertube_url = str(config.get('peertube', 'peertube_url'))
+
+    oauth_client = LegacyApplicationClient(
+        client_id=str(config.get('peertube', 'client_id'))
+    )
+    oauth = OAuth2Session(client=oauth_client)
+    oauth.fetch_token(
+        token_url=peertube_url + '/api/v1/users/token',
+        # lower as peertube does not store uppecase for pseudo
+        username=str(config.get('peertube', 'username').lower()),
+        password=str(config.get('peertube', 'password')),
+        client_id=str(config.get('peertube', 'client_id')),
+        client_secret=str(config.get('peertube', 'client_secret'))
+    )
     return oauth
+
 
 def upload_video(oauth, config, options):
 
     def get_userinfo():
-        user_info = json.loads(oauth.get(url+"/api/v1/users/me").content)
+        user_info = json.loads(oauth.get(url + "/api/v1/users/me").content)
         return str(user_info["id"])
 
     def get_videofile(path):
         mimetypes.init()
-        return (os.path.basename(path), open(os.path.abspath(path), 'rb'),
-                mimetypes.types_map[os.path.splitext(path)[1]])
+        return (basename(path), open(abspath(path), 'rb'),
+                mimetypes.types_map[splitext(path)[1]])
 
     path = options.get('--file')
     url = config.get('peertube', 'peertube_url')
     tags = None
-    tags_tuple=[]
 
-    # We need to transform fields into tuple to deal with tags as MultipartEncoder does not support list
-    # refer https://github.com/requests/toolbelt/issues/190 and https://github.com/requests/toolbelt/issues/205
+    # We need to transform fields into tuple to deal with tags as
+    # MultipartEncoder does not support list refer
+    # https://github.com/requests/toolbelt/issues/190 and
+    # https://github.com/requests/toolbelt/issues/205
     fields = [
-        ("name", options.get('--name') or os.path.splitext(os.path.basename(path))[0]),
-        ("category", str(options.get('--category') or 1)),  # look at the list numbers at /videos/categories
-        ("licence", str(options.get('--licence') or 1)),  # look at the list numbers at /videos/licences
+        ("name", options.get('--name') or splitext(basename(path))[0]),
+        # look at the list numbers at /videos/categories
+        ("category", str(options.get('--category') or 1)),
+        # look at the list numbers at /videos/licences
+        ("licence", str(options.get('--licence') or 1)),
         ("description", options.get('--description') or "default description"),
-        ("privacy", str(options.get('--privacy') or 3)),  # look at the list numbers at /videos/privacies
+        # look at the list numbers at /videos/privacies
+        ("privacy", str(options.get('--privacy') or 3)),
         ("nsfw", str(options.get('--nsfw') or 0)),
         ("commentsEnabled", "1"),
         ("channelId", get_userinfo()),
-        ("videofile", get_videofile(path))  # beware, see validateVideo for supported types
+        # beware, see validateVideo for supported types
+        ("videofile", get_videofile(path))
     ]
 
     if options.get('--tags'):
@@ -67,21 +79,25 @@ def upload_video(oauth, config, options):
         'Content-Type': multipart_data.content_type
     }
 
-    response = oauth.post(config.get('peertube', 'peertube_url')+"/api/v1/videos/upload", data=multipart_data, headers=headers)
+    response = oauth.post(url + "/api/v1/videos/upload",
+                          data=multipart_data,
+                          headers=headers)
     if response is not None:
         if response.status_code == 200:
-          print 'Peertube : Video was successfully uploaded.'
+            print('Peertube : Video was successfully uploaded.')
         else:
-          exit('Peertube : The upload failed with an unexpected response: %s' % response)
+            exit(('Peertube : The upload failed with an unexpected response: '
+                  '%s') % response)
 
 
 def run(options):
     config = RawConfigParser()
     config.read(PEERTUBE_SECRETS_FILE)
-    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = config.get('peertube', 'OAUTHLIB_INSECURE_TRANSPORT')
+    insecure_transport = config.get('peertube', 'OAUTHLIB_INSECURE_TRANSPORT')
+    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = insecure_transport
     oauth = get_authenticated_service(config)
     try:
-        print 'Peertube : Uploading file...'
+        print('Peertube : Uploading file...')
         upload_video(oauth, config, options)
     except Exception as e:
         if hasattr(e, 'message'):
