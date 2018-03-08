@@ -10,7 +10,7 @@ Search in your package manager, otherwise use ``pip install --upgrade``
  - google-api-python-client
  - docopt
  - schema
- - magic
+ - python-magic
  - requests-toolbelt
 
 ## How To
