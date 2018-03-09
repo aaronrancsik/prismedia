@@ -32,6 +32,7 @@ Options:
   -d, --description=STRING  Description of the video.
   -t, --tags=STRING  Tags for the video. comma separated
   -c, --category=STRING Category for the videos, see below. Default to films
+  --cca  License should be CreativeCommon Attribution (affects Youtube upload only)
   -h --help  Show this help.
   --version  Show version.
 
@@ -54,7 +55,7 @@ Categories:
   - [x] description
   - [x] tags
   - [x] categories
-  - [ ] licence
+  - [x] license: cca or not, affect only Youtube as Peertube uses Attribution by design
   - [ ] thumbnail/preview
 - [ ] Use a config file (NFO) file to retrieve videos arguments
 - [ ] Record and forget: put the video in a directory, and the script uploads it for you

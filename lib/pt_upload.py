@@ -56,7 +56,7 @@ def upload_video(oauth, config, options):
     fields = [
         ("name", options.get('--name') or splitext(basename(path))[0]),
         # look at the list numbers at /videos/licences
-        ("licence", str(options.get('--licence') or 1)),
+        ("licence", "1"),
         ("description", options.get('--description') or "default description"),
         # look at the list numbers at /videos/privacies
         ("privacy", str(options.get('--privacy') or 3)),

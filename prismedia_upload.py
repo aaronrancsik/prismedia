@@ -13,7 +13,8 @@ Options:
   --name=NAME  Name of the video to upload. default to video file name
   -d, --description=STRING  Description of the video.
   -t, --tags=STRING  Tags for the video. comma separated
-  -c, --category=STRING Category for the videos, see below. Default to films
+  -c, --category=STRING  Category for the videos, see below. Default to films
+  --cca  License should be CreativeCommon Attribution (affects Youtube upload only)
   -h --help  Show this help.
   --version  Show version.
 
@@ -85,6 +86,7 @@ if __name__ == '__main__':
         Optional('--description'): Or(None, And(str, lambda x: not x.isdigit(), error="The video name should be a string")),
         Optional('--tags'): Or(None, And(str, lambda x: not x.isdigit(), error="Tags should be a string")),
         Optional('--category'): Or(None, And(str, validateCategory, error="Category not recognized, please see --help")),
+        Optional('--cca'): bool,
         '--help': bool,
         '--version': bool
     })

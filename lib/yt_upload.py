@@ -81,6 +81,10 @@ def initialize_upload(youtube, options):
     if options.get('--category'):
         category = utils.getCategory(options.get('--category'), 'youtube')
 
+    license = None
+    if options.get('--cca'):
+        license = "creativeCommon"
+
     body = {
         "snippet": {
             "title": options.get('--name') or splitext(basename(path))[0],
@@ -89,7 +93,10 @@ def initialize_upload(youtube, options):
             #if no category, set default to 1 (Films)
             "categoryId": str(category or 1),
         },
-        "status": {"privacyStatus": str(options.get('--privacy') or "private")}
+        "status": {
+            "privacyStatus": str(options.get('--privacy') or "private"),
+            "license": str(license or "youtube")
+        }
     }
 
     # Call the API's videos.insert method to create and upload the video.

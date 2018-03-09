@@ -2,6 +2,7 @@
 # coding: utf-8
 
 
+### FOR CATEGORIE ###
 YOUTUBE_CATEGORY = {
     "music":10,
     "films":1,
@@ -41,6 +42,8 @@ PEERTUBE_CATEGORY = {
     "technology":15,
     "animals":16
 }
+
+######################
 
 def getCategory(category, type):
     if type == "youtube":
