@@ -28,11 +28,12 @@ Usage:
   prismedia_upload.py --version
 
 Options:
-  --name=NAME  Name of the video to upload. default to video file name
-  -d, --description=STRING  Description of the video.
+  --name=NAME  Name of the video to upload. [default: video filename]
+  -d, --description=STRING  Description of the video. [default: default description]
   -t, --tags=STRING  Tags for the video. comma separated
-  -c, --category=STRING Category for the videos, see below. Default to films
+  -c, --category=STRING  Category for the videos, see below. [ default: Films]
   --cca  License should be CreativeCommon Attribution (affects Youtube upload only)
+  -p, --privacy=STRING Choose between public, unlisted or private. [default: private]
   -h --help  Show this help.
   --version  Show version.
 
@@ -44,7 +45,6 @@ Categories:
     comedy, entertainment, news,
     how to, education, activism, science & technology,
     science, technology, animals
-
 ```
 
 ## Features
@@ -56,6 +56,9 @@ Categories:
   - [x] tags
   - [x] categories
   - [x] license: cca or not, affect only Youtube as Peertube uses Attribution by design
+  - [x] privacy (between public, unlisted or private)
+  - [ ] enabling/disabling comment
+  - [ ] nsfw
   - [ ] thumbnail/preview
 - [ ] Use a config file (NFO) file to retrieve videos arguments
 - [ ] Record and forget: put the video in a directory, and the script uploads it for you

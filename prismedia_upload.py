@@ -10,11 +10,12 @@ Usage:
   prismedia_upload.py --version
 
 Options:
-  --name=NAME  Name of the video to upload. default to video file name
-  -d, --description=STRING  Description of the video.
+  --name=NAME  Name of the video to upload. [default: video filename]
+  -d, --description=STRING  Description of the video. [default: default description]
   -t, --tags=STRING  Tags for the video. comma separated
-  -c, --category=STRING  Category for the videos, see below. Default to films
+  -c, --category=STRING  Category for the videos, see below. [ default: Films]
   --cca  License should be CreativeCommon Attribution (affects Youtube upload only)
+  -p, --privacy=STRING Choose between public, unlisted or private. [default: private]
   -h --help  Show this help.
   --version  Show version.
 
@@ -48,7 +49,7 @@ except ImportError:
 try:
     import magic
 except ImportError:
-    exit('This program requires that the `magic` library'
+    exit('This program requires that the `python-magic` library'
          ' is installed, NOT the Python bindings to libmagic API \n'
          'see https://github.com/ahupp/python-magic\n')
 
@@ -76,6 +77,12 @@ def validateCategory(category):
     else:
         return False
 
+def validatePrivacy(privacy):
+  if privacy.lower() in VALID_PRIVACY_STATUSES:
+    return True
+  else:
+    return False
+
 if __name__ == '__main__':
 
     options = docopt(__doc__, version=VERSION)
@@ -86,6 +93,7 @@ if __name__ == '__main__':
         Optional('--description'): Or(None, And(str, lambda x: not x.isdigit(), error="The video name should be a string")),
         Optional('--tags'): Or(None, And(str, lambda x: not x.isdigit(), error="Tags should be a string")),
         Optional('--category'): Or(None, And(str, validateCategory, error="Category not recognized, please see --help")),
+        Optional('--privacy'): Or(None, And(str, validatePrivacy, error="Please use recognized privacy between public, unlisted or private")),
         Optional('--cca'): bool,
         '--help': bool,
         '--version': bool

@@ -14,6 +14,11 @@ from requests_toolbelt.multipart.encoder import MultipartEncoder
 import utils
 
 PEERTUBE_SECRETS_FILE = 'peertube_secret'
+PEERTUBE_PRIVACY = {
+    "public": 1,
+    "unlisted": 2,
+    "private:": 3
+}
 
 
 def get_authenticated_service(config):
@@ -59,8 +64,7 @@ def upload_video(oauth, config, options):
         ("licence", "1"),
         ("description", options.get('--description') or "default description"),
         # look at the list numbers at /videos/privacies
-        ("privacy", str(options.get('--privacy') or 3)),
-        ("nsfw", str(options.get('--nsfw') or 0)),
+        ("nsfw", "0"),
         ("commentsEnabled", "1"),
         ("channelId", get_userinfo()),
         ("videofile", get_videofile(path))
@@ -76,6 +80,11 @@ def upload_video(oauth, config, options):
     else:
         #if no category, set default to 2 (Films)
         fields.append(("category", "2"))
+
+    if options.get('--privacy'):
+        fields.append(("privacy", str(PEERTUBE_PRIVACY[options.get('--privacy').lower()])))
+    else:
+        fields.append(("privacy", "3"))
 
     multipart_data = MultipartEncoder(fields)
 
