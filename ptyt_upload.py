@@ -17,9 +17,12 @@ Options:
   --version  Show version.
 """
 from os.path import dirname, realpath
-from sys.path import insert
+import sys
 
 from docopt import docopt
+
+# Allows you to a relative import from the parent folder
+sys.path.insert(0, dirname(realpath(__file__)) + "/lib")
 
 import yt_upload
 import pt_upload
@@ -50,8 +53,6 @@ def validateVideo(path):
 
 
 if __name__ == '__main__':
-    # Allows you to a relative import from the parent folder
-    insert(0, dirname(realpath(__file__)) + "/lib")
 
     options = docopt(__doc__, version=VERSION)
 
