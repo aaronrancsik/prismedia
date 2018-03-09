@@ -2,12 +2,12 @@
 # coding: utf-8
 
 """
-ptyt_upload - tool to upload videos to Peertube and Youtube
+prismedia_upload - tool to upload videos to Peertube and Youtube
 
 Usage:
-  ptyt_upload.py --file=<FILE> [options]
-  ptyt_upload.py -h | --help
-  ptyt_upload.py --version
+  prismedia_upload.py --file=<FILE> [options]
+  prismedia_upload.py -h | --help
+  prismedia_upload.py --version
 
 Options:
   --name=NAME  Name of the video to upload. default to video file name
@@ -51,7 +51,7 @@ except ImportError:
          ' is installed, NOT the Python bindings to libmagic API \n'
          'see https://github.com/ahupp/python-magic\n')
 
-VERSION = "ptyt 0.2-alpha"
+VERSION = "prismedia 0.2-alpha"
 VALID_PRIVACY_STATUSES = ('public', 'private', 'unlisted')
 VALID_CATEGORIES = (
     "music", "films", "vehicles",
