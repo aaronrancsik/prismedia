@@ -11,6 +11,8 @@ from requests_oauthlib import OAuth2Session
 from oauthlib.oauth2 import LegacyApplicationClient
 from requests_toolbelt.multipart.encoder import MultipartEncoder
 
+import utils
+
 PEERTUBE_SECRETS_FILE = 'peertube_secret'
 
 
@@ -53,8 +55,6 @@ def upload_video(oauth, config, options):
     # https://github.com/requests/toolbelt/issues/205
     fields = [
         ("name", options.get('--name') or splitext(basename(path))[0]),
-        # look at the list numbers at /videos/categories
-        ("category", str(options.get('--category') or 1)),
         # look at the list numbers at /videos/licences
         ("licence", str(options.get('--licence') or 1)),
         ("description", options.get('--description') or "default description"),
@@ -63,7 +63,6 @@ def upload_video(oauth, config, options):
         ("nsfw", str(options.get('--nsfw') or 0)),
         ("commentsEnabled", "1"),
         ("channelId", get_userinfo()),
-        # beware, see validateVideo for supported types
         ("videofile", get_videofile(path))
     ]
 
@@ -72,7 +71,12 @@ def upload_video(oauth, config, options):
         for strtags in tags:
             fields.append(("tags", strtags))
 
-    # multipart_data = MultipartEncoder(fields=fields)
+    if options.get('--category'):
+        fields.append(("category", str(utils.getCategory(options.get('--category'), 'peertube'))))
+    else:
+        #if no category, set default to 2 (Films)
+        fields.append(("category", "2"))
+
     multipart_data = MultipartEncoder(fields)
 
     headers = {

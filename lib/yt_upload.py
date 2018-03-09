@@ -16,6 +16,7 @@ from googleapiclient.errors import HttpError
 from googleapiclient.http import MediaFileUpload
 from google_auth_oauthlib.flow import InstalledAppFlow
 
+import utils
 
 # Explicitly tell the underlying HTTP transport library not to retry, since
 # we are handling retry logic ourselves.
@@ -76,12 +77,17 @@ def initialize_upload(youtube, options):
     if options.get('--tags'):
         tags = options.get('--tags').split(',')
 
+    category = None
+    if options.get('--category'):
+        category = utils.getCategory(options.get('--category'), 'youtube')
+
     body = {
         "snippet": {
             "title": options.get('--name') or splitext(basename(path))[0],
-            "description": options.get('--description') or "",
+            "description": options.get('--description') or "default description",
             "tags": tags,
-            "categoryId": str(options.get('--category') or 1),
+            #if no category, set default to 1 (Films)
+            "categoryId": str(category or 1),
         },
         "status": {"privacyStatus": str(options.get('--privacy') or "private")}
     }
