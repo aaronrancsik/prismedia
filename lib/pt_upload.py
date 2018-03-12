@@ -64,7 +64,7 @@ def upload_video(oauth, config, options):
         ("licence", "1"),
         ("description", options.get('--description') or "default description"),
         # look at the list numbers at /videos/privacies
-        ("nsfw", "0"),
+        ("nsfw", str(int(options.get('--nsfw')) or "0")),
         ("channelId", get_userinfo()),
         ("videofile", get_videofile(path))
     ]

@@ -35,6 +35,7 @@ Options:
   --cca  License should be CreativeCommon Attribution (affects Youtube upload only)
   -p, --privacy=STRING Choose between public, unlisted or private. [default: private]
   --disable-comments  Disable comments (Peertube only) [default: comments are enabled]
+  --nsfw  Set the video as NSFW (Peertube only as YT API does not support) [default: video is not restricted]
   -h --help  Show this help.
   --version  Show version.
 
@@ -58,8 +59,8 @@ Categories:
   - [x] categories
   - [x] license: cca or not, affect only Youtube as Peertube uses Attribution by design
   - [x] privacy (between public, unlisted or private)
-  - [x] enabling/disabling comment (Peertube only as Youtube API has no option for that)
-  - [ ] nsfw
+  - [x] enabling/disabling comment (Peertube only as Youtube API does not support it)
+  - [x] nsfw (Peertube only as Youtube API does not support it)
   - [ ] thumbnail/preview
 - [ ] Use a config file (NFO) file to retrieve videos arguments
 - [ ] Record and forget: put the video in a directory, and the script uploads it for you

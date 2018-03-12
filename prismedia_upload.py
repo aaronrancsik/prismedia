@@ -10,13 +10,14 @@ Usage:
   prismedia_upload.py --version
 
 Options:
-  --name=NAME  Name of the video to upload. [default: video filename]
+  --name=NAME  Name of the video to upload. (default to video filename)
   -d, --description=STRING  Description of the video. [default: default description]
   -t, --tags=STRING  Tags for the video. comma separated
-  -c, --category=STRING  Category for the videos, see below. [ default: Films]
+  -c, --category=STRING  Category for the videos, see below. [default: Films]
   --cca  License should be CreativeCommon Attribution (affects Youtube upload only)
   -p, --privacy=STRING  Choose between public, unlisted or private. [default: private]
-  --disable-comments  Disable comments (Peertube only) [default: comments are enabled]
+  --disable-comments  Disable comments (Peertube only as YT API does not support) [default: comments are enabled]
+  --nsfw  Set the video as NSFW (Peertube only as YT API does not support) [default: video is not restricted]
   -h --help  Show this help.
   --version  Show version.
 
@@ -44,13 +45,13 @@ import pt_upload
 try:
     from schema import Schema, And, Or, Optional, SchemaError
 except ImportError:
-    exit('This program requires that the `schema` data-validation library'
+    e('This program requires that the `schema` data-validation library'
          ' is installed: \n'
          'see https://github.com/halst/schema\n')
 try:
     import magic
 except ImportError:
-    exit('This program requires that the `python-magic` library'
+    e('This program requires that the `python-magic` library'
          ' is installed, NOT the Python bindings to libmagic API \n'
          'see https://github.com/ahupp/python-magic\n')
 
@@ -97,6 +98,7 @@ if __name__ == '__main__':
         Optional('--privacy'): Or(None, And(str, validatePrivacy, error="Please use recognized privacy between public, unlisted or private")),
         Optional('--cca'): bool,
         Optional('--disable-comments'): bool,
+        Optional('--nsfw'): bool,
         '--help': bool,
         '--version': bool
     })
@@ -104,7 +106,7 @@ if __name__ == '__main__':
     try:
         options = schema.validate(options)
     except SchemaError as e:
-        exit(e)
+        e(e)
 
     # yt_upload.run(options)
     pt_upload.run(options)
