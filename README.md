@@ -34,6 +34,7 @@ Options:
   -c, --category=STRING  Category for the videos, see below. [ default: Films]
   --cca  License should be CreativeCommon Attribution (affects Youtube upload only)
   -p, --privacy=STRING Choose between public, unlisted or private. [default: private]
+  --disable-comments  Disable comments (Peertube only) [default: comments are enabled]
   -h --help  Show this help.
   --version  Show version.
 
@@ -57,7 +58,7 @@ Categories:
   - [x] categories
   - [x] license: cca or not, affect only Youtube as Peertube uses Attribution by design
   - [x] privacy (between public, unlisted or private)
-  - [ ] enabling/disabling comment
+  - [x] enabling/disabling comment (Peertube only as Youtube API has no option for that)
   - [ ] nsfw
   - [ ] thumbnail/preview
 - [ ] Use a config file (NFO) file to retrieve videos arguments

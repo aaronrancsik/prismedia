@@ -15,7 +15,8 @@ Options:
   -t, --tags=STRING  Tags for the video. comma separated
   -c, --category=STRING  Category for the videos, see below. [ default: Films]
   --cca  License should be CreativeCommon Attribution (affects Youtube upload only)
-  -p, --privacy=STRING Choose between public, unlisted or private. [default: private]
+  -p, --privacy=STRING  Choose between public, unlisted or private. [default: private]
+  --disable-comments  Disable comments (Peertube only) [default: comments are enabled]
   -h --help  Show this help.
   --version  Show version.
 
@@ -95,6 +96,7 @@ if __name__ == '__main__':
         Optional('--category'): Or(None, And(str, validateCategory, error="Category not recognized, please see --help")),
         Optional('--privacy'): Or(None, And(str, validatePrivacy, error="Please use recognized privacy between public, unlisted or private")),
         Optional('--cca'): bool,
+        Optional('--disable-comments'): bool,
         '--help': bool,
         '--version': bool
     })
@@ -104,5 +106,5 @@ if __name__ == '__main__':
     except SchemaError as e:
         exit(e)
 
-    yt_upload.run(options)
+    # yt_upload.run(options)
     pt_upload.run(options)

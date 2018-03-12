@@ -17,7 +17,7 @@ PEERTUBE_SECRETS_FILE = 'peertube_secret'
 PEERTUBE_PRIVACY = {
     "public": 1,
     "unlisted": 2,
-    "private:": 3
+    "private": 3
 }
 
 
@@ -65,7 +65,6 @@ def upload_video(oauth, config, options):
         ("description", options.get('--description') or "default description"),
         # look at the list numbers at /videos/privacies
         ("nsfw", "0"),
-        ("commentsEnabled", "1"),
         ("channelId", get_userinfo()),
         ("videofile", get_videofile(path))
     ]
@@ -85,6 +84,11 @@ def upload_video(oauth, config, options):
         fields.append(("privacy", str(PEERTUBE_PRIVACY[options.get('--privacy').lower()])))
     else:
         fields.append(("privacy", "3"))
+
+    if options.get('--disable-comments'):
+        fields.append(("commentsEnabled", "0"))
+    else:
+        fields.append(("commentsEnabled", "1"))
 
     multipart_data = MultipartEncoder(fields)
 
@@ -114,6 +118,6 @@ def run(options):
         upload_video(oauth, config, options)
     except Exception as e:
         if hasattr(e, 'message'):
-            print(e.message)
+            print("Error: " + e.message)
         else:
-            print(e)
+            print("Error: " + e)
