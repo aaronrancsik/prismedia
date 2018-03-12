@@ -88,7 +88,7 @@ def initialize_upload(youtube, options):
     body = {
         "snippet": {
             "title": options.get('--name') or splitext(basename(path))[0],
-            "description": options.get('--description') or "default description",
+            "description": options.get('--description'),
             "tags": tags,
             #if no category, set default to 1 (Films)
             "categoryId": str(category or 1),
@@ -105,7 +105,6 @@ def initialize_upload(youtube, options):
         body=body,
         media_body=MediaFileUpload(path, chunksize=-1, resumable=True)
     )
-
     resumable_upload(insert_request)
 
 
