@@ -19,6 +19,7 @@ Edit peertube_secret and youtube_secret.json with your credentials.
 
 ### Peertube
 Set your credentials, peertube server URL.  
+You can get client_id and client_secret by logging in your peertube website and reaching the URL: https://domain.example/api/v1/oauth-clients/local
 You can set ``OAUTHLIB_INSECURE_TRANSPORT`` to 1 if you do not use https (not recommended)
 
 ### Youtube
