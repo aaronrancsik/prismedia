@@ -17,7 +17,7 @@ Options:
   --cca  License should be CreativeCommon Attribution (affects Youtube upload only)
   -p, --privacy=STRING  Choose between public, unlisted or private. [default: private]
   --disable-comments  Disable comments (Peertube only as YT API does not support) [default: comments are enabled]
-  --nsfw  Set the video as NSFW (Peertube only as YT API does not support) [default: video is not restricted]
+  --nsfw  Set the video as No Safe For Work (Peertube only as YT API does not support) [default: video is safe]
   -h --help  Show this help.
   --version  Show version.
 
@@ -36,7 +36,7 @@ import sys
 from docopt import docopt
 
 
-# Allows you to a relative import from the parent folder
+# Allows a relative import from the parent folder
 sys.path.insert(0, dirname(realpath(__file__)) + "/lib")
 
 import yt_upload
@@ -45,13 +45,13 @@ import pt_upload
 try:
     from schema import Schema, And, Or, Optional, SchemaError
 except ImportError:
-    e('This program requires that the `schema` data-validation library'
+    exit('This program requires that the `schema` data-validation library'
          ' is installed: \n'
          'see https://github.com/halst/schema\n')
 try:
     import magic
 except ImportError:
-    e('This program requires that the `python-magic` library'
+    exit('This program requires that the `python-magic` library'
          ' is installed, NOT the Python bindings to libmagic API \n'
          'see https://github.com/ahupp/python-magic\n')
 
@@ -63,7 +63,7 @@ VALID_CATEGORIES = (
     "comedy", "entertainment", "news",
     "how to", "education", "activism", "science & technology",
     "science", "technology", "animals"
-    )
+)
 
 
 def validateVideo(path):
@@ -73,17 +73,20 @@ def validateVideo(path):
     else:
         return False
 
+
 def validateCategory(category):
     if category.lower() in VALID_CATEGORIES:
         return True
     else:
         return False
 
+
 def validatePrivacy(privacy):
-  if privacy.lower() in VALID_PRIVACY_STATUSES:
-    return True
-  else:
-    return False
+    if privacy.lower() in VALID_PRIVACY_STATUSES:
+        return True
+    else:
+        return False
+
 
 if __name__ == '__main__':
 
@@ -91,11 +94,31 @@ if __name__ == '__main__':
 
     schema = Schema({
         '--file': And(str, validateVideo, error='file is not supported, please use mp4'),
-        Optional('--name'): Or(None, And(str, lambda x: not x.isdigit(), error="The video name should be a string")),
-        Optional('--description'): Or(None, And(str, lambda x: not x.isdigit(), error="The video name should be a string")),
-        Optional('--tags'): Or(None, And(str, lambda x: not x.isdigit(), error="Tags should be a string")),
-        Optional('--category'): Or(None, And(str, validateCategory, error="Category not recognized, please see --help")),
-        Optional('--privacy'): Or(None, And(str, validatePrivacy, error="Please use recognized privacy between public, unlisted or private")),
+        Optional('--name'): Or(None, And(
+                                str,
+                                lambda x: not x.isdigit(),
+                                error="The video name should be a string")
+                               ),
+        Optional('--description'): Or(None, And(
+                                        str,
+                                        lambda x: not x.isdigit(),
+                                        error="The video name should be a string")
+                                      ),
+        Optional('--tags'): Or(None, And(
+                                    str,
+                                    lambda x: not x.isdigit(),
+                                    error="Tags should be a string")
+                               ),
+        Optional('--category'): Or(None, And(
+                                    str,
+                                    validateCategory,
+                                    error="Category not recognized, please see --help")
+                                   ),
+        Optional('--privacy'): Or(None, And(
+                                    str,
+                                    validatePrivacy,
+                                    error="Please use recognized privacy between public, unlisted or private")
+                                  ),
         Optional('--cca'): bool,
         Optional('--disable-comments'): bool,
         Optional('--nsfw'): bool,
@@ -106,7 +129,7 @@ if __name__ == '__main__':
     try:
         options = schema.validate(options)
     except SchemaError as e:
-        e(e)
+        exit(e)
 
-    # yt_upload.run(options)
+    yt_upload.run(options)
     pt_upload.run(options)

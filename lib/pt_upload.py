@@ -52,7 +52,6 @@ def upload_video(oauth, config, options):
 
     path = options.get('--file')
     url = config.get('peertube', 'peertube_url')
-    tags = None
 
     # We need to transform fields into tuple to deal with tags as
     # MultipartEncoder does not support list refer
@@ -77,7 +76,7 @@ def upload_video(oauth, config, options):
     if options.get('--category'):
         fields.append(("category", str(utils.getCategory(options.get('--category'), 'peertube'))))
     else:
-        #if no category, set default to 2 (Films)
+        # if no category, set default to 2 (Films)
         fields.append(("category", "2"))
 
     if options.get('--privacy'):
@@ -120,4 +119,4 @@ def run(options):
         if hasattr(e, 'message'):
             print("Error: " + e.message)
         else:
-            print("Error: " + e)
+            print("Error: " + str(e))

@@ -35,7 +35,7 @@ Options:
   --cca  License should be CreativeCommon Attribution (affects Youtube upload only)
   -p, --privacy=STRING Choose between public, unlisted or private. [default: private]
   --disable-comments  Disable comments (Peertube only) [default: comments are enabled]
-  --nsfw  Set the video as NSFW (Peertube only as YT API does not support) [default: video is not restricted]
+  --nsfw  Set the video as No Safe For Work (Peertube only as YT API does not support) [default: video is safe]
   -h --help  Show this help.
   --version  Show version.
 
@@ -57,7 +57,7 @@ Categories:
   - [x] description
   - [x] tags
   - [x] categories
-  - [x] license: cca or not, affect only Youtube as Peertube uses Attribution by design
+  - [x] license: cca or not (Youtube only as Peertube uses Attribution by design)
   - [x] privacy (between public, unlisted or private)
   - [x] enabling/disabling comment (Peertube only as Youtube API does not support it)
   - [x] nsfw (Peertube only as Youtube API does not support it)

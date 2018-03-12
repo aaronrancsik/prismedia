@@ -90,7 +90,7 @@ def initialize_upload(youtube, options):
             "title": options.get('--name') or splitext(basename(path))[0],
             "description": options.get('--description'),
             "tags": tags,
-            #if no category, set default to 1 (Films)
+            # if no category, set default to 1 (Films)
             "categoryId": str(category or 1),
         },
         "status": {
