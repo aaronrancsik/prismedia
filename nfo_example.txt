@@ -1,0 +1,16 @@
+### This NFO example show how to construct a NFO for your video ###
+### All fields are optional, but you need at least one fields (otherwise NFO is useless :-p) ###
+### See --help for options explanation
+### Prismedia will search and use NFO in this order: ###
+###  1. file passed in command line through --nfo ###
+###  2. file inside video directory named after --name command line option append with .txt ###
+###  3. file inside video directory named after --file command line option with .txt extension ###
+[video]
+name = videoname
+description = Your complete video description
+tags = list of tags, comma separated
+category = Films
+cca = True
+privacy = private
+disable-comments = True
+nsfw = True
