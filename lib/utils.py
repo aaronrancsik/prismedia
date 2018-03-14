@@ -49,8 +49,8 @@ PEERTUBE_CATEGORY = {
 ######################
 
 
-def getCategory(category, type):
-    if type == "youtube":
+def getCategory(category, platform):
+    if platform == "youtube":
         return YOUTUBE_CATEGORY[category.lower()]
     else:
         return PEERTUBE_CATEGORY[category.lower()]
@@ -58,7 +58,7 @@ def getCategory(category, type):
 
 # return the nfo as a RawConfigParser object
 def loadNFO(options):
-    video_directory = dirname(options.get('--file')) +"/"
+    video_directory = dirname(options.get('--file')) + "/"
     if options.get('--nfo'):
         try:
             print "Using " + options.get('--nfo') + " as NFO, loading..."

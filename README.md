@@ -119,7 +119,7 @@ Categories:
   - [x] enabling/disabling comment (Peertube only as Youtube API does not support it)
   - [x] nsfw (Peertube only as Youtube API does not support it)
   - ~~thumbnail/preview~~ Canceled, waiting for Youtube's API support  
-- [ ] Use a config file (NFO) file to retrieve videos arguments
+- [x] Use a config file (NFO) file to retrieve videos arguments
 - [ ] Record and forget: put the video in a directory, and the script uploads it for you
 - [ ] Usable on Desktop (Linux and/or Windows and/or MacOS)
 - [ ] Graphical User Interface
