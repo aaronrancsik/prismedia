@@ -11,13 +11,16 @@ Usage:
 
 Options:
   --name=NAME  Name of the video to upload. (default to video filename)
-  -d, --description=STRING  Description of the video. [default: default description]
+  -d, --description=STRING  Description of the video. (default: default description)
   -t, --tags=STRING  Tags for the video. comma separated
-  -c, --category=STRING  Category for the videos, see below. [default: Films]
+  -c, --category=STRING  Category for the videos, see below. (default: Films)
   --cca  License should be CreativeCommon Attribution (affects Youtube upload only)
-  -p, --privacy=STRING  Choose between public, unlisted or private. [default: private]
-  --disable-comments  Disable comments (Peertube only as YT API does not support) [default: comments are enabled]
-  --nsfw  Set the video as No Safe For Work (Peertube only as YT API does not support) [default: video is safe]
+  -p, --privacy=STRING  Choose between public, unlisted or private. (default: private)
+  --disable-comments  Disable comments (Peertube only as YT API does not support) (default: comments are enabled)
+  --nsfw  Set the video as No Safe For Work (Peertube only as YT API does not support) (default: video is safe)
+  --nfo=STRING  Configure a specific nfo file to set options for the video.
+                By default Prismedia search a .txt based on video name
+                See nfo_example.txt for more details
   -h --help  Show this help.
   --version  Show version.
 
@@ -41,6 +44,7 @@ sys.path.insert(0, dirname(realpath(__file__)) + "/lib")
 
 import yt_upload
 import pt_upload
+import utils
 
 try:
     from schema import Schema, And, Or, Optional, SchemaError
@@ -55,7 +59,7 @@ except ImportError:
          ' is installed, NOT the Python bindings to libmagic API \n'
          'see https://github.com/ahupp/python-magic\n')
 
-VERSION = "prismedia 0.2-alpha"
+VERSION = "prismedia 0.3"
 VALID_PRIVACY_STATUSES = ('public', 'private', 'unlisted')
 VALID_CATEGORIES = (
     "music", "films", "vehicles",
@@ -119,6 +123,7 @@ if __name__ == '__main__':
                                     validatePrivacy,
                                     error="Please use recognized privacy between public, unlisted or private")
                                   ),
+        Optional('--nfo'): Or(None, str),
         Optional('--cca'): bool,
         Optional('--disable-comments'): bool,
         Optional('--nsfw'): bool,
@@ -130,6 +135,8 @@ if __name__ == '__main__':
         options = schema.validate(options)
     except SchemaError as e:
         exit(e)
+
+    options = utils.parseNFO(options)
 
     yt_upload.run(options)
     pt_upload.run(options)

@@ -56,16 +56,24 @@ Simply upload a video:
 ./prismedia_upload.py --file="yourvideo.mp4"
 ``` 
 
+
 Specify description and tags:
 
 ``` 
 ./prismedia_upload.py --file="yourvideo.mp4" -d "My supa description" -t "tag1,tag2,foo"
 ```
 
+
+Use a NFO file to specify your video options:
+
+```
+./prismedia_upload.py --file="yourvideo.mp4" --nfo /path/to/your/nfo.txt
+```
+
+
 Use --help to get all available options:
 
 ```
-./prismedia_upload.py --help
 prismedia_upload - tool to upload videos to Peertube and Youtube
 
 Usage:
@@ -74,14 +82,17 @@ Usage:
   prismedia_upload.py --version
 
 Options:
-  --name=NAME  Name of the video to upload. [default: video filename]
-  -d, --description=STRING  Description of the video. [default: default description]
+  --name=NAME  Name of the video to upload. (default to video filename)
+  -d, --description=STRING  Description of the video. (default: default description)
   -t, --tags=STRING  Tags for the video. comma separated
-  -c, --category=STRING  Category for the videos, see below. [default: Films]
+  -c, --category=STRING  Category for the videos, see below. (default: Films)
   --cca  License should be CreativeCommon Attribution (affects Youtube upload only)
-  -p, --privacy=STRING Choose between public, unlisted or private. [default: private]
-  --disable-comments  Disable comments (Peertube only) [default: comments are enabled]
-  --nsfw  Set the video as No Safe For Work (Peertube only as YT API does not support) [default: video is safe]
+  -p, --privacy=STRING  Choose between public, unlisted or private. (default: private)
+  --disable-comments  Disable comments (Peertube only as YT API does not support) (default: comments are enabled)
+  --nsfw  Set the video as No Safe For Work (Peertube only as YT API does not support) (default: video is safe)
+  --nfo=STRING  Configure a specific nfo file to set options for the video.
+                By default Prismedia search a .txt based on video name
+                See nfo_example.txt for more details
   -h --help  Show this help.
   --version  Show version.
 

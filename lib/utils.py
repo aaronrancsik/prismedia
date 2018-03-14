@@ -1,8 +1,10 @@
 #!/usr/bin/python
 # coding: utf-8
 
+from ConfigParser import RawConfigParser, NoOptionError, NoSectionError
+from os.path import dirname, splitext, basename, isfile
 
-### FOR CATEGORIE ###
+### CATEGORIES ###
 YOUTUBE_CATEGORY = {
     "music": 10,
     "films": 1,
@@ -43,6 +45,7 @@ PEERTUBE_CATEGORY = {
     "animals": 16
 }
 
+
 ######################
 
 
@@ -51,3 +54,65 @@ def getCategory(category, type):
         return YOUTUBE_CATEGORY[category.lower()]
     else:
         return PEERTUBE_CATEGORY[category.lower()]
+
+
+# return the nfo as a RawConfigParser object
+def loadNFO(options):
+    video_directory = dirname(options.get('--file')) +"/"
+    if options.get('--nfo'):
+        try:
+            print "Using " + options.get('--nfo') + " as NFO, loading..."
+            if isfile(options.get('--nfo')):
+                nfo = RawConfigParser()
+                nfo.read(options.get('--nfo'))
+                return nfo
+            else:
+                exit("Given NFO file does not exist, please check your path.")
+        except Exception as e:
+            exit("Problem with NFO file: " + str(e))
+    else:
+        if options.get('--name'):
+            nfo_file = video_directory + options.get('--name') + ".txt"
+            print nfo_file
+            if isfile(nfo_file):
+                try:
+                    print "Using " + nfo_file + " as NFO, loading..."
+                    nfo = RawConfigParser()
+                    nfo.read(nfo_file)
+                    return nfo
+                except Exception as e:
+                    exit("Problem with NFO file: " + str(e))
+
+    # if --nfo and --name does not exist, use --file as default
+    video_file = splitext(basename(options.get('--file')))[0]
+    nfo_file = video_directory + video_file + ".txt"
+    if isfile(nfo_file):
+        try:
+            print "Using " + nfo_file + " as NFO, loading..."
+            nfo = RawConfigParser()
+            nfo.read(nfo_file)
+            return nfo
+        except Exception as e:
+            exit("Problem with nfo file: " + str(e))
+    print "No suitable NFO found, skipping."
+    return False
+
+
+def parseNFO(options):
+    nfo = loadNFO(options)
+    if nfo:
+        # We need to check all options and replace it with the nfo value if not defined (None or False)
+        for key, value in options.iteritems():
+            key = key.replace("-", "")
+            try:
+                # get string options
+                if value is None and nfo.get('video', key):
+                    options['--' + key] = nfo.get('video', key)
+                # get boolean options
+                elif value is False and nfo.getboolean('video', key):
+                    options['--' + key] = nfo.getboolean('video', key)
+            except NoOptionError:
+                continue
+            except NoSectionError:
+                exit("Given NFO file miss section [video], please check syntax of your NFO.")
+    return options
