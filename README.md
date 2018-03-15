@@ -112,14 +112,16 @@ Categories:
 - [x] Peertube upload
 - Support of all videos arguments (description, tags, category, licence, ...)
   - [x] description
-  - [x] tags
+  - [x] tags (no more than 30 characters per tag as Peertube does not support it)
   - [x] categories
   - [x] license: cca or not (Youtube only as Peertube uses Attribution by design)
   - [x] privacy (between public, unlisted or private)
   - [x] enabling/disabling comment (Peertube only as Youtube API does not support it)
   - [x] nsfw (Peertube only as Youtube API does not support it)
+  - [ ] set default language
   - ~~thumbnail/preview~~ Canceled, waiting for Youtube's API support  
 - [x] Use a config file (NFO) file to retrieve videos arguments
+- [ ] Allow to choose peertube or youtube upload (to resume failed upload for example)
 - [ ] Record and forget: put the video in a directory, and the script uploads it for you
 - [ ] Usable on Desktop (Linux and/or Windows and/or MacOS)
 - [ ] Graphical User Interface

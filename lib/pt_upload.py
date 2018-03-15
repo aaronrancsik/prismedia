@@ -69,6 +69,12 @@ def upload_video(oauth, secret, options):
     if options.get('--tags'):
         tags = options.get('--tags').split(',')
         for strtags in tags:
+            # Empty tag crashes Peertube, so skip them
+            if strtags == "":
+                continue
+            # Tag more than 30 chars crashes Peertube, so exit and check tags
+            if len(strtags) >= 30:
+                exit("Sorry, Peertube does not support tag with more than 30 characters, please reduce your tag size")
             fields.append(("tags", strtags))
 
     if options.get('--category'):
