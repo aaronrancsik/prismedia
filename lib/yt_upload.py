@@ -81,6 +81,10 @@ def initialize_upload(youtube, options):
     if options.get('--category'):
         category = utils.getCategory(options.get('--category'), 'youtube')
 
+    language = None
+    if options.get('--language'):
+        language = utils.getLanguage(options.get('--language'), "youtube")
+
     license = None
     if options.get('--cca'):
         license = "creativeCommon"
@@ -92,6 +96,7 @@ def initialize_upload(youtube, options):
             "tags": tags,
             # if no category, set default to 1 (Films)
             "categoryId": str(category or 1),
+            "defaultAudioLanguage": str(language or 'en')
         },
         "status": {
             "privacyStatus": str(options.get('--privacy') or "private"),

@@ -14,4 +14,5 @@ cca = True
 privacy = private
 disable-comments = True
 nsfw = True
-platform = youtub
+platform = youtube, peertube
+language = French

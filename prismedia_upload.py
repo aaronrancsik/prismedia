@@ -23,6 +23,7 @@ Options:
                 See nfo_example.txt for more details
   --platform=STRING  List of platform(s) to upload to, comma separated.
                      Supported platforms are youtube and peertube (default is both)
+  --language=STRING  Specify the default language for video. See below for supported language. (default is English)
   -h --help  Show this help.
   --version  Show version.
 
@@ -34,6 +35,13 @@ Categories:
     comedy, entertainment, news,
     how to, education, activism, science & technology,
     science, technology, animals
+
+Languages:
+  Language of the video (audio track), choose one. Default is English
+  Here are available languages from Peertube and Youtube:
+    Arabic, English, French, German, Hindi, Italian,
+    Japanese, Korean, Mandarin, Portuguese, Punjabi, Russian, Spanish
+
 """
 from os.path import dirname, realpath
 import sys
@@ -64,6 +72,7 @@ except ImportError:
          'see https://github.com/ahupp/python-magic\n')
 
 VERSION = "prismedia v0.3"
+
 VALID_PRIVACY_STATUSES = ('public', 'private', 'unlisted')
 VALID_CATEGORIES = (
     "music", "films", "vehicles",
@@ -73,6 +82,10 @@ VALID_CATEGORIES = (
     "science", "technology", "animals"
 )
 VALID_PLATFORM = ('youtube', 'peertube')
+VALID_LANGUAGES = ('arabic', 'english', 'french',
+                   'german', 'hindi', 'italian',
+                   'japanese', 'korean', 'mandarin',
+                   'portuguese', 'punjabi', 'russian', 'spanish')
 
 
 def validateVideo(path):
@@ -99,10 +112,17 @@ def validatePrivacy(privacy):
 
 def validatePlatform(platform):
     for plfrm in platform.split(','):
-        if plfrm not in VALID_PLATFORM:
+        if plfrm.lower().replace(" ", "") not in VALID_PLATFORM:
             return False
 
     return True
+
+
+def validateLanguage(language):
+    if language.lower() in VALID_LANGUAGES:
+        return True
+    else:
+        return False
 
 
 if __name__ == '__main__':
@@ -130,6 +150,11 @@ if __name__ == '__main__':
                                     str,
                                     validateCategory,
                                     error="Category not recognized, please see --help")
+                                   ),
+        Optional('--language'): Or(None, And(
+                                    str,
+                                    validateLanguage,
+                                    error="Language not recognized, please see --help")
                                    ),
         Optional('--privacy'): Or(None, And(
                                     str,

@@ -45,7 +45,38 @@ PEERTUBE_CATEGORY = {
     "animals": 16
 }
 
+### LANGUAGES ###
+YOUTUBE_LANGUAGE = {
+    "arabic": 'ar',
+    "english": 'en',
+    "french": 'fr',
+    "german": 'de',
+    "hindi": 'hi',
+    "italian": 'it',
+    "japanese": 'ja',
+    "korean": 'ko',
+    "mandarin": 'zh-CN',
+    "portuguese": 'pt-PT',
+    "punjabi": 'pa',
+    "russian": 'ru',
+    "spanish": 'es'
+}
 
+PEERTUBE_LANGUAGE = {
+    "arabic": 5,
+    "english": 1,
+    "french": 13,
+    "german": 11,
+    "hindi": 4,
+    "italian": 14,
+    "japanese": 9,
+    "korean": 12,
+    "mandarin": 3,
+    "portuguese": 6,
+    "punjabi": 10,
+    "russian": 8,
+    "spanish": 2
+}
 ######################
 
 
@@ -54,6 +85,13 @@ def getCategory(category, platform):
         return YOUTUBE_CATEGORY[category.lower()]
     else:
         return PEERTUBE_CATEGORY[category.lower()]
+
+
+def getLanguage(language, platform):
+    if platform == "youtube":
+        return YOUTUBE_LANGUAGE[language.lower()]
+    else:
+        return PEERTUBE_LANGUAGE[language.lower()]
 
 
 # return the nfo as a RawConfigParser object

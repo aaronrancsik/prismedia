@@ -95,6 +95,7 @@ Options:
                 See nfo_example.txt for more details
   --platform=STRING  List of platform(s) to upload to, comma separated.
                      Supported platforms are youtube and peertube (default is both)
+  --language=STRING  Specify the default language for video. See below for supported language. (default is English)
   -h --help  Show this help.
   --version  Show version.
 
@@ -106,6 +107,12 @@ Categories:
     comedy, entertainment, news,
     how to, education, activism, science & technology,
     science, technology, animals
+
+Languages:
+  Language of the video (audio track), choose one. Default is English
+  Here are available languages from Peertube and Youtube:
+    Arabic, English, French, German, Hindi, Italian,
+    Japanese, Korean, Mandarin, Portuguese, Punjabi, Russian, Spanish
 ```
 
 ## Features
@@ -120,7 +127,7 @@ Categories:
   - [x] privacy (between public, unlisted or private)
   - [x] enabling/disabling comment (Peertube only as Youtube API does not support it)
   - [x] nsfw (Peertube only as Youtube API does not support it)
-  - [ ] set default language
+  - [x] set default language
   - ~~thumbnail/preview~~ Canceled, waiting for Youtube's API support  
 - [x] Use a config file (NFO) file to retrieve videos arguments
 - [x] Allow to choose peertube or youtube upload (to resume failed upload for example)

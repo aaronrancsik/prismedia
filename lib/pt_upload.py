@@ -83,6 +83,12 @@ def upload_video(oauth, secret, options):
         # if no category, set default to 2 (Films)
         fields.append(("category", "2"))
 
+    if options.get('--language'):
+        fields.append(("language", str(utils.getLanguage(options.get('--language'), "peertube"))))
+    else:
+        # if no language, set default to 1 (English)
+        fields.append(("language", "1"))
+
     if options.get('--privacy'):
         fields.append(("privacy", str(PEERTUBE_PRIVACY[options.get('--privacy').lower()])))
     else:
