@@ -110,7 +110,12 @@ def upload_video(oauth, secret, options):
                           headers=headers)
     if response is not None:
         if response.status_code == 200:
-            print('Peertube : Video was successfully uploaded.')
+            uuid = response.json()
+            uuid = uuid['video']
+            uuid = uuid['uuid']
+            template = ('Peertube : Video was successfully uploaded.\n'
+                        'Watch it at %s/videos/watch/%s.')
+            print(template % (url, uuid))
         else:
             exit(('Peertube : The upload failed with an unexpected response: '
                   '%s') % response)

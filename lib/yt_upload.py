@@ -125,8 +125,9 @@ def resumable_upload(request):
             status, response = request.next_chunk()
             if response is not None:
                 if 'id' in response:
-                    template = ('Youtube : Video id "%s" was successfully '
-                                'uploaded.')
+                    template = ('Youtube : Video was successfully '
+                                'uploaded.\n'
+                                'Watch it at https://youtu.be/%s (post-encoding could get some time)')
                     print(template % response['id'])
                 else:
                     template = ('Youtube : The upload failed with an '
