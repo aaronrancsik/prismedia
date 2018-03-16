@@ -21,6 +21,8 @@ Options:
   --nfo=STRING  Configure a specific nfo file to set options for the video.
                 By default Prismedia search a .txt based on video name
                 See nfo_example.txt for more details
+  --platform=STRING  List of platform(s) to upload to, comma separated.
+                     Supported platforms are youtube and peertube (default is both)
   -h --help  Show this help.
   --version  Show version.
 
@@ -47,12 +49,14 @@ import pt_upload
 import utils
 
 try:
+    # noinspection PyUnresolvedReferences
     from schema import Schema, And, Or, Optional, SchemaError
 except ImportError:
     exit('This program requires that the `schema` data-validation library'
          ' is installed: \n'
          'see https://github.com/halst/schema\n')
 try:
+    # noinspection PyUnresolvedReferences
     import magic
 except ImportError:
     exit('This program requires that the `python-magic` library'
@@ -68,6 +72,7 @@ VALID_CATEGORIES = (
     "how to", "education", "activism", "science & technology",
     "science", "technology", "animals"
 )
+VALID_PLATFORM = ('youtube', 'peertube')
 
 
 def validateVideo(path):
@@ -90,6 +95,14 @@ def validatePrivacy(privacy):
         return True
     else:
         return False
+
+
+def validatePlatform(platform):
+    for plfrm in platform.split(','):
+        if plfrm not in VALID_PLATFORM:
+            return False
+
+    return True
 
 
 if __name__ == '__main__':
@@ -124,6 +137,7 @@ if __name__ == '__main__':
                                     error="Please use recognized privacy between public, unlisted or private")
                                   ),
         Optional('--nfo'): Or(None, str),
+        Optional('--platform'): Or(None, And(str, validatePlatform, error="Sorry, upload platform not supported")),
         Optional('--cca'): bool,
         Optional('--disable-comments'): bool,
         Optional('--nsfw'): bool,
@@ -138,5 +152,7 @@ if __name__ == '__main__':
 
     options = utils.parseNFO(options)
 
-    yt_upload.run(options)
-    pt_upload.run(options)
+    if options.get('--platform') is None or "youtube" in options.get('--platform'):
+        yt_upload.run(options)
+    if options.get('--platform') is None or "peertube" in options.get('--platform'):
+        pt_upload.run(options)

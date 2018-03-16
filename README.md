@@ -93,6 +93,8 @@ Options:
   --nfo=STRING  Configure a specific nfo file to set options for the video.
                 By default Prismedia search a .txt based on video name
                 See nfo_example.txt for more details
+  --platform=STRING  List of platform(s) to upload to, comma separated.
+                     Supported platforms are youtube and peertube (default is both)
   -h --help  Show this help.
   --version  Show version.
 
@@ -121,7 +123,7 @@ Categories:
   - [ ] set default language
   - ~~thumbnail/preview~~ Canceled, waiting for Youtube's API support  
 - [x] Use a config file (NFO) file to retrieve videos arguments
-- [ ] Allow to choose peertube or youtube upload (to resume failed upload for example)
+- [x] Allow to choose peertube or youtube upload (to resume failed upload for example)
 - [ ] Record and forget: put the video in a directory, and the script uploads it for you
 - [ ] Usable on Desktop (Linux and/or Windows and/or MacOS)
 - [ ] Graphical User Interface
