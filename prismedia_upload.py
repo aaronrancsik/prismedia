@@ -63,7 +63,7 @@ except ImportError:
          ' is installed, NOT the Python bindings to libmagic API \n'
          'see https://github.com/ahupp/python-magic\n')
 
-VERSION = "prismedia 0.3"
+VERSION = "prismedia v0.3"
 VALID_PRIVACY_STATUSES = ('public', 'private', 'unlisted')
 VALID_CATEGORIES = (
     "music", "films", "vehicles",
@@ -145,12 +145,12 @@ if __name__ == '__main__':
         '--version': bool
     })
 
+    options = utils.parseNFO(options)
+
     try:
         options = schema.validate(options)
     except SchemaError as e:
         exit(e)
-
-    options = utils.parseNFO(options)
 
     if options.get('--platform') is None or "youtube" in options.get('--platform'):
         yt_upload.run(options)
