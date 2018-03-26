@@ -135,6 +135,6 @@ def run(options):
         upload_video(oauth, secret, options)
     except Exception as e:
         if hasattr(e, 'message'):
-            print("Error: " + e.message)
+            print("Error: " + str(e.message))
         else:
             print("Error: " + str(e))
