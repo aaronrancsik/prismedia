@@ -9,6 +9,7 @@
 name = videoname
 description = Your complete video description
 tags = list of tags, comma separated
+mt = True
 category = Films
 cca = True
 privacy = private

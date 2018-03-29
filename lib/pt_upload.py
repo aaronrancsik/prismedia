@@ -68,14 +68,17 @@ def upload_video(oauth, secret, options):
 
     if options.get('--tags'):
         tags = options.get('--tags').split(',')
-        for strtags in tags:
+        for strtag in tags:
             # Empty tag crashes Peertube, so skip them
-            if strtags == "":
+            if strtag == "":
                 continue
             # Tag more than 30 chars crashes Peertube, so exit and check tags
-            if len(strtags) >= 30:
+            if len(strtag) >= 30:
                 exit("Sorry, Peertube does not support tag with more than 30 characters, please reduce your tag size")
-            fields.append(("tags", strtags))
+            # If Mastodon compatibility is enabled, clean tags from special characters
+            if options.get('--mt'):
+                strtag = utils.mastodonTag(strtag)
+            fields.append(("tags", strtag))
 
     if options.get('--category'):
         fields.append(("category", str(utils.getCategory(options.get('--category'), 'peertube'))))

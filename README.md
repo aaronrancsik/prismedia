@@ -78,13 +78,19 @@ prismedia_upload - tool to upload videos to Peertube and Youtube
 
 Usage:
   prismedia_upload.py --file=<FILE> [options]
+  prismedia_upload.py --file=<FILE> --tags=STRING [--mt options]
   prismedia_upload.py -h | --help
   prismedia_upload.py --version
 
 Options:
   --name=NAME  Name of the video to upload. (default to video filename)
   -d, --description=STRING  Description of the video. (default: default description)
-  -t, --tags=STRING  Tags for the video. comma separated
+  -t, --tags=STRING  Tags for the video. comma separated.
+                     WARN: tags with space and special characters (!, ', ", ?, ...)
+                           are not supported by Mastodon to be published from Peertube
+                           use mastodon compatibility below
+  --mt  Force Mastodon compatibility for tags (drop every incompatible characters inside tags)
+        This option requires --tags
   -c, --category=STRING  Category for the videos, see below. (default: Films)
   --cca  License should be CreativeCommon Attribution (affects Youtube upload only)
   -p, --privacy=STRING  Choose between public, unlisted or private. (default: private)
@@ -122,6 +128,7 @@ Languages:
 - Support of all videos arguments (description, tags, category, licence, ...)
   - [x] description
   - [x] tags (no more than 30 characters per tag as Peertube does not support it)
+  - [x] Option to force tags to be compatible with Mastodon publication
   - [x] categories
   - [x] license: cca or not (Youtube only as Peertube uses Attribution by design)
   - [x] privacy (between public, unlisted or private)

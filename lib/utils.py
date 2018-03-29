@@ -3,6 +3,7 @@
 
 from ConfigParser import RawConfigParser, NoOptionError, NoSectionError
 from os.path import dirname, splitext, basename, isfile
+import unicodedata
 
 ### CATEGORIES ###
 YOUTUBE_CATEGORY = {
@@ -154,3 +155,21 @@ def parseNFO(options):
             except NoSectionError:
                 exit("Given NFO file miss section [video], please check syntax of your NFO.")
     return options
+
+
+def upcaseFirstLetter(s):
+    return s[0].upper() + s[1:]
+
+
+def mastodonTag(tag):
+    tags = tag.split(' ')
+    mtag = ''
+    for s in tags:
+        if s == '':
+            continue
+        strtag = unicodedata.normalize('NFKD', unicode (s, 'utf-8')).encode('ASCII', 'ignore')
+        strtag = ''.join(e for e in strtag if e.isalnum())
+        strtag = upcaseFirstLetter(strtag)
+        mtag = mtag + strtag
+
+    return mtag
