@@ -3,6 +3,8 @@
 
 from ConfigParser import RawConfigParser, NoOptionError, NoSectionError
 from os.path import dirname, splitext, basename, isfile
+from os import devnull
+from subprocess import check_call, CalledProcessError, STDOUT
 import unicodedata
 
 ### CATEGORIES ###
@@ -159,6 +161,46 @@ def parseNFO(options):
 
 def upcaseFirstLetter(s):
     return s[0].upper() + s[1:]
+
+
+def publishAt(publishAt, oauth, url, idvideo):
+    try:
+        FNULL = open(devnull, 'w')
+        check_call(["at", "-V"], stdout=FNULL, stderr=STDOUT)
+    except CalledProcessError:
+        exit("You need to install the atd daemon to use the publishAt option.")
+    try:
+        FNULL = open(devnull, 'w')
+        check_call(["curl", "-V"], stdout=FNULL, stderr=STDOUT)
+    except CalledProcessError:
+        exit("You need to install the curl command line to use the publishAt option.")
+    time = publishAt.split("T")
+    # Remove leading seconds that atd does not manage
+    if time[1].count(":") == 2:
+        time[1] = time[1][:-3]
+
+    atTime = time[1] + " " + time[0]
+    token=str(oauth.__dict__['_client'].__dict__['access_token'])
+    atFile = "/tmp/peertube_" + idvideo + "_" + publishAt + ".at"
+    try:
+        file = open(atFile,"w")
+        file.write("curl '" + url + "/api/v1/videos/" + idvideo + "' -X PUT -H 'Authorization: Bearer " + token + "' -H 'Content-Type: multipart/form-data' -F 'privacy=1'")
+        file.write(" ") # atd needs an empty line at the end of the file to load...
+        file.close()
+    except Exception as e:
+        if hasattr(e, 'message'):
+            print("Error: " + str(e.message))
+        else:
+            print("Error: " + str(e))
+
+    try:
+        FNULL = open(devnull, 'w')
+        check_call(["at", "-M", "-f", atFile, atTime], stdout=FNULL, stderr=STDOUT)
+    except Exception as e:
+        if hasattr(e, 'message'):
+            print("Error: " + str(e.message))
+        else:
+            print("Error: " + str(e))
 
 
 def mastodonTag(tag):

@@ -30,6 +30,10 @@ Options:
   --platform=STRING  List of platform(s) to upload to, comma separated.
                      Supported platforms are youtube and peertube (default is both)
   --language=STRING  Specify the default language for video. See below for supported language. (default is English)
+  --publishAt=DATE  Publish the video at the given DATE using local server timezone.
+                    DATE should be on the form YYYY-MM-DDThh:mm:ss eg: 2018-03-12T19:00:00
+                    DATE should be in the future
+                    For Peertube, requires the "atd" and "curl utilities installed on the system
   -h --help  Show this help.
   --version  Show version.
 
@@ -51,6 +55,7 @@ Languages:
 """
 from os.path import dirname, realpath
 import sys
+import datetime
 
 from docopt import docopt
 
@@ -131,6 +136,18 @@ def validateLanguage(language):
         return False
 
 
+def validatePublish(publish):
+    # Check date format and if date is future
+    try:
+        now = datetime.datetime.now()
+        publishAt = datetime.datetime.strptime(publish, '%Y-%m-%dT%H:%M:%S')
+        if now >= publishAt:
+            return False
+    except ValueError:
+        return False
+    return True
+
+
 if __name__ == '__main__':
 
     options = docopt(__doc__, version=VERSION)
@@ -170,6 +187,11 @@ if __name__ == '__main__':
                                   ),
         Optional('--nfo'): Or(None, str),
         Optional('--platform'): Or(None, And(str, validatePlatform, error="Sorry, upload platform not supported")),
+        Optional('--publishAt'): Or(None, And(
+                                    str,
+                                    validatePublish,
+                                    error="DATE should be the form YYYY-MM-DDThh:mm:ss and has to be in the future")
+                                    ),
         Optional('--cca'): bool,
         Optional('--disable-comments'): bool,
         Optional('--nsfw'): bool,

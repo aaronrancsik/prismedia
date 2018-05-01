@@ -10,6 +10,9 @@ import copy
 import json
 from os.path import splitext, basename, exists
 import google.oauth2.credentials
+import datetime
+import pytz
+from tzlocal import get_localzone
 
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -100,9 +103,18 @@ def initialize_upload(youtube, options):
         },
         "status": {
             "privacyStatus": str(options.get('--privacy') or "private"),
-            "license": str(license or "youtube")
+            "license": str(license or "youtube"),
         }
     }
+
+    if options.get('--publishAt'):
+        # Youtube needs microsecond and the local timezone from ISO 8601
+        publishAt = options.get('--publishAt') + ".000001"
+        publishAt = datetime.datetime.strptime(publishAt, '%Y-%m-%dT%H:%M:%S.%f')
+        tz = get_localzone()
+        tz = pytz.timezone(str(tz))
+        publishAt = tz.localize(publishAt).isoformat()
+        body['status']['publishAt'] = str(publishAt)
 
     # Call the API's videos.insert method to create and upload the video.
     insert_request = youtube.videos().insert(

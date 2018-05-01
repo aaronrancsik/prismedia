@@ -36,6 +36,7 @@ def get_authenticated_service(secret):
         client_id=str(secret.get('peertube', 'client_id')),
         client_secret=str(secret.get('peertube', 'client_secret'))
     )
+
     return oauth
 
 
@@ -113,15 +114,19 @@ def upload_video(oauth, secret, options):
                           headers=headers)
     if response is not None:
         if response.status_code == 200:
-            uuid = response.json()
-            uuid = uuid['video']
-            uuid = uuid['uuid']
+            jresponse = response.json()
+            jresponse = jresponse['video']
+            uuid = jresponse['uuid']
+            idvideo = str(jresponse['id'])
             template = ('Peertube : Video was successfully uploaded.\n'
                         'Watch it at %s/videos/watch/%s.')
             print(template % (url, uuid))
         else:
             exit(('Peertube : The upload failed with an unexpected response: '
                   '%s') % response)
+
+    if options.get('--publishAt'):
+        utils.publishAt(str(options.get('--publishAt')), oauth, url, idvideo)
 
 
 def run(options):
