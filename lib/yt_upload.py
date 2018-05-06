@@ -12,6 +12,7 @@ from os.path import splitext, basename, exists
 import google.oauth2.credentials
 import datetime
 import pytz
+import logging
 from tzlocal import get_localzone
 
 from googleapiclient.discovery import build
@@ -20,6 +21,9 @@ from googleapiclient.http import MediaFileUpload
 from google_auth_oauthlib.flow import InstalledAppFlow
 
 import utils
+
+logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
+
 
 # Explicitly tell the underlying HTTP transport library not to retry, since
 # we are handling retry logic ourselves.
@@ -71,7 +75,7 @@ def get_authenticated_service():
             p = copy.deepcopy(vars(credentials))
             del p["expiry"]
             json.dump(p, f)
-    return build(API_SERVICE_NAME, API_VERSION, credentials=credentials)
+    return build(API_SERVICE_NAME, API_VERSION, credentials=credentials,  cache_discovery=False)
 
 
 def initialize_upload(youtube, options):
@@ -133,18 +137,19 @@ def resumable_upload(request):
     retry = 0
     while response is None:
         try:
-            print('Youtube : Uploading file...')
+            logging.info('Youtube : Uploading file...')
             status, response = request.next_chunk()
             if response is not None:
                 if 'id' in response:
                     template = ('Youtube : Video was successfully '
                                 'uploaded.\n'
                                 'Watch it at https://youtu.be/%s (post-encoding could take some time)')
-                    print(template % response['id'])
+                    logging.info(template % response['id'])
                 else:
                     template = ('Youtube : The upload failed with an '
                                 'unexpected response: %s')
-                    exit(template % response)
+                    logging.error(template % response)
+                    exit(1)
         except HttpError as e:
             if e.resp.status in RETRIABLE_STATUS_CODES:
                 template = 'Youtube : A retriable HTTP error %d occurred:\n%s'
@@ -155,14 +160,15 @@ def resumable_upload(request):
             error = 'Youtube : A retriable error occurred: %s' % e
 
     if error is not None:
-        print(error)
+        logging.warning(error)
         retry += 1
         if retry > MAX_RETRIES:
-            exit('Youtube : No longer attempting to retry.')
+            logging.error('Youtube : No longer attempting to retry.')
+            exit(1)
 
         max_sleep = 2 ** retry
         sleep_seconds = random.random() * max_sleep
-        print('Youtube : Sleeping %f seconds and then retrying...'
+        logging.warning('Youtube : Sleeping %f seconds and then retrying...'
               % sleep_seconds)
         time.sleep(sleep_seconds)
 
@@ -172,5 +178,5 @@ def run(options):
     try:
         initialize_upload(youtube, options)
     except HttpError as e:
-        print('Youtube : An HTTP error %d occurred:\n%s' % (e.resp.status,
+        logging.error('Youtube : An HTTP error %d occurred:\n%s' % (e.resp.status,
                                                             e.content))

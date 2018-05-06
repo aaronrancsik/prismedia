@@ -56,6 +56,8 @@ Languages:
 from os.path import dirname, realpath
 import sys
 import datetime
+import logging
+logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
 
 from docopt import docopt
 
@@ -71,18 +73,20 @@ try:
     # noinspection PyUnresolvedReferences
     from schema import Schema, And, Or, Optional, SchemaError
 except ImportError:
-    exit('This program requires that the `schema` data-validation library'
-         ' is installed: \n'
-         'see https://github.com/halst/schema\n')
+    logging.error('This program requires that the `schema` data-validation library'
+                  ' is installed: \n'
+                  'see https://github.com/halst/schema\n')
+    exit(1)
 try:
     # noinspection PyUnresolvedReferences
     import magic
 except ImportError:
-    exit('This program requires that the `python-magic` library'
-         ' is installed, NOT the Python bindings to libmagic API \n'
-         'see https://github.com/ahupp/python-magic\n')
+    logging.error('This program requires that the `python-magic` library'
+                  ' is installed, NOT the Python bindings to libmagic API \n'
+                  'see https://github.com/ahupp/python-magic\n')
+    exit(1)
 
-VERSION = "prismedia v0.3"
+VERSION = "prismedia v0.4"
 
 VALID_PRIVACY_STATUSES = ('public', 'private', 'unlisted')
 VALID_CATEGORIES = (

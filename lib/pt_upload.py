@@ -4,6 +4,7 @@
 import os
 import mimetypes
 import json
+import logging
 from os.path import splitext, basename, abspath
 
 from ConfigParser import RawConfigParser
@@ -75,7 +76,8 @@ def upload_video(oauth, secret, options):
                 continue
             # Tag more than 30 chars crashes Peertube, so exit and check tags
             if len(strtag) >= 30:
-                exit("Sorry, Peertube does not support tag with more than 30 characters, please reduce your tag size")
+                logging.warning("Sorry, Peertube does not support tag with more than 30 characters, please reduce your tag size")
+                exit(1)
             # If Mastodon compatibility is enabled, clean tags from special characters
             if options.get('--mt'):
                 strtag = utils.mastodonTag(strtag)
@@ -120,10 +122,11 @@ def upload_video(oauth, secret, options):
             idvideo = str(jresponse['id'])
             template = ('Peertube : Video was successfully uploaded.\n'
                         'Watch it at %s/videos/watch/%s.')
-            print(template % (url, uuid))
+            logging.info(template % (url, uuid))
         else:
-            exit(('Peertube : The upload failed with an unexpected response: '
-                  '%s') % response)
+            logging.error(('Peertube : The upload failed with an unexpected response: '
+                           '%s') % response)
+            exit(1)
 
     if options.get('--publishAt'):
         utils.publishAt(str(options.get('--publishAt')), oauth, url, idvideo)
@@ -134,15 +137,16 @@ def run(options):
     try:
         secret.read(PEERTUBE_SECRETS_FILE)
     except Exception as e:
-        exit("Error loading " + str(PEERTUBE_SECRETS_FILE) + ": " + str(e))
+        logging.error("Error loading " + str(PEERTUBE_SECRETS_FILE) + ": " + str(e))
+        exit(1)
     insecure_transport = secret.get('peertube', 'OAUTHLIB_INSECURE_TRANSPORT')
     os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = insecure_transport
     oauth = get_authenticated_service(secret)
     try:
-        print('Peertube : Uploading file...')
+        logging.info('Peertube : Uploading file...')
         upload_video(oauth, secret, options)
     except Exception as e:
         if hasattr(e, 'message'):
-            print("Error: " + str(e.message))
+            logging.error("Error: " + str(e.message))
         else:
-            print("Error: " + str(e))
+            logging.error("Error: " + str(e))

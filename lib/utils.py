@@ -6,6 +6,7 @@ from os.path import dirname, splitext, basename, isfile
 from os import devnull
 from subprocess import check_call, CalledProcessError, STDOUT
 import unicodedata
+import logging
 
 ### CATEGORIES ###
 YOUTUBE_CATEGORY = {
@@ -102,40 +103,44 @@ def loadNFO(options):
     video_directory = dirname(options.get('--file')) + "/"
     if options.get('--nfo'):
         try:
-            print "Using " + options.get('--nfo') + " as NFO, loading..."
+            logging.info("Using " + options.get('--nfo') + " as NFO, loading...")
             if isfile(options.get('--nfo')):
                 nfo = RawConfigParser()
                 nfo.read(options.get('--nfo'))
                 return nfo
             else:
-                exit("Given NFO file does not exist, please check your path.")
+                logging.error("Given NFO file does not exist, please check your path.")
+                exit(1)
         except Exception as e:
-            exit("Problem with NFO file: " + str(e))
+            logging.error("Problem with NFO file: " + str(e))
+            exit(1)
     else:
         if options.get('--name'):
             nfo_file = video_directory + options.get('--name') + ".txt"
             print nfo_file
             if isfile(nfo_file):
                 try:
-                    print "Using " + nfo_file + " as NFO, loading..."
+                    logging.info("Using " + nfo_file + " as NFO, loading...")
                     nfo = RawConfigParser()
                     nfo.read(nfo_file)
                     return nfo
                 except Exception as e:
-                    exit("Problem with NFO file: " + str(e))
+                    logging.error("Problem with NFO file: " + str(e))
+                    exit(1)
 
     # if --nfo and --name does not exist, use --file as default
     video_file = splitext(basename(options.get('--file')))[0]
     nfo_file = video_directory + video_file + ".txt"
     if isfile(nfo_file):
         try:
-            print "Using " + nfo_file + " as NFO, loading..."
+            logging.info("Using " + nfo_file + " as NFO, loading...")
             nfo = RawConfigParser()
             nfo.read(nfo_file)
             return nfo
         except Exception as e:
-            exit("Problem with nfo file: " + str(e))
-    print "No suitable NFO found, skipping."
+            logging.error("Problem with nfo file: " + str(e))
+            exit(1)
+    logging.info("No suitable NFO found, skipping.")
     return False
 
 
@@ -155,7 +160,8 @@ def parseNFO(options):
             except NoOptionError:
                 continue
             except NoSectionError:
-                exit("Given NFO file miss section [video], please check syntax of your NFO.")
+                logging.error("Given NFO file miss section [video], please check syntax of your NFO.")
+                exit(1)
     return options
 
 
@@ -168,12 +174,14 @@ def publishAt(publishAt, oauth, url, idvideo):
         FNULL = open(devnull, 'w')
         check_call(["at", "-V"], stdout=FNULL, stderr=STDOUT)
     except CalledProcessError:
-        exit("You need to install the atd daemon to use the publishAt option.")
+        logging.error("You need to install the atd daemon to use the publishAt option.")
+        exit(1)
     try:
         FNULL = open(devnull, 'w')
         check_call(["curl", "-V"], stdout=FNULL, stderr=STDOUT)
     except CalledProcessError:
-        exit("You need to install the curl command line to use the publishAt option.")
+        logging.error("You need to install the curl command line to use the publishAt option.")
+        exit(1)
     time = publishAt.split("T")
     # Remove leading seconds that atd does not manage
     if time[1].count(":") == 2:
@@ -189,18 +197,18 @@ def publishAt(publishAt, oauth, url, idvideo):
         file.close()
     except Exception as e:
         if hasattr(e, 'message'):
-            print("Error: " + str(e.message))
+            logging.error("Error: " + str(e.message))
         else:
-            print("Error: " + str(e))
+            logging.error("Error: " + str(e))
 
     try:
         FNULL = open(devnull, 'w')
         check_call(["at", "-M", "-f", atFile, atTime], stdout=FNULL, stderr=STDOUT)
     except Exception as e:
         if hasattr(e, 'message'):
-            print("Error: " + str(e.message))
+            logging.error("Error: " + str(e.message))
         else:
-            print("Error: " + str(e))
+            logging.error("Error: " + str(e))
 
 
 def mastodonTag(tag):
