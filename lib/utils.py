@@ -182,6 +182,12 @@ def publishAt(publishAt, oauth, url, idvideo, secret):
     except CalledProcessError:
         logging.error("You need to install the curl command line to use the publishAt option.")
         exit(1)
+    try:
+        FNULL = open(devnull, 'w')
+        check_call(["jq", "-V"], stdout=FNULL, stderr=STDOUT)
+    except CalledProcessError:
+        logging.error("You need to install the jq command line to use the publishAt option.")
+        exit(1)
     time = publishAt.split("T")
     # Remove leading seconds that atd does not manage
     if time[1].count(":") == 2:
