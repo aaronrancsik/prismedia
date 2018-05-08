@@ -152,5 +152,9 @@ Languages:
 - [ ] Usable on Desktop (Linux and/or Windows and/or MacOS)
 - [ ] Graphical User Interface
 
+## Compatibility
+
+If your server uses peertube before 1.0.0-beta4, use the version inside tag 1.0.0-beta3!
+
 ## Sources 
 inspired by [peeror](https://git.drycat.fr/rigelk/Peeror) and [youtube-upload](https://github.com/tokland/youtube-upload)
