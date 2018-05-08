@@ -67,19 +67,19 @@ YOUTUBE_LANGUAGE = {
 }
 
 PEERTUBE_LANGUAGE = {
-    "arabic": 5,
-    "english": 1,
-    "french": 13,
-    "german": 11,
-    "hindi": 4,
-    "italian": 14,
-    "japanese": 9,
-    "korean": 12,
-    "mandarin": 3,
-    "portuguese": 6,
-    "punjabi": 10,
-    "russian": 8,
-    "spanish": 2
+    "arabic": "ar",
+    "english": "en",
+    "french": "fr",
+    "german": "de",
+    "hindi": "hi",
+    "italian": "it",
+    "japanese": "ja",
+    "korean": "ko",
+    "mandarin": "zh",
+    "portuguese": "pt",
+    "punjabi": "pa",
+    "russian": "ru",
+    "spanish": "es"
 }
 ######################
 
