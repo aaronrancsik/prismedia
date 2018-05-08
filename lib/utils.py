@@ -169,7 +169,7 @@ def upcaseFirstLetter(s):
     return s[0].upper() + s[1:]
 
 
-def publishAt(publishAt, oauth, url, idvideo):
+def publishAt(publishAt, oauth, url, idvideo, secret):
     try:
         FNULL = open(devnull, 'w')
         check_call(["at", "-V"], stdout=FNULL, stderr=STDOUT)
@@ -188,13 +188,20 @@ def publishAt(publishAt, oauth, url, idvideo):
         time[1] = time[1][:-3]
 
     atTime = time[1] + " " + time[0]
-    token=str(oauth.__dict__['_client'].__dict__['access_token'])
+    refresh_token=str(oauth.__dict__['_client'].__dict__['refresh_token'])
     atFile = "/tmp/peertube_" + idvideo + "_" + publishAt + ".at"
     try:
-        file = open(atFile,"w")
-        file.write("curl '" + url + "/api/v1/videos/" + idvideo + "' -X PUT -H 'Authorization: Bearer " + token + "' -H 'Content-Type: multipart/form-data' -F 'privacy=1'")
-        file.write(" ") # atd needs an empty line at the end of the file to load...
-        file.close()
+        openfile = open(atFile,"w")
+        openfile.write('token=$(curl -X POST -d "client_id=' + str(secret.get('peertube', 'client_id')) +
+                        '&client_secret=' + str(secret.get('peertube', 'client_secret')) +
+                        '&grant_type=refresh_token&refresh_token=' + str(refresh_token) +
+                        '" "' + url + '/api/v1/users/token" | jq -r .access_token)')
+        openfile.write("\n")
+        openfile.write('curl "' + url + '/api/v1/videos/' + idvideo +
+                        '" -X PUT -H "Authorization: Bearer ${token}"' +
+                        ' -H "Content-Type: multipart/form-data" -F "privacy=1"')
+        openfile.write("\n ")  # atd needs an empty line at the end of the file to load...
+        openfile.close()
     except Exception as e:
         if hasattr(e, 'message'):
             logging.error("Error: " + str(e.message))
