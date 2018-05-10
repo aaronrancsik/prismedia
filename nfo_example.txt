@@ -8,6 +8,9 @@
 [video]
 name = videoname
 description = Your complete video description
+ Multilines description
+ should be wrote with a blank space
+ at the beginning of the line :)
 tags = list of tags, comma separated
 mt = True
 category = Films
