@@ -123,13 +123,12 @@ def upload_video(oauth, secret, options):
             template = ('Peertube : Video was successfully uploaded.\n'
                         'Watch it at %s/videos/watch/%s.')
             logging.info(template % (url, uuid))
+            if options.get('--publishAt'):
+                utils.publishAt(str(options.get('--publishAt')), oauth, url, idvideo, secret)
         else:
             logging.error(('Peertube : The upload failed with an unexpected response: '
                            '%s') % response)
             exit(1)
-
-    if options.get('--publishAt'):
-        utils.publishAt(str(options.get('--publishAt')), oauth, url, idvideo)
 
 
 def run(options):

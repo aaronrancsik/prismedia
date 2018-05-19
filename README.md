@@ -17,6 +17,7 @@ Search in your package manager, otherwise use ``pip install --upgrade``
 For Peertube and if you want to use the publishAt option, you also need some utilities on you local system
  - [atd](https://linux.die.net/man/8/atd) daemon
  - [curl](https://linux.die.net/man/1/curl)
+ - [jq](https://stedolan.github.io/jq/)
 
 ## Configuration
 
@@ -110,7 +111,7 @@ Options:
   --publishAt=DATE  Publish the video at the given DATE using local server timezone.
                     DATE should be on the form YYYY-MM-DDThh:mm:ss eg: 2018-03-12T19:00:00
                     DATE should be in the future
-                    For Peertube, requires the "atd" and "curl utilities installed on the system
+                    For Peertube, requires the "atd", "curl" and "jq" utilities installed on the system
   -h --help  Show this help.
   --version  Show version.
 
@@ -144,10 +145,12 @@ Languages:
   - [x] enabling/disabling comment (Peertube only as Youtube API does not support it)
   - [x] nsfw (Peertube only as Youtube API does not support it)
   - [x] set default language
-  - ~~thumbnail/preview~~ Canceled, waiting for Youtube's API support  
+  - [ ] thumbnail/preview (YT workflow: upload video, upload thumbnail, add thumbnail to video)
+  - [ ] multiple lines description (see [issue 4](https://git.lecygnenoir.info/LecygneNoir/prismedia/issues/4))
+  - [ ] add videos to playlist (YT & PT workflow: upload video, find playlist id, add video to playlist)
 - [x] Use a config file (NFO) file to retrieve videos arguments
 - [x] Allow to choose peertube or youtube upload (to resume failed upload for example)
-- [x] Add publishAt option to plan your videos (need the [atd](https://linux.die.net/man/8/atd) daemon and [curl](https://linux.die.net/man/1/curl))
+- [x] Add publishAt option to plan your videos (need the [atd](https://linux.die.net/man/8/atd) daemon, [curl](https://linux.die.net/man/1/curl) and [jq](https://stedolan.github.io/jq/))
 - [ ] Record and forget: put the video in a directory, and the script uploads it for you
 - [ ] Usable on Desktop (Linux and/or Windows and/or MacOS)
 - [ ] Graphical User Interface
