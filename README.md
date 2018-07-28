@@ -69,6 +69,12 @@ Specify description and tags:
 ./prismedia_upload.py --file="yourvideo.mp4" -d "My supa description" -t "tag1,tag2,foo"
 ```
 
+Provide a thumbnail:
+
+```
+./prismedia_upload.py --file="yourvideo.mp4" -d "Video with thumbnail" --thumbnail="/path/to/your/thumbnail.jpg"
+```
+
 
 Use a NFO file to specify your video options:
 
@@ -111,7 +117,10 @@ Options:
   --publishAt=DATE  Publish the video at the given DATE using local server timezone.
                     DATE should be on the form YYYY-MM-DDThh:mm:ss eg: 2018-03-12T19:00:00
                     DATE should be in the future
-                    For Peertube, requires the "atd", "curl" and "jq" utilities installed on the system
+                    For Peertube, requires the "atd" and "curl utilities installed on the system
+  --thumbnail=STRING    Path to a file to use as a thumbnail for the video.
+                        Supported types are jpg and jpeg.
+                        By default, prismedia search for an image based on video name followed by .jpg or .jpeg
   -h --help  Show this help.
   --version  Show version.
 
@@ -145,8 +154,8 @@ Languages:
   - [x] enabling/disabling comment (Peertube only as Youtube API does not support it)
   - [x] nsfw (Peertube only as Youtube API does not support it)
   - [x] set default language
-  - [ ] thumbnail/preview (YT workflow: upload video, upload thumbnail, add thumbnail to video)
-  - [ ] multiple lines description (see [issue 4](https://git.lecygnenoir.info/LecygneNoir/prismedia/issues/4))
+  - [x] thumbnail/preview
+  - [x] multiple lines description (see [issue 4](https://git.lecygnenoir.info/LecygneNoir/prismedia/issues/4))
   - [ ] add videos to playlist (YT & PT workflow: upload video, find playlist id, add video to playlist)
 - [x] Use a config file (NFO) file to retrieve videos arguments
 - [x] Allow to choose peertube or youtube upload (to resume failed upload for example)
