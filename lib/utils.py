@@ -98,6 +98,32 @@ def getLanguage(language, platform):
         return PEERTUBE_LANGUAGE[language.lower()]
 
 
+def remove_empty_kwargs(**kwargs):
+    good_kwargs = {}
+    if kwargs is not None:
+        for key, value in kwargs.iteritems():
+            if value:
+                good_kwargs[key] = value
+    return good_kwargs
+
+def searchThumbnail(options):
+    video_directory = dirname(options.get('--file')) + "/"
+    # First, check for thumbnail based on videoname
+    if options.get('--name'):
+        if isfile(video_directory + options.get('--name') + ".jpg"):
+            options['--thumbnail'] = video_directory + options.get('--name') + ".jpg"
+        elif isfile(video_directory + options.get('--name') + ".jpeg"):
+            options['--thumbnail'] = video_directory + options.get('--name') + ".jpeg"
+    # Then, if we still not have thumbnail, check for thumbnail based on videofile name
+    if not options.get('--thumbnail'):
+        video_file = splitext(basename(options.get('--file')))[0]
+        if isfile(video_directory + video_file + ".jpg"):
+            options['--thumbnail'] = video_directory + video_file + ".jpg"
+        elif isfile(video_directory + video_file + ".jpeg"):
+            options['--thumbnail'] = video_directory + video_file + ".jpeg"
+    return options
+
+
 # return the nfo as a RawConfigParser object
 def loadNFO(options):
     video_directory = dirname(options.get('--file')) + "/"
@@ -117,7 +143,6 @@ def loadNFO(options):
     else:
         if options.get('--name'):
             nfo_file = video_directory + options.get('--name') + ".txt"
-            print nfo_file
             if isfile(nfo_file):
                 try:
                     logging.info("Using " + nfo_file + " as NFO, loading...")
