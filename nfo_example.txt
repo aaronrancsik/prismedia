@@ -14,6 +14,7 @@ category = Films
 cca = True
 privacy = private
 disable-comments = True
+thumbnail = /path/to/your/thumbnail.jpg # Set the absolute path to your thumbnail
 nsfw = True
 platform = youtube, peertube
 language = French

@@ -34,6 +34,9 @@ Options:
                     DATE should be on the form YYYY-MM-DDThh:mm:ss eg: 2018-03-12T19:00:00
                     DATE should be in the future
                     For Peertube, requires the "atd" and "curl utilities installed on the system
+  --thumbnail=STRING    Path to a file to use as a thumbnail for the video.
+                        Supported types are jpg and jpeg.
+                        By default, prismedia search for an image based on video name followed by .jpg or .jpeg
   -h --help  Show this help.
   --version  Show version.
 
@@ -151,6 +154,12 @@ def validatePublish(publish):
         return False
     return True
 
+def validateThumbnail(thumbnail):
+    supported_types = ['image/jpg', 'image/jpeg']
+    if magic.from_file(thumbnail, mime=True) in supported_types:
+        return thumbnail
+    else:
+        return False
 
 if __name__ == '__main__':
 
@@ -199,11 +208,17 @@ if __name__ == '__main__':
         Optional('--cca'): bool,
         Optional('--disable-comments'): bool,
         Optional('--nsfw'): bool,
+        Optional('--thumbnail'): Or(None, And(
+                                    str, validateThumbnail, error='thumbnail is not supported, please use jpg/jpeg'),
+                                    ),
         '--help': bool,
         '--version': bool
     })
 
     options = utils.parseNFO(options)
+
+    if not options.get('--thumbnail'):
+        options = utils.searchThumbnail(options)
 
     try:
         options = schema.validate(options)
