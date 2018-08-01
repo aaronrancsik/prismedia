@@ -59,7 +59,7 @@ def upload_video(oauth, secret, options):
     # https://github.com/requests/toolbelt/issues/190 and
     # https://github.com/requests/toolbelt/issues/205
     fields = [
-        ("name", options.get('--name') or splitext(basename(path))[0]),
+        ("name", options.get('--name') or splitext(basename(options.get('--file')))[0]),
         ("licence", "1"),
         ("description", options.get('--description')  or "default description"),
         ("nsfw", str(int(options.get('--nsfw')) or "0")),
