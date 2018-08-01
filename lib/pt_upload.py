@@ -47,12 +47,11 @@ def upload_video(oauth, secret, options):
         user_info = json.loads(oauth.get(url + "/api/v1/users/me").content)
         return str(user_info["id"])
 
-    def get_videofile(path):
+    def get_file(path):
         mimetypes.init()
         return (basename(path), open(abspath(path), 'rb'),
                 mimetypes.types_map[splitext(path)[1]])
 
-    path = options.get('--file')
     url = secret.get('peertube', 'peertube_url')
 
     # We need to transform fields into tuple to deal with tags as
@@ -60,12 +59,12 @@ def upload_video(oauth, secret, options):
     # https://github.com/requests/toolbelt/issues/190 and
     # https://github.com/requests/toolbelt/issues/205
     fields = [
-        ("name", options.get('--name') or splitext(basename(path))[0]),
+        ("name", options.get('--name') or splitext(basename(options.get('--file')))[0]),
         ("licence", "1"),
         ("description", options.get('--description')  or "default description"),
         ("nsfw", str(int(options.get('--nsfw')) or "0")),
         ("channelId", get_userinfo()),
-        ("videofile", get_videofile(path))
+        ("videofile", get_file(options.get('--file')))
     ]
 
     if options.get('--tags'):
@@ -76,7 +75,7 @@ def upload_video(oauth, secret, options):
                 continue
             # Tag more than 30 chars crashes Peertube, so exit and check tags
             if len(strtag) >= 30:
-                logging.warning("Sorry, Peertube does not support tag with more than 30 characters, please reduce your tag size")
+                logging.warning("Peertube: Sorry, Peertube does not support tag with more than 30 characters, please reduce your tag size")
                 exit(1)
             # If Mastodon compatibility is enabled, clean tags from special characters
             if options.get('--mt'):
@@ -105,6 +104,9 @@ def upload_video(oauth, secret, options):
     else:
         fields.append(("commentsEnabled", "1"))
 
+    if options.get('--thumbnail'):
+        fields.append(("thumbnailfile", get_file(options.get('--thumbnail'))))
+
     multipart_data = MultipartEncoder(fields)
 
     headers = {
@@ -120,13 +122,13 @@ def upload_video(oauth, secret, options):
             jresponse = jresponse['video']
             uuid = jresponse['uuid']
             idvideo = str(jresponse['id'])
-            template = ('Peertube : Video was successfully uploaded.\n'
-                        'Watch it at %s/videos/watch/%s.')
+            logging.info('Peertube : Video was successfully uploaded.')
+            template = 'Peertube: Watch it at %s/videos/watch/%s.'
             logging.info(template % (url, uuid))
             if options.get('--publishAt'):
                 utils.publishAt(str(options.get('--publishAt')), oauth, url, idvideo, secret)
         else:
-            logging.error(('Peertube : The upload failed with an unexpected response: '
+            logging.error(('Peertube: The upload failed with an unexpected response: '
                            '%s') % response)
             exit(1)
 
@@ -136,16 +138,16 @@ def run(options):
     try:
         secret.read(PEERTUBE_SECRETS_FILE)
     except Exception as e:
-        logging.error("Error loading " + str(PEERTUBE_SECRETS_FILE) + ": " + str(e))
+        logging.error("Peertube: Error loading " + str(PEERTUBE_SECRETS_FILE) + ": " + str(e))
         exit(1)
     insecure_transport = secret.get('peertube', 'OAUTHLIB_INSECURE_TRANSPORT')
     os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = insecure_transport
     oauth = get_authenticated_service(secret)
     try:
-        logging.info('Peertube : Uploading file...')
+        logging.info('Peertube: Uploading video...')
         upload_video(oauth, secret, options)
     except Exception as e:
         if hasattr(e, 'message'):
-            logging.error("Error: " + str(e.message))
+            logging.error("Peertube: Error: " + str(e.message))
         else:
-            logging.error("Error: " + str(e))
+            logging.error("Peertube: Error: " + str(e))
