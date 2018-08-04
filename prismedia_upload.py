@@ -34,6 +34,10 @@ Options:
                     DATE should be on the form YYYY-MM-DDThh:mm:ss eg: 2018-03-12T19:00:00
                     DATE should be in the future
                     For Peertube, requires the "atd" and "curl utilities installed on the system
+  --playlist=STRING Set the playlist to use for the video. Also known as Channel for Peertube.
+                    If the playlist is not found, spawn an error except if --playlist-create is set.
+  --playlistCreate  Create the playlist if not exists. (default do not create)
+                    Only relevant if --playlist is set.
   -h --help  Show this help.
   --version  Show version.
 
@@ -86,7 +90,7 @@ except ImportError:
                   'see https://github.com/ahupp/python-magic\n')
     exit(1)
 
-VERSION = "prismedia v0.4"
+VERSION = "prismedia v0.5"
 
 VALID_PRIVACY_STATUSES = ('public', 'private', 'unlisted')
 VALID_CATEGORIES = (
@@ -199,6 +203,8 @@ if __name__ == '__main__':
         Optional('--cca'): bool,
         Optional('--disable-comments'): bool,
         Optional('--nsfw'): bool,
+        Optional('--playlist'): Or(None, str),
+        Optional('--playlistCreate'): bool,
         '--help': bool,
         '--version': bool
     })
