@@ -48,17 +48,54 @@ def get_authenticated_service(secret):
     return oauth
 
 
+def get_playlist_by_name(user_info, options):
+
+    for playlist in user_info["videoChannels"]:
+        if playlist['displayName'] == options.get('--playlist'):
+            return playlist['id']
+
+
+def create_playlist(oauth, url, options):
+    template = ('Peertube : Playlist %s does not exist, creating it.')
+    logging.info(template % (str(options.get('--playlist'))))
+    data = '{"displayName":"' + str(options.get('--playlist')) +'", \
+            "description":null}'
+
+    headers = {
+        'Content-Type': "application/json"
+    }
+    try:
+        response = oauth.post(url + "/api/v1/video-channels/",
+                       data=data,
+                       headers=headers)
+    except Exception as e:
+        if hasattr(e, 'message'):
+            logging.error("Error: " + str(e.message))
+        else:
+            logging.error("Error: " + str(e))
+    if response is not None:
+        if response.status_code == 200:
+            jresponse = response.json()
+            jresponse = jresponse['videoChannel']
+            return jresponse['id']
+        else:
+            logging.error(('Peertube : The upload failed with an unexpected response: '
+                           '%s') % response)
+            exit(1)
+
+
 def upload_video(oauth, secret, options):
 
     def get_userinfo():
-        user_info = json.loads(oauth.get(url + "/api/v1/users/me").content)
-        return str(user_info["id"])
+        return json.loads(oauth.get(url+"/api/v1/users/me").content)
 
     def get_file(path):
         mimetypes.init()
         return (basename(path), open(abspath(path), 'rb'),
                 mimetypes.types_map[splitext(path)[1]])
 
+    path = options.get('--file')
+    user_info = get_userinfo()
     url = str(secret.get('peertube', 'peertube_url')).rstrip('/')
 
     # We need to transform fields into tuple to deal with tags as
@@ -70,7 +107,6 @@ def upload_video(oauth, secret, options):
         ("licence", "1"),
         ("description", options.get('--description')  or "default description"),
         ("nsfw", str(int(options.get('--nsfw')) or "0")),
-        ("channelId", get_userinfo()),
         ("videofile", get_file(options.get('--file')))
     ]
 
@@ -115,12 +151,21 @@ def upload_video(oauth, secret, options):
         fields.append(("thumbnailfile", get_file(options.get('--thumbnail'))))
         fields.append(("previewfile", get_file(options.get('--thumbnail'))))
 
+    if options.get('--playlist'):
+        playlist_id = get_playlist_by_name(user_info, options)
+        if not playlist_id and options.get('--playlistCreate'):
+            playlist_id = create_playlist(oauth, url, options)
+        else:
+            playlist_id = user_info['id']
+    else:
+        playlist_id = user_info['id']
+    fields.append(("channelId", str(playlist_id)))
+
     multipart_data = MultipartEncoder(fields)
 
     headers = {
         'Content-Type': multipart_data.content_type
     }
-
     response = oauth.post(url + "/api/v1/videos/upload",
                           data=multipart_data,
                           headers=headers)
@@ -138,7 +183,6 @@ def upload_video(oauth, secret, options):
         else:
             logging.error(('Peertube: The upload failed with an unexpected response: '
                            '%s') % response)
-            print(response.json())
             exit(1)
 
 
