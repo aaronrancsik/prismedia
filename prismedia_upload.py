@@ -37,6 +37,10 @@ Options:
   --thumbnail=STRING    Path to a file to use as a thumbnail for the video.
                         Supported types are jpg and jpeg.
                         By default, prismedia search for an image based on video name followed by .jpg or .jpeg
+  --playlist=STRING Set the playlist to use for the video. Also known as Channel for Peertube.
+                    If the playlist is not found, spawn an error except if --playlist-create is set.
+  --playlistCreate  Create the playlist if not exists. (default do not create)
+                    Only relevant if --playlist is set.
   -h --help  Show this help.
   --version  Show version.
 
@@ -211,6 +215,8 @@ if __name__ == '__main__':
         Optional('--thumbnail'): Or(None, And(
                                     str, validateThumbnail, error='thumbnail is not supported, please use jpg/jpeg'),
                                     ),
+        Optional('--playlist'): Or(None, str),
+        Optional('--playlistCreate'): bool,
         '--help': bool,
         '--version': bool
     })
