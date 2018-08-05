@@ -23,21 +23,28 @@ PEERTUBE_PRIVACY = {
 
 
 def get_authenticated_service(secret):
-    peertube_url = str(secret.get('peertube', 'peertube_url'))
+    peertube_url = str(secret.get('peertube', 'peertube_url')).rstrip("/")
 
     oauth_client = LegacyApplicationClient(
         client_id=str(secret.get('peertube', 'client_id'))
     )
-    oauth = OAuth2Session(client=oauth_client)
-    oauth.fetch_token(
-        token_url=peertube_url + '/api/v1/users/token',
-        # lower as peertube does not store uppecase for pseudo
-        username=str(secret.get('peertube', 'username').lower()),
-        password=str(secret.get('peertube', 'password')),
-        client_id=str(secret.get('peertube', 'client_id')),
-        client_secret=str(secret.get('peertube', 'client_secret'))
-    )
-
+    try:
+        oauth = OAuth2Session(client=oauth_client)
+        oauth.fetch_token(
+            token_url=str(peertube_url + '/api/v1/users/token'),
+            # lower as peertube does not store uppercase for pseudo
+            username=str(secret.get('peertube', 'username').lower()),
+            password=str(secret.get('peertube', 'password')),
+            client_id=str(secret.get('peertube', 'client_id')),
+            client_secret=str(secret.get('peertube', 'client_secret'))
+        )
+    except Exception as e:
+        if hasattr(e, 'message'):
+            logging.error("Peertube: Error: " + str(e.message))
+            exit(1)
+        else:
+            logging.error("Peertube: Error: " + str(e))
+            exit(1)
     return oauth
 
 
@@ -52,7 +59,7 @@ def upload_video(oauth, secret, options):
         return (basename(path), open(abspath(path), 'rb'),
                 mimetypes.types_map[splitext(path)[1]])
 
-    url = secret.get('peertube', 'peertube_url')
+    url = str(secret.get('peertube', 'peertube_url')).rstrip('/')
 
     # We need to transform fields into tuple to deal with tags as
     # MultipartEncoder does not support list refer
