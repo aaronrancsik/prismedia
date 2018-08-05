@@ -106,6 +106,7 @@ def upload_video(oauth, secret, options):
 
     if options.get('--thumbnail'):
         fields.append(("thumbnailfile", get_file(options.get('--thumbnail'))))
+        fields.append(("previewfile", get_file(options.get('--thumbnail'))))
 
     multipart_data = MultipartEncoder(fields)
 
