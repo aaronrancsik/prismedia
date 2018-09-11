@@ -48,8 +48,11 @@ def get_authenticated_service(secret):
     return oauth
 
 
-def get_playlist_by_name(user_info, options):
+def get_default_playlist(user_info):
+    return user_info['videoChannels'][0]['id']
 
+
+def get_playlist_by_name(user_info, options):
     for playlist in user_info["videoChannels"]:
         if playlist['displayName'] == options.get('--playlist'):
             return playlist['id']
@@ -155,10 +158,11 @@ def upload_video(oauth, secret, options):
         playlist_id = get_playlist_by_name(user_info, options)
         if not playlist_id and options.get('--playlistCreate'):
             playlist_id = create_playlist(oauth, url, options)
-        else:
-            playlist_id = user_info['id']
+        elif not playlist_id:
+            logging.warning("Playlist `" + options.get('--playlist') + "` is unknown, using default playlist.")
+            playlist_id = get_default_playlist(user_info)
     else:
-        playlist_id = user_info['id']
+        playlist_id = get_default_playlist(user_info)
     fields.append(("channelId", str(playlist_id)))
 
     multipart_data = MultipartEncoder(fields)
