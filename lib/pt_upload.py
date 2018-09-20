@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python2
 # coding: utf-8
 
 import os
@@ -138,6 +138,7 @@ def upload_video(oauth, secret, options):
         else:
             logging.error(('Peertube: The upload failed with an unexpected response: '
                            '%s') % response)
+            print(response.json())
             exit(1)
 
 

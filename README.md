@@ -1,6 +1,6 @@
 # Prismedia
 
-A scripting way to upload videos to peertube and youtube
+A scripting way to upload videos to peertube and youtube written in python2
 
 ## Dependencies
 Search in your package manager, otherwise use ``pip install --upgrade``
@@ -11,6 +11,7 @@ Search in your package manager, otherwise use ``pip install --upgrade``
  - docopt
  - schema
  - python-magic
+ - python-magic-bin
  - requests-toolbelt
  - tzlocal
 
@@ -60,12 +61,12 @@ Simply upload a video:
 
 ```
 ./prismedia_upload.py --file="yourvideo.mp4"
-``` 
+```
 
 
 Specify description and tags:
 
-``` 
+```
 ./prismedia_upload.py --file="yourvideo.mp4" -d "My supa description" -t "tag1,tag2,foo"
 ```
 
@@ -168,5 +169,5 @@ Languages:
 
 If your server uses peertube before 1.0.0-beta4, use the version inside tag 1.0.0-beta3!
 
-## Sources 
+## Sources
 inspired by [peeror](https://git.drycat.fr/rigelk/Peeror) and [youtube-upload](https://github.com/tokland/youtube-upload)
