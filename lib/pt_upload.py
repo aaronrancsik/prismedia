@@ -110,7 +110,7 @@ def upload_video(oauth, secret, options):
         ("licence", "1"),
         ("description", options.get('--description')  or "default description"),
         ("nsfw", str(int(options.get('--nsfw')) or "0")),
-        ("videofile", get_videofile(path))
+        ("videofile", get_file(path))
     ]
 
     if options.get('--tags'):
