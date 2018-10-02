@@ -157,6 +157,8 @@ Languages:
   - [x] thumbnail/preview
   - [x] multiple lines description (see [issue 4](https://git.lecygnenoir.info/LecygneNoir/prismedia/issues/4))
   - [ ] add videos to playlist (YT & PT workflow: upload video, find playlist id, add video to playlist)
+   - [x] Peertube
+   - [ ] Youtube
 - [x] Use a config file (NFO) file to retrieve videos arguments
 - [x] Allow to choose peertube or youtube upload (to resume failed upload for example)
 - [x] Add publishAt option to plan your videos (need the [atd](https://linux.die.net/man/8/atd) daemon, [curl](https://linux.die.net/man/1/curl) and [jq](https://stedolan.github.io/jq/))
