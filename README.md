@@ -15,11 +15,6 @@ Search in your package manager, otherwise use ``pip install --upgrade``
  - requests-toolbelt
  - tzlocal
 
-For Peertube and if you want to use the publishAt option, you also need some utilities on you local system
- - [atd](https://linux.die.net/man/8/atd) daemon
- - [curl](https://linux.die.net/man/1/curl)
- - [jq](https://stedolan.github.io/jq/)
-
 ## Configuration
 
 Edit peertube_secret and youtube_secret.json with your credentials.
@@ -118,7 +113,6 @@ Options:
   --publishAt=DATE  Publish the video at the given DATE using local server timezone.
                     DATE should be on the form YYYY-MM-DDThh:mm:ss eg: 2018-03-12T19:00:00
                     DATE should be in the future
-                    For Peertube, requires the "atd" and "curl utilities installed on the system
   --thumbnail=STRING    Path to a file to use as a thumbnail for the video.
                         Supported types are jpg and jpeg.
                         By default, prismedia search for an image based on video name followed by .jpg or .jpeg
@@ -160,7 +154,7 @@ Languages:
   - [ ] add videos to playlist (YT & PT workflow: upload video, find playlist id, add video to playlist)
 - [x] Use a config file (NFO) file to retrieve videos arguments
 - [x] Allow to choose peertube or youtube upload (to resume failed upload for example)
-- [x] Add publishAt option to plan your videos (need the [atd](https://linux.die.net/man/8/atd) daemon, [curl](https://linux.die.net/man/1/curl) and [jq](https://stedolan.github.io/jq/))
+- [x] Add publishAt option to plan your videos
 - [ ] Record and forget: put the video in a directory, and the script uploads it for you
 - [ ] Usable on Desktop (Linux and/or Windows and/or MacOS)
 - [ ] Graphical User Interface
