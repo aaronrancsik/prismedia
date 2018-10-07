@@ -48,8 +48,11 @@ def get_authenticated_service(secret):
     return oauth
 
 
-def get_playlist_by_name(user_info, options):
+def get_default_playlist(user_info):
+    return user_info['videoChannels'][0]['id']
 
+
+def get_playlist_by_name(user_info, options):
     for playlist in user_info["videoChannels"]:
         if playlist['displayName'] == options.get('--playlist'):
             return playlist['id']
@@ -95,8 +98,8 @@ def upload_video(oauth, secret, options):
                 mimetypes.types_map[splitext(path)[1]])
 
     path = options.get('--file')
+    url = secret.get('peertube', 'peertube_url')
     user_info = get_userinfo()
-    url = str(secret.get('peertube', 'peertube_url')).rstrip('/')
 
     # We need to transform fields into tuple to deal with tags as
     # MultipartEncoder does not support list refer
@@ -107,7 +110,7 @@ def upload_video(oauth, secret, options):
         ("licence", "1"),
         ("description", options.get('--description')  or "default description"),
         ("nsfw", str(int(options.get('--nsfw')) or "0")),
-        ("videofile", get_file(options.get('--file')))
+        ("videofile", get_file(path))
     ]
 
     if options.get('--tags'):
@@ -155,10 +158,11 @@ def upload_video(oauth, secret, options):
         playlist_id = get_playlist_by_name(user_info, options)
         if not playlist_id and options.get('--playlistCreate'):
             playlist_id = create_playlist(oauth, url, options)
-        else:
-            playlist_id = user_info['id']
+        elif not playlist_id:
+            logging.warning("Playlist `" + options.get('--playlist') + "` is unknown, using default playlist.")
+            playlist_id = get_default_playlist(user_info)
     else:
-        playlist_id = user_info['id']
+        playlist_id = get_default_playlist(user_info)
     fields.append(("channelId", str(playlist_id)))
 
     multipart_data = MultipartEncoder(fields)
