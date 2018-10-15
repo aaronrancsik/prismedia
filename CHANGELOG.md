@@ -4,6 +4,7 @@
 
 ### Features
  - Add the possibility to upload thumbnail
+ - Use the API instead of external binaries for publishAt (thanks @zykino)
 
 ## v0.5
 
