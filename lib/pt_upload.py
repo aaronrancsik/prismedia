@@ -5,7 +5,10 @@ import os
 import mimetypes
 import json
 import logging
+import datetime
+import pytz
 from os.path import splitext, basename, abspath
+from tzlocal import get_localzone
 
 from ConfigParser import RawConfigParser
 from requests_oauthlib import OAuth2Session
@@ -101,15 +104,26 @@ def upload_video(oauth, secret, options):
         # if no language, set default to 1 (English)
         fields.append(("language", "en"))
 
-    if options.get('--privacy'):
-        fields.append(("privacy", str(PEERTUBE_PRIVACY[options.get('--privacy').lower()])))
-    else:
-        fields.append(("privacy", "3"))
-
     if options.get('--disable-comments'):
         fields.append(("commentsEnabled", "0"))
     else:
         fields.append(("commentsEnabled", "1"))
+
+    privacy = None
+    if options.get('--privacy'):
+        privacy = options.get('--privacy').lower()
+
+    if options.get('--publishAt'):
+        publishAt = options.get('--publishAt')
+        publishAt = datetime.datetime.strptime(publishAt, '%Y-%m-%dT%H:%M:%S')
+        tz = get_localzone()
+        tz = pytz.timezone(str(tz))
+        publishAt = tz.localize(publishAt).isoformat()
+        fields.append(("scheduleUpdate[updateAt]", publishAt))
+        fields.append(("scheduleUpdate[privacy]", str(PEERTUBE_PRIVACY["public"])))
+        fields.append(("privacy", str(PEERTUBE_PRIVACY["private"])))
+    else:
+        fields.append(("privacy", str(PEERTUBE_PRIVACY[privacy or "private"])))
 
     if options.get('--thumbnail'):
         fields.append(("thumbnailfile", get_file(options.get('--thumbnail'))))
@@ -133,8 +147,6 @@ def upload_video(oauth, secret, options):
             logging.info('Peertube : Video was successfully uploaded.')
             template = 'Peertube: Watch it at %s/videos/watch/%s.'
             logging.info(template % (url, uuid))
-            if options.get('--publishAt'):
-                utils.publishAt(str(options.get('--publishAt')), oauth, url, idvideo, secret)
         else:
             logging.error(('Peertube: The upload failed with an unexpected response: '
                            '%s') % response)
