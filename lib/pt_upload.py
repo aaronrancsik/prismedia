@@ -62,9 +62,10 @@ def get_playlist_by_name(user_info, options):
 
 
 def create_playlist(oauth, url, options):
-    template = ('Peertube : Playlist %s does not exist, creating it.')
+    template = ('Peertube: Playlist %s does not exist, creating it.')
     logging.info(template % (str(options.get('--playlist'))))
-    data = '{"displayName":"' + str(options.get('--playlist')) +'", \
+    data = '{"name":"' + utils.cleanString(str(options.get('--playlist'))) +'", \
+            "displayName":"' + str(options.get('--playlist')) +'", \
             "description":null}'
 
     headers = {
@@ -85,7 +86,7 @@ def create_playlist(oauth, url, options):
             jresponse = jresponse['videoChannel']
             return jresponse['id']
         else:
-            logging.error(('Peertube : The upload failed with an unexpected response: '
+            logging.error(('Peertube: The upload failed with an unexpected response: '
                            '%s') % response)
             exit(1)
 
@@ -101,7 +102,7 @@ def upload_video(oauth, secret, options):
                 mimetypes.types_map[splitext(path)[1]])
 
     path = options.get('--file')
-    url = secret.get('peertube', 'peertube_url')
+    url = str(secret.get('peertube', 'peertube_url')).rstrip('/')
     user_info = get_userinfo()
 
     # We need to transform fields into tuple to deal with tags as
@@ -128,7 +129,7 @@ def upload_video(oauth, secret, options):
                 exit(1)
             # If Mastodon compatibility is enabled, clean tags from special characters
             if options.get('--mt'):
-                strtag = utils.mastodonTag(strtag)
+                strtag = utils.cleanString(strtag)
             fields.append(("tags", strtag))
 
     if options.get('--category'):
