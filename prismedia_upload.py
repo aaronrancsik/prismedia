@@ -6,11 +6,12 @@ prismedia_upload - tool to upload videos to Peertube and Youtube
 
 Usage:
   prismedia_upload.py --file=<FILE> [options]
-  prismedia_upload.py --file=<FILE> --tags=STRING [--mt options]
+  prismedia_upload.py -f <FILE> --tags=STRING [--mt options]
   prismedia_upload.py -h | --help
   prismedia_upload.py --version
 
 Options:
+  -f, --file=STRING Path to the video file to upload in mp4
   --name=NAME  Name of the video to upload. (default to video filename)
   -d, --description=STRING  Description of the video. (default: default description)
   -t, --tags=STRING  Tags for the video. comma separated.
