@@ -9,6 +9,7 @@ import time
 import copy
 import json
 from os.path import splitext, basename, exists
+import os
 import google.oauth2.credentials
 import datetime
 import pytz
@@ -78,6 +79,16 @@ def get_authenticated_service():
             del p["expiry"]
             json.dump(p, f)
     return build(API_SERVICE_NAME, API_VERSION, credentials=credentials,  cache_discovery=False)
+
+
+def check_authenticated_scopes():
+    if exists(CREDENTIALS_PATH):
+        with open(CREDENTIALS_PATH, 'r') as f:
+            credential_params = json.load(f)
+            # Check if all scopes are present
+            if credential_params["_scopes"] != SCOPES:
+                logging.warning("Youtube: Credentials are obsolete, need to re-authenticate.")
+                os.remove(CREDENTIALS_PATH)
 
 
 def initialize_upload(youtube, options):
