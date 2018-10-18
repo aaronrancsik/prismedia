@@ -73,7 +73,7 @@ def get_authenticated_service():
                 client_secret=credential_params["_client_secret"]
             )
     else:
-        credentials = flow.run_local_server()
+        credentials = flow.run_console()
         with open(CREDENTIALS_PATH, 'w') as f:
             p = copy.deepcopy(vars(credentials))
             del p["expiry"]
