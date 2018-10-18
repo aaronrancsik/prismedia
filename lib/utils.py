@@ -193,15 +193,15 @@ def parseNFO(options):
 def upcaseFirstLetter(s):
     return s[0].upper() + s[1:]
 
-def mastodonTag(tag):
-    tags = tag.split(' ')
-    mtag = ''
-    for s in tags:
+def cleanString(toclean):
+    toclean = toclean.split(' ')
+    cleaned = ''
+    for s in toclean:
         if s == '':
             continue
-        strtag = unicodedata.normalize('NFKD', unicode (s, 'utf-8')).encode('ASCII', 'ignore')
-        strtag = ''.join(e for e in strtag if e.isalnum())
-        strtag = upcaseFirstLetter(strtag)
-        mtag = mtag + strtag
+        strtoclean = unicodedata.normalize('NFKD', unicode (s, 'utf-8')).encode('ASCII', 'ignore')
+        strtoclean = ''.join(e for e in strtoclean if e.isalnum())
+        strtoclean = upcaseFirstLetter(strtoclean)
+        cleaned = cleaned + strtoclean
 
-    return mtag
+    return cleaned

@@ -151,7 +151,8 @@ Languages:
   - [x] set default language
   - [x] thumbnail/preview
   - [x] multiple lines description (see [issue 4](https://git.lecygnenoir.info/LecygneNoir/prismedia/issues/4))
-  - [ ] add videos to playlist (YT & PT workflow: upload video, find playlist id, add video to playlist)
+  - [x] add videos to playlist for Peertube
+  - [x] add videos to playlist for Youtube
 - [x] Use a config file (NFO) file to retrieve videos arguments
 - [x] Allow to choose peertube or youtube upload (to resume failed upload for example)
 - [x] Add publishAt option to plan your videos
@@ -164,4 +165,4 @@ Languages:
 If your server uses peertube before 1.0.0-beta4, use the version inside tag 1.0.0-beta3!
 
 ## Sources
-inspired by [peeror](https://git.drycat.fr/rigelk/Peeror) and [youtube-upload](https://github.com/tokland/youtube-upload)
+inspired by [peeror](https://git.rigelk.eu/rigelk/peeror) and [youtube-upload](https://github.com/tokland/youtube-upload)
