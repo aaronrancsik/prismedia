@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python2
 # coding: utf-8
 
 """
@@ -6,11 +6,12 @@ prismedia_upload - tool to upload videos to Peertube and Youtube
 
 Usage:
   prismedia_upload.py --file=<FILE> [options]
-  prismedia_upload.py --file=<FILE> --tags=STRING [--mt options]
+  prismedia_upload.py -f <FILE> --tags=STRING [--mt options]
   prismedia_upload.py -h | --help
   prismedia_upload.py --version
 
 Options:
+  -f, --file=STRING Path to the video file to upload in mp4
   --name=NAME  Name of the video to upload. (default to video filename)
   -d, --description=STRING  Description of the video. (default: default description)
   -t, --tags=STRING  Tags for the video. comma separated.
@@ -34,6 +35,13 @@ Options:
                     DATE should be on the form YYYY-MM-DDThh:mm:ss eg: 2018-03-12T19:00:00
                     DATE should be in the future
                     For Peertube, requires the "atd" and "curl utilities installed on the system
+  --thumbnail=STRING    Path to a file to use as a thumbnail for the video.
+                        Supported types are jpg and jpeg.
+                        By default, prismedia search for an image based on video name followed by .jpg or .jpeg
+  --playlist=STRING Set the playlist to use for the video. Also known as Channel for Peertube.
+                    If the playlist is not found, spawn an error except if --playlist-create is set.
+  --playlistCreate  Create the playlist if not exists. (default do not create)
+                    Only relevant if --playlist is set.
   -h --help  Show this help.
   --version  Show version.
 
@@ -86,7 +94,7 @@ except ImportError:
                   'see https://github.com/ahupp/python-magic\n')
     exit(1)
 
-VERSION = "prismedia v0.5"
+VERSION = "prismedia v0.6"
 
 VALID_PRIVACY_STATUSES = ('public', 'private', 'unlisted')
 VALID_CATEGORIES = (
@@ -151,6 +159,12 @@ def validatePublish(publish):
         return False
     return True
 
+def validateThumbnail(thumbnail):
+    supported_types = ['image/jpg', 'image/jpeg']
+    if magic.from_file(thumbnail, mime=True) in supported_types:
+        return thumbnail
+    else:
+        return False
 
 if __name__ == '__main__':
 
@@ -199,11 +213,19 @@ if __name__ == '__main__':
         Optional('--cca'): bool,
         Optional('--disable-comments'): bool,
         Optional('--nsfw'): bool,
+        Optional('--thumbnail'): Or(None, And(
+                                    str, validateThumbnail, error='thumbnail is not supported, please use jpg/jpeg'),
+                                    ),
+        Optional('--playlist'): Or(None, str),
+        Optional('--playlistCreate'): bool,
         '--help': bool,
         '--version': bool
     })
 
     options = utils.parseNFO(options)
+
+    if not options.get('--thumbnail'):
+        options = utils.searchThumbnail(options)
 
     try:
         options = schema.validate(options)

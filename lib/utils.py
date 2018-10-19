@@ -98,6 +98,32 @@ def getLanguage(language, platform):
         return PEERTUBE_LANGUAGE[language.lower()]
 
 
+def remove_empty_kwargs(**kwargs):
+    good_kwargs = {}
+    if kwargs is not None:
+        for key, value in kwargs.iteritems():
+            if value:
+                good_kwargs[key] = value
+    return good_kwargs
+
+def searchThumbnail(options):
+    video_directory = dirname(options.get('--file')) + "/"
+    # First, check for thumbnail based on videoname
+    if options.get('--name'):
+        if isfile(video_directory + options.get('--name') + ".jpg"):
+            options['--thumbnail'] = video_directory + options.get('--name') + ".jpg"
+        elif isfile(video_directory + options.get('--name') + ".jpeg"):
+            options['--thumbnail'] = video_directory + options.get('--name') + ".jpeg"
+    # Then, if we still not have thumbnail, check for thumbnail based on videofile name
+    if not options.get('--thumbnail'):
+        video_file = splitext(basename(options.get('--file')))[0]
+        if isfile(video_directory + video_file + ".jpg"):
+            options['--thumbnail'] = video_directory + video_file + ".jpg"
+        elif isfile(video_directory + video_file + ".jpeg"):
+            options['--thumbnail'] = video_directory + video_file + ".jpeg"
+    return options
+
+
 # return the nfo as a RawConfigParser object
 def loadNFO(options):
     video_directory = dirname(options.get('--file')) + "/"
@@ -117,7 +143,6 @@ def loadNFO(options):
     else:
         if options.get('--name'):
             nfo_file = video_directory + options.get('--name') + ".txt"
-            print nfo_file
             if isfile(nfo_file):
                 try:
                     logging.info("Using " + nfo_file + " as NFO, loading...")
@@ -168,71 +193,15 @@ def parseNFO(options):
 def upcaseFirstLetter(s):
     return s[0].upper() + s[1:]
 
-
-def publishAt(publishAt, oauth, url, idvideo, secret):
-    try:
-        FNULL = open(devnull, 'w')
-        check_call(["at", "-V"], stdout=FNULL, stderr=STDOUT)
-    except CalledProcessError:
-        logging.error("You need to install the atd daemon to use the publishAt option.")
-        exit(1)
-    try:
-        FNULL = open(devnull, 'w')
-        check_call(["curl", "-V"], stdout=FNULL, stderr=STDOUT)
-    except CalledProcessError:
-        logging.error("You need to install the curl command line to use the publishAt option.")
-        exit(1)
-    try:
-        FNULL = open(devnull, 'w')
-        check_call(["jq", "-V"], stdout=FNULL, stderr=STDOUT)
-    except CalledProcessError:
-        logging.error("You need to install the jq command line to use the publishAt option.")
-        exit(1)
-    time = publishAt.split("T")
-    # Remove leading seconds that atd does not manage
-    if time[1].count(":") == 2:
-        time[1] = time[1][:-3]
-
-    atTime = time[1] + " " + time[0]
-    refresh_token=str(oauth.__dict__['_client'].__dict__['refresh_token'])
-    atFile = "/tmp/peertube_" + idvideo + "_" + publishAt + ".at"
-    try:
-        openfile = open(atFile,"w")
-        openfile.write('token=$(curl -X POST -d "client_id=' + str(secret.get('peertube', 'client_id')) +
-                        '&client_secret=' + str(secret.get('peertube', 'client_secret')) +
-                        '&grant_type=refresh_token&refresh_token=' + str(refresh_token) +
-                        '" "' + url + '/api/v1/users/token" | jq -r .access_token)')
-        openfile.write("\n")
-        openfile.write('curl "' + url + '/api/v1/videos/' + idvideo +
-                        '" -X PUT -H "Authorization: Bearer ${token}"' +
-                        ' -H "Content-Type: multipart/form-data" -F "privacy=1"')
-        openfile.write("\n ")  # atd needs an empty line at the end of the file to load...
-        openfile.close()
-    except Exception as e:
-        if hasattr(e, 'message'):
-            logging.error("Error: " + str(e.message))
-        else:
-            logging.error("Error: " + str(e))
-
-    try:
-        FNULL = open(devnull, 'w')
-        check_call(["at", "-M", "-f", atFile, atTime], stdout=FNULL, stderr=STDOUT)
-    except Exception as e:
-        if hasattr(e, 'message'):
-            logging.error("Error: " + str(e.message))
-        else:
-            logging.error("Error: " + str(e))
-
-
-def mastodonTag(tag):
-    tags = tag.split(' ')
-    mtag = ''
-    for s in tags:
+def cleanString(toclean):
+    toclean = toclean.split(' ')
+    cleaned = ''
+    for s in toclean:
         if s == '':
             continue
-        strtag = unicodedata.normalize('NFKD', unicode (s, 'utf-8')).encode('ASCII', 'ignore')
-        strtag = ''.join(e for e in strtag if e.isalnum())
-        strtag = upcaseFirstLetter(strtag)
-        mtag = mtag + strtag
+        strtoclean = unicodedata.normalize('NFKD', unicode (s, 'utf-8')).encode('ASCII', 'ignore')
+        strtoclean = ''.join(e for e in strtoclean if e.isalnum())
+        strtoclean = upcaseFirstLetter(strtoclean)
+        cleaned = cleaned + strtoclean
 
-    return mtag
+    return cleaned

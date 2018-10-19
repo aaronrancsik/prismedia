@@ -1,6 +1,6 @@
 # Prismedia
 
-A scripting way to upload videos to peertube and youtube
+A scripting way to upload videos to peertube and youtube written in python2
 
 ## Dependencies
 Search in your package manager, otherwise use ``pip install --upgrade``
@@ -11,13 +11,9 @@ Search in your package manager, otherwise use ``pip install --upgrade``
  - docopt
  - schema
  - python-magic
+ - python-magic-bin
  - requests-toolbelt
  - tzlocal
-
-For Peertube and if you want to use the publishAt option, you also need some utilities on you local system
- - [atd](https://linux.die.net/man/8/atd) daemon
- - [curl](https://linux.die.net/man/1/curl)
- - [jq](https://stedolan.github.io/jq/)
 
 ## Configuration
 
@@ -60,13 +56,19 @@ Simply upload a video:
 
 ```
 ./prismedia_upload.py --file="yourvideo.mp4"
-``` 
+```
 
 
 Specify description and tags:
 
-``` 
+```
 ./prismedia_upload.py --file="yourvideo.mp4" -d "My supa description" -t "tag1,tag2,foo"
+```
+
+Provide a thumbnail:
+
+```
+./prismedia_upload.py --file="yourvideo.mp4" -d "Video with thumbnail" --thumbnail="/path/to/your/thumbnail.jpg"
 ```
 
 
@@ -80,15 +82,8 @@ Use a NFO file to specify your video options:
 Use --help to get all available options:
 
 ```
-prismedia_upload - tool to upload videos to Peertube and Youtube
-
-Usage:
-  prismedia_upload.py --file=<FILE> [options]
-  prismedia_upload.py --file=<FILE> --tags=STRING [--mt options]
-  prismedia_upload.py -h | --help
-  prismedia_upload.py --version
-
 Options:
+  -f, --file=STRING Path to the video file to upload in mp4
   --name=NAME  Name of the video to upload. (default to video filename)
   -d, --description=STRING  Description of the video. (default: default description)
   -t, --tags=STRING  Tags for the video. comma separated.
@@ -111,7 +106,14 @@ Options:
   --publishAt=DATE  Publish the video at the given DATE using local server timezone.
                     DATE should be on the form YYYY-MM-DDThh:mm:ss eg: 2018-03-12T19:00:00
                     DATE should be in the future
-                    For Peertube, requires the "atd", "curl" and "jq" utilities installed on the system
+                    For Peertube, requires the "atd" and "curl utilities installed on the system
+  --thumbnail=STRING    Path to a file to use as a thumbnail for the video.
+                        Supported types are jpg and jpeg.
+                        By default, prismedia search for an image based on video name followed by .jpg or .jpeg
+  --playlist=STRING Set the playlist to use for the video. Also known as Channel for Peertube.
+                    If the playlist is not found, spawn an error except if --playlist-create is set.
+  --playlistCreate  Create the playlist if not exists. (default do not create)
+                    Only relevant if --playlist is set.
   -h --help  Show this help.
   --version  Show version.
 
@@ -145,12 +147,13 @@ Languages:
   - [x] enabling/disabling comment (Peertube only as Youtube API does not support it)
   - [x] nsfw (Peertube only as Youtube API does not support it)
   - [x] set default language
-  - [ ] thumbnail/preview (YT workflow: upload video, upload thumbnail, add thumbnail to video)
-  - [ ] multiple lines description (see [issue 4](https://git.lecygnenoir.info/LecygneNoir/prismedia/issues/4))
-  - [ ] add videos to playlist (YT & PT workflow: upload video, find playlist id, add video to playlist)
+  - [x] thumbnail/preview
+  - [x] multiple lines description (see [issue 4](https://git.lecygnenoir.info/LecygneNoir/prismedia/issues/4))
+  - [x] add videos to playlist for Peertube
+  - [x] add videos to playlist for Youtube
 - [x] Use a config file (NFO) file to retrieve videos arguments
 - [x] Allow to choose peertube or youtube upload (to resume failed upload for example)
-- [x] Add publishAt option to plan your videos (need the [atd](https://linux.die.net/man/8/atd) daemon, [curl](https://linux.die.net/man/1/curl) and [jq](https://stedolan.github.io/jq/))
+- [x] Add publishAt option to plan your videos
 - [ ] Record and forget: put the video in a directory, and the script uploads it for you
 - [ ] Usable on Desktop (Linux and/or Windows and/or MacOS)
 - [ ] Graphical User Interface
@@ -159,5 +162,5 @@ Languages:
 
 If your server uses peertube before 1.0.0-beta4, use the version inside tag 1.0.0-beta3!
 
-## Sources 
-inspired by [peeror](https://git.drycat.fr/rigelk/Peeror) and [youtube-upload](https://github.com/tokland/youtube-upload)
+## Sources
+inspired by [peeror](https://git.rigelk.eu/rigelk/peeror) and [youtube-upload](https://github.com/tokland/youtube-upload)
