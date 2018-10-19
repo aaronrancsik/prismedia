@@ -64,7 +64,10 @@ def get_playlist_by_name(user_info, options):
 def create_playlist(oauth, url, options):
     template = ('Peertube: Playlist %s does not exist, creating it.')
     logging.info(template % (str(options.get('--playlist'))))
-    data = '{"name":"' + utils.cleanString(str(options.get('--playlist'))) +'", \
+    playlist_name = utils.cleanString(str(options.get('--playlist')))
+    # Peertube allows 20 chars max for playlist name
+    playlist_name = playlist_name[:19]
+    data = '{"name":"' + playlist_name +'", \
             "displayName":"' + str(options.get('--playlist')) +'", \
             "description":null}'
 
