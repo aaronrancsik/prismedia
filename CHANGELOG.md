@@ -1,6 +1,6 @@
 # Changelog
 
-## v 0.6
+## v0.6
 
 ### Compatibility ###
 **Beware**, the first launch of prismedia for youtube will reask for credentials, this is needed for playlists.
