@@ -1,10 +1,18 @@
 # Changelog
 
-## v 0.?
+## v0.6
+
+### Compatibility ###
+**Beware**, the first launch of prismedia for youtube will reask for credentials, this is needed for playlists.
+
+This release is fully compatible with Peertube v1.0.0!
 
 ### Features
- - Add the possibility to upload thumbnail
- - Use the API instead of external binaries for publishAt (thanks @zykino)
+ - Add the possibility to upload thumbnail.
+ - Add the possibility to configure playlist. (thanks @zykino for Peertube part)
+ - Use the API instead of external binaries for publishAt for both Peertube and Youtube. (thanks @zykino)
+ - Use the console option to authenticate against youtube for easier use with ssh'ed servers
+ - Add -f as an alias for --file for easier upload.
 
 ## v0.5
 

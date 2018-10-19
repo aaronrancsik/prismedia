@@ -82,15 +82,8 @@ Use a NFO file to specify your video options:
 Use --help to get all available options:
 
 ```
-prismedia_upload - tool to upload videos to Peertube and Youtube
-
-Usage:
-  prismedia_upload.py --file=<FILE> [options]
-  prismedia_upload.py --file=<FILE> --tags=STRING [--mt options]
-  prismedia_upload.py -h | --help
-  prismedia_upload.py --version
-
 Options:
+  -f, --file=STRING Path to the video file to upload in mp4
   --name=NAME  Name of the video to upload. (default to video filename)
   -d, --description=STRING  Description of the video. (default: default description)
   -t, --tags=STRING  Tags for the video. comma separated.
@@ -113,9 +106,14 @@ Options:
   --publishAt=DATE  Publish the video at the given DATE using local server timezone.
                     DATE should be on the form YYYY-MM-DDThh:mm:ss eg: 2018-03-12T19:00:00
                     DATE should be in the future
+                    For Peertube, requires the "atd" and "curl utilities installed on the system
   --thumbnail=STRING    Path to a file to use as a thumbnail for the video.
                         Supported types are jpg and jpeg.
                         By default, prismedia search for an image based on video name followed by .jpg or .jpeg
+  --playlist=STRING Set the playlist to use for the video. Also known as Channel for Peertube.
+                    If the playlist is not found, spawn an error except if --playlist-create is set.
+  --playlistCreate  Create the playlist if not exists. (default do not create)
+                    Only relevant if --playlist is set.
   -h --help  Show this help.
   --version  Show version.
 
