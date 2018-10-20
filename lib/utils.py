@@ -193,6 +193,7 @@ def parseNFO(options):
 def upcaseFirstLetter(s):
     return s[0].upper() + s[1:]
 
+
 def cleanString(toclean):
     toclean = toclean.split(' ')
     cleaned = ''
@@ -201,6 +202,8 @@ def cleanString(toclean):
             continue
         strtoclean = unicodedata.normalize('NFKD', unicode (s, 'utf-8')).encode('ASCII', 'ignore')
         strtoclean = ''.join(e for e in strtoclean if e.isalnum())
+        if strtoclean == '':
+            continue
         strtoclean = upcaseFirstLetter(strtoclean)
         cleaned = cleaned + strtoclean
 

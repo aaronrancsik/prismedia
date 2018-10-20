@@ -57,7 +57,7 @@ def get_default_playlist(user_info):
 
 def get_playlist_by_name(user_info, options):
     for playlist in user_info["videoChannels"]:
-        if playlist['displayName'] == options.get('--playlist'):
+        if playlist['displayName'].encode('utf8') == str(options.get('--playlist')):
             return playlist['id']
 
 
