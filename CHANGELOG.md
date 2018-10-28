@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.6.1
+
+### Fixes
+ - fix an error when playlists on Peertube have same names but not same display names (issue #20)
+ - fix an error where videos does not upload on Peertube when some characters are used in playlist(issue #19)
+
 ## v0.6
 
 ### Compatibility ###

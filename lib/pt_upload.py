@@ -88,6 +88,11 @@ def create_playlist(oauth, url, options):
             jresponse = response.json()
             jresponse = jresponse['videoChannel']
             return jresponse['id']
+        if response.status_code == 409:
+            logging.error('Peertube: Error: It seems there is a conflict with an existing playlist, please beware '
+                          'Peertube internal name is compiled from 20 firsts characters of playlist name.'
+                          ' Please check your playlist name an retry.')
+            exit(1)
         else:
             logging.error(('Peertube: The upload failed with an unexpected response: '
                            '%s') % response)
