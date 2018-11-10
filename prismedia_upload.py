@@ -64,11 +64,11 @@ Languages:
 from os.path import dirname, realpath
 import sys
 import datetime
+import locale
 import logging
 logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
 
 from docopt import docopt
-
 
 # Allows a relative import from the parent folder
 sys.path.insert(0, dirname(realpath(__file__)) + "/lib")
@@ -110,7 +110,6 @@ VALID_LANGUAGES = ('arabic', 'english', 'french',
                    'japanese', 'korean', 'mandarin',
                    'portuguese', 'punjabi', 'russian', 'spanish')
 
-
 def validateVideo(path):
     supported_types = ['video/mp4']
     if magic.from_file(path, mime=True) in supported_types:
@@ -118,20 +117,17 @@ def validateVideo(path):
     else:
         return False
 
-
 def validateCategory(category):
     if category.lower() in VALID_CATEGORIES:
         return True
     else:
         return False
 
-
 def validatePrivacy(privacy):
     if privacy.lower() in VALID_PRIVACY_STATUSES:
         return True
     else:
         return False
-
 
 def validatePlatform(platform):
     for plfrm in platform.split(','):
@@ -140,13 +136,11 @@ def validatePlatform(platform):
 
     return True
 
-
 def validateLanguage(language):
     if language.lower() in VALID_LANGUAGES:
         return True
     else:
         return False
-
 
 def validatePublish(publish):
     # Check date format and if date is future
@@ -222,6 +216,7 @@ if __name__ == '__main__':
         '--version': bool
     })
 
+    utils.decodeArgumentStrings(options, locale.getpreferredencoding())
     options = utils.parseNFO(options)
 
     if not options.get('--thumbnail'):
