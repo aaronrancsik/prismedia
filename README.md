@@ -149,8 +149,8 @@ Languages:
   - [x] set default language
   - [x] thumbnail/preview
   - [x] multiple lines description (see [issue 4](https://git.lecygnenoir.info/LecygneNoir/prismedia/issues/4))
-  - [x] add videos to playlist for Peertube
-  - [x] add videos to playlist for Youtube
+  - [x] add videos to playlist
+  - [x] create playlist
 - [x] Use a config file (NFO) file to retrieve videos arguments
 - [x] Allow to choose peertube or youtube upload (to resume failed upload for example)
 - [x] Add publishAt option to plan your videos
