@@ -174,7 +174,7 @@ if __name__ == '__main__':
         Optional('--description'): Or(None, And(
                                         str,
                                         lambda x: not x.isdigit(),
-                                        error="The video name should be a string")
+                                        error="The video description should be a string")
                                       ),
         Optional('--tags'): Or(None, And(
                                     str,
