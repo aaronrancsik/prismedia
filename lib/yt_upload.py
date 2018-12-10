@@ -254,7 +254,7 @@ def set_playlist(youtube, playlist_id, video_id):
             logging.error("Youtube: Error: " + str(e.message))
         else:
             logging.error("Youtube: Error: " + str(e))
-    logging.info('Youtube: Video is correclty added to the playlist.')
+    logging.info('Youtube: Video is correctly added to the playlist.')
 
 
 # This method implements an exponential backoff strategy to resume a
