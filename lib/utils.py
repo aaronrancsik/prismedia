@@ -206,7 +206,7 @@ def cleanString(toclean):
     return cleaned
 
 def decodeArgumentStrings(options, encoding):
-    # Python crash when decding from UTF-8 to UTF-8, so we prevent this
+    # Python crash when decoding from UTF-8 to UTF-8, so we prevent this
     if "utf-8" == encoding.lower():
         return;
 
