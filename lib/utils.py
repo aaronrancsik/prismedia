@@ -3,9 +3,10 @@
 
 from ConfigParser import RawConfigParser, NoOptionError, NoSectionError
 from os.path import dirname, splitext, basename, isfile
+import re
 from os import devnull
 from subprocess import check_call, CalledProcessError, STDOUT
-import unicodedata
+import unidecode
 import logging
 
 ### CATEGORIES ###
@@ -191,17 +192,9 @@ def upcaseFirstLetter(s):
     return s[0].upper() + s[1:]
 
 def cleanString(toclean):
-    toclean = toclean.split(' ')
-    cleaned = ''
-    for s in toclean:
-        if s == '':
-            continue
-        strtoclean = unicodedata.normalize('NFKD', unicode (s, 'utf-8')).encode('ASCII', 'ignore')
-        strtoclean = ''.join(e for e in strtoclean if e.isalnum())
-        if strtoclean == '':
-            continue
-        strtoclean = upcaseFirstLetter(strtoclean)
-        cleaned = cleaned + strtoclean
+    toclean = toclean.decode('utf-8')
+    toclean = unidecode.unidecode(toclean)
+    cleaned = re.sub('[^A-Za-z0-9]+', '', toclean)
 
     return cleaned
 

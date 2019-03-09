@@ -135,9 +135,6 @@ def upload_video(oauth, secret, options):
             if len(strtag) >= 30:
                 logging.warning("Peertube: Sorry, Peertube does not support tag with more than 30 characters, please reduce your tag size")
                 exit(1)
-            # If Mastodon compatibility is enabled, clean tags from special characters
-            if options.get('--mt'):
-                strtag = utils.cleanString(strtag)
             fields.append(("tags", strtag))
 
     if options.get('--category'):
