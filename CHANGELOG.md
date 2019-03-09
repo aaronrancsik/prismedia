@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.6.1-1 Hotfix
+This fix prepares the python3 compatibility
+
+ - Remove mastodon tags (mt) options as it's deprecated. Compatibility between Peertube and Mastodon is complete.
+
 ## v0.6.1
 
 ### Fixes
