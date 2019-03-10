@@ -14,6 +14,7 @@ Search in your package manager, otherwise use ``pip install --upgrade``
  - python-magic-bin
  - requests-toolbelt
  - tzlocal
+ - unidecode
 
 ## Configuration
 

@@ -1,9 +1,11 @@
 # Changelog
 
 ## v0.6.1-1 Hotfix
-This fix prepares the python3 compatibility
+This fix prepares the python3 compatibility.  
+**Warning** you need a new prerequisites: python-unidecode
 
  - Remove mastodon tags (mt) options as it's deprecated. Compatibility between Peertube and Mastodon is complete.
+ - Simplify python2 specific functions
 
 ## v0.6.1
 
