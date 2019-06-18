@@ -70,8 +70,9 @@ def create_playlist(oauth, url, options):
     logging.info(template % (str(options.get('--playlist'))))
     # We use files for form-data Content
     # see https://requests.readthedocs.io/en/latest/user/quickstart/#post-a-multipart-encoded-file
+    # None is used to mute "filename" field
     files = {'displayName': (None, str(options.get('--playlist'))),
-             'privacy': (None, "3"),
+             'privacy': (None, "1"),
              'description': (None, "null"),
              'videoChannelId': (None, "null"),
              'thumbnailfile': (None, "null")}
@@ -89,12 +90,35 @@ def create_playlist(oauth, url, options):
             jresponse = jresponse['videoPlaylist']
             return jresponse['id']
         else:
-            logging.error(('Peertube: The upload failed with an unexpected response: '
+            logging.error(('Peertube: Creating the playlist failed with an unexpected response: '
                            '%s') % response)
             exit(1)
 
+
 def set_playlist(oauth, url, video_id, playlist_id):
     logging.info('Peertube: add video to playlist.')
+    data = '{"videoId":"' + str(video_id) + '"}'
+
+    headers = {
+        'Content-Type': "application/json"
+    }
+    try:
+        response = oauth.post(url + "/api/v1/video-playlists/"+str(playlist_id)+"/videos",
+                              data=data,
+                              headers=headers)
+    except Exception as e:
+        if hasattr(e, 'message'):
+            logging.error("Error: " + str(e.message))
+        else:
+            logging.error("Error: " + str(e))
+    if response is not None:
+        if response.status_code == 200:
+            logging.info('Peertube: Video is successfully added to the playlist.')
+        else:
+            logging.error(('Peertube: Configuring the playlist failed with an unexpected response: '
+                           '%s') % response)
+            exit(1)
+
 
 def upload_video(oauth, secret, options):
 
@@ -179,7 +203,7 @@ def upload_video(oauth, secret, options):
         playlist_id = get_playlist_by_name(user_playlists, options)
         if not playlist_id and options.get('--playlistCreate'):
             playlist_id = create_playlist(oauth, url, options)
-        else:
+        elif not playlist_id:
             logging.warning("Playlist `" + options.get('--playlist') + "` does not exist, please set --playlistCreate"
                             " if you want to create it")
             exit(1)
@@ -204,8 +228,9 @@ def upload_video(oauth, secret, options):
             logging.info('Peertube : Video was successfully uploaded.')
             template = 'Peertube: Watch it at %s/videos/watch/%s.'
             logging.info(template % (url, uuid))
-            # if options.get('--playlist'):
-            #     set_playlist(oauth, url, video_id, playlist_id)
+            # Upload is successful we may set playlist
+            if options.get('--playlist'):
+                set_playlist(oauth, url, video_id, playlist_id)
         else:
             logging.error(('Peertube: The upload failed with an unexpected response: '
                            '%s') % response)
