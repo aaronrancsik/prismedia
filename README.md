@@ -14,6 +14,7 @@ Search in your package manager, otherwise use ``pip install --upgrade``
  - python-magic-bin
  - requests-toolbelt
  - tzlocal
+ - unidecode
 
 ## Configuration
 
@@ -98,7 +99,8 @@ Options:
   --disable-comments  Disable comments (Peertube only as YT API does not support) (default: comments are enabled)
   --nsfw  Set the video as No Safe For Work (Peertube only as YT API does not support) (default: video is safe)
   --nfo=STRING  Configure a specific nfo file to set options for the video.
-                By default Prismedia search a .txt based on video name
+                By default Prismedia search a .txt based on the video name and will
+                decode the file as UTF-8 (so make sure your nfo file is UTF-8 encoded)
                 See nfo_example.txt for more details
   --platform=STRING  List of platform(s) to upload to, comma separated.
                      Supported platforms are youtube and peertube (default is both)
@@ -149,8 +151,8 @@ Languages:
   - [x] set default language
   - [x] thumbnail/preview
   - [x] multiple lines description (see [issue 4](https://git.lecygnenoir.info/LecygneNoir/prismedia/issues/4))
-  - [x] add videos to playlist for Peertube
-  - [x] add videos to playlist for Youtube
+  - [x] add videos to playlist
+  - [x] create playlist
 - [x] Use a config file (NFO) file to retrieve videos arguments
 - [x] Allow to choose peertube or youtube upload (to resume failed upload for example)
 - [x] Add publishAt option to plan your videos

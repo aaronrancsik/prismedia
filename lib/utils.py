@@ -124,7 +124,6 @@ def searchThumbnail(options):
             options['--thumbnail'] = video_directory + video_file + ".jpeg"
     return options
 
-
 # return the nfo as a RawConfigParser object
 def loadNFO(options):
     video_directory = dirname(options.get('--file')) + "/"
@@ -169,7 +168,6 @@ def loadNFO(options):
     logging.info("No suitable NFO found, skipping.")
     return False
 
-
 def parseNFO(options):
     nfo = loadNFO(options)
     if nfo:
@@ -190,10 +188,8 @@ def parseNFO(options):
                 exit(1)
     return options
 
-
 def upcaseFirstLetter(s):
     return s[0].upper() + s[1:]
-
 
 def cleanString(toclean):
     toclean = toclean.decode('utf-8')
@@ -201,3 +197,17 @@ def cleanString(toclean):
     cleaned = re.sub('[^A-Za-z0-9]+', '', toclean)
 
     return cleaned
+
+def decodeArgumentStrings(options, encoding):
+    # Python crash when decoding from UTF-8 to UTF-8, so we prevent this
+    if "utf-8" == encoding.lower():
+        return;
+
+    if options["--name"] is not None:
+        options["--name"] = options["--name"].decode(encoding)
+
+    if options["--description"] is not None:
+        options["--description"] = options["--description"].decode(encoding)
+
+    if options["--tags"] is not None:
+        options["--tags"] = options["--tags"].decode(encoding)
