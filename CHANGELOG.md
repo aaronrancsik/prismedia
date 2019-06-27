@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.6.2
+
+**Warning**: your Peertube instance should be at least in v1.3.0 to use this new functionality.
+
+### Features
+New feature, the Peertube playlists are now supported!
+We do not use channel in place of playlist anymore.
+
 ## v0.6.1-1 Hotfix
 This fix prepares the python3 compatibility.  
 **Warning** you need a new prerequisites: python-unidecode
