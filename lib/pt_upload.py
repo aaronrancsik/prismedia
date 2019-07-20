@@ -65,7 +65,7 @@ def get_playlist_by_name(user_playlists, options):
             return playlist['id']
 
 
-def create_playlist(oauth, url, options):
+def create_playlist(oauth, url, options, default_channel):
     template = ('Peertube: Playlist %s does not exist, creating it.')
     logging.info(template % (str(options.get('--playlist'))))
     # We use files for form-data Content
@@ -74,7 +74,7 @@ def create_playlist(oauth, url, options):
     files = {'displayName': (None, str(options.get('--playlist'))),
              'privacy': (None, "1"),
              'description': (None, "null"),
-             'videoChannelId': (None, "null"),
+             'videoChannelId': (None, str(default_channel)),
              'thumbnailfile': (None, "null")}
     try:
         response = oauth.post(url + "/api/v1/video-playlists/",
@@ -199,17 +199,17 @@ def upload_video(oauth, secret, options):
         fields.append(("thumbnailfile", get_file(options.get('--thumbnail'))))
         fields.append(("previewfile", get_file(options.get('--thumbnail'))))
 
+    default_channel = get_default_channel(user_info)
+    fields.append(("channelId", str(default_channel)))
+
     if options.get('--playlist'):
         playlist_id = get_playlist_by_name(user_playlists, options)
         if not playlist_id and options.get('--playlistCreate'):
-            playlist_id = create_playlist(oauth, url, options)
+            playlist_id = create_playlist(oauth, url, options, default_channel)
         elif not playlist_id:
             logging.warning("Playlist `" + options.get('--playlist') + "` does not exist, please set --playlistCreate"
                             " if you want to create it")
             exit(1)
-
-    default_channel = get_default_channel(user_info)
-    fields.append(("channelId", str(default_channel)))
 
     multipart_data = MultipartEncoder(fields)
 
