@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.6.3
+
+### Fixes
+Fix Critical bug #38 that prevent upload when creating playlists on Peertube, as public playlist need a non-null channel_id.
+
 ## v0.6.2
 
 **Warning**: your Peertube instance should be at least in v1.3.0 to use this new functionality.
