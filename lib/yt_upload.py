@@ -252,8 +252,10 @@ def set_playlist(youtube, playlist_id, video_id):
     except Exception as e:
         if hasattr(e, 'message'):
             logging.error("Youtube: Error: " + str(e.message))
+            exit(1)
         else:
             logging.error("Youtube: Error: " + str(e))
+            exit(1)
     logging.info('Youtube: Video is correctly added to the playlist.')
 
 
