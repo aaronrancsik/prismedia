@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.6.4
+
+### Fixes
+ - Fix #33, no more trying to add a video into a playlist when the playlist does not exist on Youtube
+ - fix #39, patch the playlist name check when playlist contains special chars
+
 ## v0.6.3
 
 ### Fixes
