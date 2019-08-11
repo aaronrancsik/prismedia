@@ -156,8 +156,8 @@ def initialize_upload(youtube, options):
     if video_id and options.get('--thumbnail'):
         set_thumbnail(youtube, options.get('--thumbnail'), videoId=video_id)
 
-    # If we get a video_id, upload is successful and we are able to set playlist
-    if video_id and options.get('--playlist'):
+    # If we get a video_id and a playlist_id, upload is successful and we are able to set playlist
+    if video_id and playlist_id != "":
         set_playlist(youtube, playlist_id, video_id)
 
 
