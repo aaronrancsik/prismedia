@@ -168,7 +168,7 @@ def get_playlist_by_name(youtube, playlist_name):
         maxResults=50
     ).execute()
     for playlist in response["items"]:
-        if playlist["snippet"]['title'] == playlist_name:
+        if playlist["snippet"]['title'].encode('utf8') == str(playlist_name):
             return playlist['id']
 
 
