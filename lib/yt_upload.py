@@ -156,8 +156,8 @@ def initialize_upload(youtube, options):
     if video_id and options.get('--thumbnail'):
         set_thumbnail(youtube, options.get('--thumbnail'), videoId=video_id)
 
-    # If we get a video_id, upload is successful and we are able to set playlist
-    if video_id and options.get('--playlist'):
+    # If we get a video_id and a playlist_id, upload is successful and we are able to set playlist
+    if video_id and playlist_id != "":
         set_playlist(youtube, playlist_id, video_id)
 
 
@@ -168,7 +168,7 @@ def get_playlist_by_name(youtube, playlist_name):
         maxResults=50
     ).execute()
     for playlist in response["items"]:
-        if playlist["snippet"]['title'] == playlist_name:
+        if playlist["snippet"]['title'].encode('utf8') == str(playlist_name):
             return playlist['id']
 
 
@@ -252,8 +252,10 @@ def set_playlist(youtube, playlist_id, video_id):
     except Exception as e:
         if hasattr(e, 'message'):
             logging.error("Youtube: Error: " + str(e.message))
+            exit(1)
         else:
             logging.error("Youtube: Error: " + str(e))
+            exit(1)
     logging.info('Youtube: Video is correctly added to the playlist.')
 
 
