@@ -24,7 +24,8 @@ Options:
   --disable-comments  Disable comments (Peertube only as YT API does not support) (default: comments are enabled)
   --nsfw  Set the video as No Safe For Work (Peertube only as YT API does not support) (default: video is safe)
   --nfo=STRING  Configure a specific nfo file to set options for the video.
-                By default Prismedia search a .txt based on video name
+                By default Prismedia search a .txt based on the video name and will
+                decode the file as UTF-8 (so make sure your nfo file is UTF-8 encoded)
                 See nfo_example.txt for more details
   --platform=STRING  List of platform(s) to upload to, comma separated.
                      Supported platforms are youtube and peertube (default is both)
@@ -36,8 +37,12 @@ Options:
   --thumbnail=STRING    Path to a file to use as a thumbnail for the video.
                         Supported types are jpg and jpeg.
                         By default, prismedia search for an image based on video name followed by .jpg or .jpeg
+  --channel=STRING Set the channel to use for the video (Peertube only)
+                    If the channel is not found, spawn an error except if --channelCreate is set.
+  --channelCreate  Create the channel if not exists. (Peertube only, default do not create)
+                   Only relevant if --channel is set.
   --playlist=STRING Set the playlist to use for the video. Also known as Channel for Peertube.
-                    If the playlist is not found, spawn an error except if --playlist-create is set.
+                    If the playlist is not found, spawn an error except if --playlistCreate is set.
   --playlistCreate  Create the playlist if not exists. (default do not create)
                     Only relevant if --playlist is set.
   -h --help  Show this help.
@@ -92,7 +97,7 @@ except ImportError:
                   'see https://github.com/ahupp/python-magic\n')
     exit(1)
 
-VERSION = "prismedia v0.6.4"
+VERSION = "prismedia v0.7.0"
 
 VALID_PRIVACY_STATUSES = ('public', 'private', 'unlisted')
 VALID_CATEGORIES = (
@@ -207,6 +212,8 @@ if __name__ == '__main__':
         Optional('--thumbnail'): Or(None, And(
                                     str, validateThumbnail, error='thumbnail is not supported, please use jpg/jpeg'),
                                     ),
+        Optional('--channel'): Or(None, str),
+        Optional('--channelCreate'): bool,
         Optional('--playlist'): Or(None, str),
         Optional('--playlistCreate'): bool,
         '--help': bool,

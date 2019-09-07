@@ -55,6 +55,50 @@ def get_default_channel(user_info):
     return user_info['videoChannels'][0]['id']
 
 
+def get_channel_by_name(user_info, options):
+    for channel in user_info["videoChannels"]:
+        if channel['displayName'].encode('utf8') == str(options.get('--channel')):
+            return channel['id']
+
+
+def create_channel(oauth, url, options):
+    template = ('Peertube: Channel %s does not exist, creating it.')
+    logging.info(template % (str(options.get('--channel'))))
+    channel_name = utils.cleanString(str(options.get('--channel')))
+    # Peertube allows 20 chars max for channel name
+    channel_name = channel_name[:19]
+    data = '{"name":"' + channel_name +'", \
+            "displayName":"' + str(options.get('--channel')) +'", \
+            "description":null}'
+
+    headers = {
+        'Content-Type': "application/json"
+    }
+    try:
+        response = oauth.post(url + "/api/v1/video-channels/",
+                              data=data,
+                              headers=headers)
+    except Exception as e:
+        if hasattr(e, 'message'):
+            logging.error("Error: " + str(e.message))
+        else:
+            logging.error("Error: " + str(e))
+    if response is not None:
+        if response.status_code == 200:
+            jresponse = response.json()
+            jresponse = jresponse['videoChannel']
+            return jresponse['id']
+        if response.status_code == 409:
+            logging.error('Peertube: Error: It seems there is a conflict with an existing channel, please beware '
+                          'Peertube internal name is compiled from 20 firsts characters of channel name.'
+                          ' Please check your channel name and retry.')
+            exit(1)
+        else:
+            logging.error(('Peertube: Creating channel failed with an unexpected response: '
+                           '%s') % response)
+            exit(1)
+
+
 def get_default_playlist(user_info):
     return user_info['videoChannels'][0]['id']
 
@@ -65,7 +109,7 @@ def get_playlist_by_name(user_playlists, options):
             return playlist['id']
 
 
-def create_playlist(oauth, url, options, default_channel):
+def create_playlist(oauth, url, options, channel):
     template = ('Peertube: Playlist %s does not exist, creating it.')
     logging.info(template % (str(options.get('--playlist'))))
     # We use files for form-data Content
@@ -74,7 +118,7 @@ def create_playlist(oauth, url, options, default_channel):
     files = {'displayName': (None, str(options.get('--playlist'))),
              'privacy': (None, "1"),
              'description': (None, "null"),
-             'videoChannelId': (None, str(default_channel)),
+             'videoChannelId': (None, str(channel)),
              'thumbnailfile': (None, "null")}
     try:
         response = oauth.post(url + "/api/v1/video-playlists/",
@@ -199,13 +243,22 @@ def upload_video(oauth, secret, options):
         fields.append(("thumbnailfile", get_file(options.get('--thumbnail'))))
         fields.append(("previewfile", get_file(options.get('--thumbnail'))))
 
-    default_channel = get_default_channel(user_info)
-    fields.append(("channelId", str(default_channel)))
+    if options.get('--channel'):
+        channel_id = get_channel_by_name(user_info, options)
+        if not channel_id and options.get('--channelCreate'):
+            channel_id = create_channel(oauth, url, options)
+        elif not channel_id:
+            logging.warning("Channel `" + options.get('--channel') + "` is unknown, using default channel.")
+            channel_id = get_default_channel(user_info)
+    else:
+        channel_id = get_default_channel(user_info)
+
+    fields.append(("channelId", str(channel_id)))
 
     if options.get('--playlist'):
         playlist_id = get_playlist_by_name(user_playlists, options)
         if not playlist_id and options.get('--playlistCreate'):
-            playlist_id = create_playlist(oauth, url, options, default_channel)
+            playlist_id = create_playlist(oauth, url, options, channel_id)
         elif not playlist_id:
             logging.warning("Playlist `" + options.get('--playlist') + "` does not exist, please set --playlistCreate"
                             " if you want to create it")
