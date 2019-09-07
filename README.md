@@ -139,10 +139,9 @@ Languages:
 
 - [x] Youtube upload
 - [x] Peertube upload
-- Support of all videos arguments (description, tags, category, licence, ...)
+- Support of videos parameters (description, tags, category, licence, ...)
   - [x] description
   - [x] tags (no more than 30 characters per tag as Peertube does not support it)
-  - [x] Option to force tags to be compatible with Mastodon publication
   - [x] categories
   - [x] license: cca or not (Youtube only as Peertube uses Attribution by design)
   - [x] privacy (between public, unlisted or private)
@@ -153,9 +152,10 @@ Languages:
   - [x] multiple lines description (see [issue 4](https://git.lecygnenoir.info/LecygneNoir/prismedia/issues/4))
   - [x] add videos to playlist
   - [x] create playlist
+  - [x] schedule your video with publishAt
+  - [ ] combine channel and playlist (Peertube only as channel is Peertube feature)
 - [x] Use a config file (NFO) file to retrieve videos arguments
 - [x] Allow to choose peertube or youtube upload (to resume failed upload for example)
-- [x] Add publishAt option to plan your videos
 - [ ] Record and forget: put the video in a directory, and the script uploads it for you
 - [ ] Usable on Desktop (Linux and/or Windows and/or MacOS)
 - [ ] Graphical User Interface
