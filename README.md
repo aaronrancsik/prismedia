@@ -91,8 +91,6 @@ Options:
                      WARN: tags with space and special characters (!, ', ", ?, ...)
                            are not supported by Mastodon to be published from Peertube
                            use mastodon compatibility below
-  --mt  Force Mastodon compatibility for tags (drop every incompatible characters inside tags)
-        This option requires --tags
   -c, --category=STRING  Category for the videos, see below. (default: Films)
   --cca  License should be CreativeCommon Attribution (affects Youtube upload only)
   -p, --privacy=STRING  Choose between public, unlisted or private. (default: private)
@@ -112,8 +110,12 @@ Options:
   --thumbnail=STRING    Path to a file to use as a thumbnail for the video.
                         Supported types are jpg and jpeg.
                         By default, prismedia search for an image based on video name followed by .jpg or .jpeg
+  --channel=STRING Set the channel to use for the video (Peertube only)
+                    If the channel is not found, spawn an error except if --channelCreate is set.
+  --channelCreate  Create the channel if not exists. (Peertube only, default do not create)
+                   Only relevant if --channel is set.
   --playlist=STRING Set the playlist to use for the video. Also known as Channel for Peertube.
-                    If the playlist is not found, spawn an error except if --playlist-create is set.
+                    If the playlist is not found, spawn an error except if --playlistCreate is set.
   --playlistCreate  Create the playlist if not exists. (default do not create)
                     Only relevant if --playlist is set.
   -h --help  Show this help.
@@ -139,10 +141,9 @@ Languages:
 
 - [x] Youtube upload
 - [x] Peertube upload
-- Support of all videos arguments (description, tags, category, licence, ...)
+- Support of videos parameters (description, tags, category, licence, ...)
   - [x] description
   - [x] tags (no more than 30 characters per tag as Peertube does not support it)
-  - [x] Option to force tags to be compatible with Mastodon publication
   - [x] categories
   - [x] license: cca or not (Youtube only as Peertube uses Attribution by design)
   - [x] privacy (between public, unlisted or private)
@@ -153,9 +154,10 @@ Languages:
   - [x] multiple lines description (see [issue 4](https://git.lecygnenoir.info/LecygneNoir/prismedia/issues/4))
   - [x] add videos to playlist
   - [x] create playlist
+  - [x] schedule your video with publishAt
+  - [x] combine channel and playlist (Peertube only as channel is Peertube feature). See [issue 40](https://git.lecygnenoir.info/LecygneNoir/prismedia/issues/40 for detailed usage.
 - [x] Use a config file (NFO) file to retrieve videos arguments
 - [x] Allow to choose peertube or youtube upload (to resume failed upload for example)
-- [x] Add publishAt option to plan your videos
 - [ ] Record and forget: put the video in a directory, and the script uploads it for you
 - [ ] Usable on Desktop (Linux and/or Windows and/or MacOS)
 - [ ] Graphical User Interface
