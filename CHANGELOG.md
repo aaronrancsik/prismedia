@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.7.0
+
+### Features
+Support Peertube channel additionally with playlist for Peertube!  
+Peertube only as channel are Peertube's feature. See #40 for details.
+
+### Fixes
+ - Best uses of special chars in videoname, channel name and playlist name
+ - Some fixes in logging message for better lisibility
+ - Readme features list improved for better lisibility
+
 ## v0.6.4
 
 ### Fixes
