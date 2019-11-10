@@ -202,9 +202,9 @@ def upload_video(oauth, secret, options):
                 continue
             # Tag more than 30 chars crashes Peertube, so exit and check tags
             if len(strtag) >= 30:
-                logging.warning("Peertube: Sorry, Peertube does not support tag with more than 30 characters, please reduce your tag size")
+                logging.warning("Peertube: Sorry, Peertube does not support tag with more than 30 characters, please reduce tag: " + strtag)
                 exit(1)
-            fields.append(("tags", strtag))
+            fields.append(("tags[]", strtag))
 
     if options.get('--category'):
         fields.append(("category", str(utils.getCategory(options.get('--category'), 'peertube'))))
