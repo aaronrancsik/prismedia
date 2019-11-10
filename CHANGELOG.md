@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.7.1
+
+### Fixes
+Fix bug #42 , crash on Peertube when video has only one tag
+
 ## v0.7.0
 
 ### Features
