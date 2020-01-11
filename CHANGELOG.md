@@ -1,5 +1,15 @@
 # Changelog
 
+## vX.X.X
+
+### Breaking changes
+Now work with python 3! support of python 2 is no longer available.  
+You should now use python 3 in order to use prismedia
+
+### Features
+Added a requirements.txt file to make installing requirement easier.
+
+
 ## v0.7.1
 
 ### Fixes
