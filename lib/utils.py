@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # coding: utf-8
 
-from ConfigParser import RawConfigParser, NoOptionError, NoSectionError
+from configparser import RawConfigParser, NoOptionError, NoSectionError
 from os.path import dirname, splitext, basename, isfile
 import re
 from os import devnull
@@ -102,7 +102,7 @@ def getLanguage(language, platform):
 def remove_empty_kwargs(**kwargs):
     good_kwargs = {}
     if kwargs is not None:
-        for key, value in kwargs.iteritems():
+        for key, value in kwargs.items():
             if value:
                 good_kwargs[key] = value
     return good_kwargs
@@ -172,7 +172,7 @@ def parseNFO(options):
     nfo = loadNFO(options)
     if nfo:
         # We need to check all options and replace it with the nfo value if not defined (None or False)
-        for key, value in options.iteritems():
+        for key, value in options.items():
             key = key.replace("-", "")
             try:
                 # get string options
@@ -192,7 +192,6 @@ def upcaseFirstLetter(s):
     return s[0].upper() + s[1:]
 
 def cleanString(toclean):
-    toclean = toclean.decode('utf-8')
     toclean = unidecode.unidecode(toclean)
     cleaned = re.sub('[^A-Za-z0-9]+', '', toclean)
 

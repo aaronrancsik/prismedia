@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 # coding: utf-8
 
 """
@@ -170,17 +170,17 @@ if __name__ == '__main__':
     schema = Schema({
         '--file': And(str, validateVideo, error='file is not supported, please use mp4'),
         Optional('--name'): Or(None, And(
-                                basestring,
+                                str,
                                 lambda x: not x.isdigit(),
                                 error="The video name should be a string")
                                ),
         Optional('--description'): Or(None, And(
-                                        basestring,
+                                        str,
                                         lambda x: not x.isdigit(),
                                         error="The video description should be a string")
                                       ),
         Optional('--tags'): Or(None, And(
-                                    basestring,
+                                    str,
                                     lambda x: not x.isdigit(),
                                     error="Tags should be a string")
                                ),
