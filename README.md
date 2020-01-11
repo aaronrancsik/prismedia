@@ -1,9 +1,9 @@
 # Prismedia
 
-A scripting way to upload videos to peertube and youtube written in python2
+A scripting way to upload videos to Peertube and Youtube written in python3.
 
 ## Dependencies
-Search in your package manager, otherwise use ``pip install --upgrade``
+Search in your package manager, or with `pip` use ``pip install -r requirements.txt``
  - google-auth
  - google-auth-oauthlib
  - google-auth-httplib2
@@ -49,8 +49,6 @@ If you plan an larger usage, please consider creating your own youtube_secret fi
 - Save this JSON as your youtube_secret.json file.
 
 ## How To
-Currently in heavy development
-
 Support only mp4 for cross compatibility between Youtube and Peertube
 
 Simply upload a video:
@@ -158,13 +156,12 @@ Languages:
   - [x] combine channel and playlist (Peertube only as channel is Peertube feature). See [issue 40](https://git.lecygnenoir.info/LecygneNoir/prismedia/issues/40 for detailed usage.
 - [x] Use a config file (NFO) file to retrieve videos arguments
 - [x] Allow to choose peertube or youtube upload (to resume failed upload for example)
-- [ ] Record and forget: put the video in a directory, and the script uploads it for you
-- [ ] Usable on Desktop (Linux and/or Windows and/or MacOS)
-- [ ] Graphical User Interface
+- [x] Usable on Desktop (Linux and/or Windows and/or MacOS)
 
 ## Compatibility
 
-If your server uses peertube before 1.0.0-beta4, use the version inside tag 1.0.0-beta3!
+ - If you still use python2, use the version 0.7.1 (no more updated)
+ - peertube before 1.0.0-beta4, use the version inside tag 1.0.0-beta3
 
 ## Sources
 inspired by [peeror](https://git.rigelk.eu/rigelk/peeror) and [youtube-upload](https://github.com/tokland/youtube-upload)
