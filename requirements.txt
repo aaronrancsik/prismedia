@@ -8,6 +8,7 @@ google-auth-oauthlib
 httplib2
 oauthlib
 python-magic
+python-magic-bin
 requests
 requests-oauthlib
 requests-toolbelt
