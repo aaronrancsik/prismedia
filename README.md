@@ -4,17 +4,25 @@ A scripting way to upload videos to Peertube and Youtube written in python3.
 
 ## Dependencies
 Search in your package manager, or with `pip` use ``pip install -r requirements.txt``
- - google-auth
- - google-auth-oauthlib
- - google-auth-httplib2
- - google-api-python-client
+ - configparser
  - docopt
- - schema
+ - future
+ - google-api-python-client
+ - google-auth
+ - google-auth-httplib2
+ - google-auth-oauthlib
+ - httplib2
+ - oauthlib
  - python-magic
  - python-magic-bin
+ - requests
+ - requests-oauthlib
  - requests-toolbelt
+ - schema
  - tzlocal
- - unidecode
+ - Unidecode
+ - uritemplate
+ - urllib3
 
 ## Configuration
 
@@ -39,14 +47,14 @@ Prismedia will try to use this file at each launch, and re-ask for authenticatio
 The default youtube_secret.json should allow you to upload some videos.  
 If you plan an larger usage, please consider creating your own youtube_secret file:
 
-- Go to the [Google console](https://console.developers.google.com/).
-- Create project.
-- Side menu: APIs & auth -> APIs
-- Top menu: Enabled API(s): Enable all Youtube APIs.
-- Side menu: APIs & auth -> Credentials.
-- Create a Client ID: Add credentials -> OAuth 2.0 Client ID -> Other -> Name: prismedia1 -> Create -> OK
-- Download JSON: Under the section "OAuth 2.0 client IDs". Save the file to your local system.
-- Save this JSON as your youtube_secret.json file.
+ - Go to the [Google console](https://console.developers.google.com/).
+ - Create project.
+ - Side menu: APIs & auth -> APIs
+ - Top menu: Enabled API(s): Enable all Youtube APIs.
+ - Side menu: APIs & auth -> Credentials.
+ - Create a Client ID: Add credentials -> OAuth 2.0 Client ID -> Other -> Name: prismedia1 -> Create -> OK
+ - Download JSON: Under the section "OAuth 2.0 client IDs". Save the file to your local system.
+ - Save this JSON as your youtube_secret.json file.
 
 ## How To
 Support only mp4 for cross compatibility between Youtube and Peertube
@@ -153,7 +161,7 @@ Languages:
   - [x] add videos to playlist
   - [x] create playlist
   - [x] schedule your video with publishAt
-  - [x] combine channel and playlist (Peertube only as channel is Peertube feature). See [issue 40](https://git.lecygnenoir.info/LecygneNoir/prismedia/issues/40 for detailed usage.
+  - [x] combine channel and playlist (Peertube only as channel is Peertube feature). See [issue 40](https://git.lecygnenoir.info/LecygneNoir/prismedia/issues/40) for detailed usage.
 - [x] Use a config file (NFO) file to retrieve videos arguments
 - [x] Allow to choose peertube or youtube upload (to resume failed upload for example)
 - [x] Usable on Desktop (Linux and/or Windows and/or MacOS)
