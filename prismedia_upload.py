@@ -223,7 +223,6 @@ if __name__ == '__main__':
         '--version': bool
     })
 
-    utils.decodeArgumentStrings(options, locale.getpreferredencoding())
     options = utils.parseNFO(options)
 
     if not options.get('--thumbnail'):
