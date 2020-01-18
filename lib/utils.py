@@ -132,7 +132,7 @@ def loadNFO(options):
             logging.info("Using " + options.get('--nfo') + " as NFO, loading...")
             if isfile(options.get('--nfo')):
                 nfo = RawConfigParser()
-                nfo.read(options.get('--nfo'))
+                nfo.read(options.get('--nfo'), encoding='utf-8')
                 return nfo
             else:
                 logging.error("Given NFO file does not exist, please check your path.")
@@ -147,7 +147,7 @@ def loadNFO(options):
                 try:
                     logging.info("Using " + nfo_file + " as NFO, loading...")
                     nfo = RawConfigParser()
-                    nfo.read(nfo_file)
+                    nfo.read(nfo_file, encoding='utf-8')
                     return nfo
                 except Exception as e:
                     logging.error("Problem with NFO file: " + str(e))
@@ -160,7 +160,7 @@ def loadNFO(options):
         try:
             logging.info("Using " + nfo_file + " as NFO, loading...")
             nfo = RawConfigParser()
-            nfo.read(nfo_file)
+            nfo.read(nfo_file, encoding='utf-8')
             return nfo
         except Exception as e:
             logging.error("Problem with nfo file: " + str(e))
