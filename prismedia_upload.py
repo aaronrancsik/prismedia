@@ -13,6 +13,7 @@ Usage:
 Options:
   -f, --file=STRING Path to the video file to upload in mp4
   --name=NAME  Name of the video to upload. (default to video filename)
+  --debug  Show some debug informations like the option actually used (default: no debug info)
   -d, --description=STRING  Description of the video. (default: default description)
   -t, --tags=STRING  Tags for the video. comma separated.
                      WARN: tags with space and special characters (!, ', ", ?, ...)
@@ -110,7 +111,7 @@ VALID_CATEGORIES = (
     "how to", "education", "activism", "science & technology",
     "science", "technology", "animals"
 )
-VALID_PLATFORM = ('youtube', 'peertube')
+VALID_PLATFORM = ('youtube', 'peertube', 'none')
 VALID_LANGUAGES = ('arabic', 'english', 'french',
                    'german', 'hindi', 'italian',
                    'japanese', 'korean', 'mandarin',
@@ -209,6 +210,7 @@ if __name__ == '__main__':
                                     validatePublish,
                                     error="DATE should be the form YYYY-MM-DDThh:mm:ss and has to be in the future")
                                     ),
+        Optional('--debug'): bool,
         Optional('--cca'): bool,
         Optional('--disable-comments'): bool,
         Optional('--nsfw'): bool,
@@ -233,7 +235,11 @@ if __name__ == '__main__':
     except SchemaError as e:
         exit(e)
 
-    if options.get('--platform') is None or "youtube" in options.get('--platform'):
-        yt_upload.run(options)
-    if options.get('--platform') is None or "peertube" in options.get('--platform'):
-        pt_upload.run(options)
+    if options.get('--debug'):
+        print(sys.version)
+        print(options)
+
+    #if options.get('--platform') is None or "peertube" in options.get('--platform'):
+    #    pt_upload.run(options)
+    #if options.get('--platform') is None or "youtube" in options.get('--platform'):
+    #    yt_upload.run(options)
