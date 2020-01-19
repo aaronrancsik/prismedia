@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.8.0
+
+### Breaking changes
+Now work with python 3! Support of python 2 is no longer available.  
+You should now use python 3 in order to use prismedia
+
+### Features
+ - Add a requirements.txt file to make installing requirement easier.  
+ - Add a debug option to show some infos before uploading (thanks to @zykino)  
+ - Now uploading to Peertube before Youtube (thanks to @zykino)
+
 ## v0.7.1
 
 ### Fixes

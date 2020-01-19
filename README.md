@@ -1,20 +1,28 @@
 # Prismedia
 
-A scripting way to upload videos to peertube and youtube written in python2
+Scripting your way to upload videos to peertube and youtube. Works with Python 3.5+.
 
 ## Dependencies
-Search in your package manager, otherwise use ``pip install --upgrade``
- - google-auth
- - google-auth-oauthlib
- - google-auth-httplib2
- - google-api-python-client
+Search in your package manager, or with `pip` use ``pip install -r requirements.txt``
+ - configparser
  - docopt
- - schema
+ - future
+ - google-api-python-client
+ - google-auth
+ - google-auth-httplib2
+ - google-auth-oauthlib
+ - httplib2
+ - oauthlib
  - python-magic
- - python-magic-bin
+ - python-magic-bin (Windows only)
+ - requests
+ - requests-oauthlib
  - requests-toolbelt
+ - schema
  - tzlocal
- - unidecode
+ - Unidecode
+ - uritemplate
+ - urllib3
 
 ## Configuration
 
@@ -39,18 +47,16 @@ Prismedia will try to use this file at each launch, and re-ask for authenticatio
 The default youtube_secret.json should allow you to upload some videos.  
 If you plan an larger usage, please consider creating your own youtube_secret file:
 
-- Go to the [Google console](https://console.developers.google.com/).
-- Create project.
-- Side menu: APIs & auth -> APIs
-- Top menu: Enabled API(s): Enable all Youtube APIs.
-- Side menu: APIs & auth -> Credentials.
-- Create a Client ID: Add credentials -> OAuth 2.0 Client ID -> Other -> Name: prismedia1 -> Create -> OK
-- Download JSON: Under the section "OAuth 2.0 client IDs". Save the file to your local system.
-- Save this JSON as your youtube_secret.json file.
+ - Go to the [Google console](https://console.developers.google.com/).
+ - Create project.
+ - Side menu: APIs & auth -> APIs
+ - Top menu: Enabled API(s): Enable all Youtube APIs.
+ - Side menu: APIs & auth -> Credentials.
+ - Create a Client ID: Add credentials -> OAuth 2.0 Client ID -> Other -> Name: prismedia1 -> Create -> OK
+ - Download JSON: Under the section "OAuth 2.0 client IDs". Save the file to your local system.
+ - Save this JSON as your youtube_secret.json file.
 
 ## How To
-Currently in heavy development
-
 Support only mp4 for cross compatibility between Youtube and Peertube
 
 Simply upload a video:
@@ -86,11 +92,11 @@ Use --help to get all available options:
 Options:
   -f, --file=STRING Path to the video file to upload in mp4
   --name=NAME  Name of the video to upload. (default to video filename)
+  --debug  Trigger some debug information like options used (default: no)
   -d, --description=STRING  Description of the video. (default: default description)
   -t, --tags=STRING  Tags for the video. comma separated.
-                     WARN: tags with space and special characters (!, ', ", ?, ...)
+                     WARN: tags with punctuation (!, ', ", ?, ...)
                            are not supported by Mastodon to be published from Peertube
-                           use mastodon compatibility below
   -c, --category=STRING  Category for the videos, see below. (default: Films)
   --cca  License should be CreativeCommon Attribution (affects Youtube upload only)
   -p, --privacy=STRING  Choose between public, unlisted or private. (default: private)
@@ -106,7 +112,6 @@ Options:
   --publishAt=DATE  Publish the video at the given DATE using local server timezone.
                     DATE should be on the form YYYY-MM-DDThh:mm:ss eg: 2018-03-12T19:00:00
                     DATE should be in the future
-                    For Peertube, requires the "atd" and "curl utilities installed on the system
   --thumbnail=STRING    Path to a file to use as a thumbnail for the video.
                         Supported types are jpg and jpeg.
                         By default, prismedia search for an image based on video name followed by .jpg or .jpeg
@@ -114,7 +119,7 @@ Options:
                     If the channel is not found, spawn an error except if --channelCreate is set.
   --channelCreate  Create the channel if not exists. (Peertube only, default do not create)
                    Only relevant if --channel is set.
-  --playlist=STRING Set the playlist to use for the video. Also known as Channel for Peertube.
+  --playlist=STRING Set the playlist to use for the video.
                     If the playlist is not found, spawn an error except if --playlistCreate is set.
   --playlistCreate  Create the playlist if not exists. (default do not create)
                     Only relevant if --playlist is set.
@@ -155,16 +160,18 @@ Languages:
   - [x] add videos to playlist
   - [x] create playlist
   - [x] schedule your video with publishAt
-  - [x] combine channel and playlist (Peertube only as channel is Peertube feature). See [issue 40](https://git.lecygnenoir.info/LecygneNoir/prismedia/issues/40 for detailed usage.
+  - [x] combine channel and playlist (Peertube only as channel is Peertube feature). See [issue 40](https://git.lecygnenoir.info/LecygneNoir/prismedia/issues/40) for detailed usage.
 - [x] Use a config file (NFO) file to retrieve videos arguments
 - [x] Allow to choose peertube or youtube upload (to resume failed upload for example)
-- [ ] Record and forget: put the video in a directory, and the script uploads it for you
-- [ ] Usable on Desktop (Linux and/or Windows and/or MacOS)
-- [ ] Graphical User Interface
+- [x] Usable on Desktop (Linux and/or Windows and/or MacOS)
 
 ## Compatibility
 
-If your server uses peertube before 1.0.0-beta4, use the version inside tag 1.0.0-beta3!
+ - If you still use python2, use the version 0.7.1 (no more updated)
+ - peertube before 1.0.0-beta4, use the version inside tag 1.0.0-beta3
 
 ## Sources
 inspired by [peeror](https://git.rigelk.eu/rigelk/peeror) and [youtube-upload](https://github.com/tokland/youtube-upload)
+
+## Contributors
+Thanks to: @Zykino, @meewan, @rigelk 😘

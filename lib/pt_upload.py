@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 # coding: utf-8
 
 import os
@@ -10,7 +10,7 @@ import pytz
 from os.path import splitext, basename, abspath
 from tzlocal import get_localzone
 
-from ConfigParser import RawConfigParser
+from configparser import RawConfigParser
 from requests_oauthlib import OAuth2Session
 from oauthlib.oauth2 import LegacyApplicationClient
 from requests_toolbelt.multipart.encoder import MultipartEncoder
@@ -57,7 +57,7 @@ def get_default_channel(user_info):
 
 def get_channel_by_name(user_info, options):
     for channel in user_info["videoChannels"]:
-        if channel['displayName'].encode('utf8') == str(options.get('--channel')):
+        if channel['displayName'] == options.get('--channel'):
             return channel['id']
 
 
@@ -67,16 +67,17 @@ def create_channel(oauth, url, options):
     channel_name = utils.cleanString(str(options.get('--channel')))
     # Peertube allows 20 chars max for channel name
     channel_name = channel_name[:19]
-    data = '{"name":"' + channel_name +'", \
-            "displayName":"' + str(options.get('--channel')) +'", \
-            "description":null}'
+    data = '{"name":"' + channel_name + '", \
+            "displayName":"' + options.get('--channel') + '", \
+            "description":null, \
+            "support":null}'
 
     headers = {
-        'Content-Type': "application/json"
+        'Content-Type': "application/json; charset=UTF-8"
     }
     try:
         response = oauth.post(url + "/api/v1/video-channels/",
-                              data=data,
+                              data=data.encode('utf-8'),
                               headers=headers)
     except Exception as e:
         if hasattr(e, 'message'):
@@ -89,8 +90,10 @@ def create_channel(oauth, url, options):
             jresponse = jresponse['videoChannel']
             return jresponse['id']
         if response.status_code == 409:
-            logging.error('Peertube: Error: It seems there is a conflict with an existing channel, please beware '
-                          'Peertube internal name is compiled from 20 firsts characters of channel name.'
+            logging.error('Peertube: Error: It seems there is a conflict with an existing channel named '
+                          + channel_name + '.'
+                          ' Please beware Peertube internal name is compiled from 20 firsts characters of channel name.'
+                          ' Also note that channel name are not case sensitive (no uppercase nor accent)'
                           ' Please check your channel name and retry.')
             exit(1)
         else:
@@ -105,7 +108,7 @@ def get_default_playlist(user_info):
 
 def get_playlist_by_name(user_playlists, options):
     for playlist in user_playlists["data"]:
-        if playlist['displayName'].encode('utf8') == str(options.get('--playlist')):
+        if playlist['displayName'] == options.get('--playlist'):
             return playlist['id']
 
 

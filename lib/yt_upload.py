@@ -1,8 +1,8 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 # coding: utf-8
 # From Youtube samples : https://raw.githubusercontent.com/youtube/api-samples/master/python/upload_video.py  # noqa
 
-import httplib
+import http.client
 import httplib2
 import random
 import time
@@ -38,13 +38,13 @@ MAX_RETRIES = 10
 RETRIABLE_EXCEPTIONS = (
     IOError,
     httplib2.HttpLib2Error,
-    httplib.NotConnected,
-    httplib.IncompleteRead,
-    httplib.ImproperConnectionState,
-    httplib.CannotSendRequest,
-    httplib.CannotSendHeader,
-    httplib.ResponseNotReady,
-    httplib.BadStatusLine,
+    http.client.NotConnected,
+    http.client.IncompleteRead,
+    http.client.ImproperConnectionState,
+    http.client.CannotSendRequest,
+    http.client.CannotSendHeader,
+    http.client.ResponseNotReady,
+    http.client.BadStatusLine,
 )
 
 RETRIABLE_STATUS_CODES = [500, 502, 503, 504]
@@ -146,7 +146,7 @@ def initialize_upload(youtube, options):
 
     # Call the API's videos.insert method to create and upload the video.
     insert_request = youtube.videos().insert(
-        part=','.join(body.keys()),
+        part=','.join(list(body.keys())),
         body=body,
         media_body=MediaFileUpload(path, chunksize=-1, resumable=True)
     )
@@ -168,7 +168,7 @@ def get_playlist_by_name(youtube, playlist_name):
         maxResults=50
     ).execute()
     for playlist in response["items"]:
-        if playlist["snippet"]['title'].encode('utf8') == str(playlist_name):
+        if playlist["snippet"]['title'] == playlist_name:
             return playlist['id']
 
 
