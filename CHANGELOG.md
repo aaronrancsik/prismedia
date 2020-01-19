@@ -1,6 +1,6 @@
 # Changelog
 
-## vX.X.X
+## v0.8.0
 
 ### Breaking changes
 Now work with python 3! Support of python 2 is no longer available.  
