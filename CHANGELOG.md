@@ -3,12 +3,13 @@
 ## vX.X.X
 
 ### Breaking changes
-Now work with python 3! support of python 2 is no longer available.  
+Now work with python 3! Support of python 2 is no longer available.  
 You should now use python 3 in order to use prismedia
 
 ### Features
-Added a requirements.txt file to make installing requirement easier.
-
+ - Add a requirements.txt file to make installing requirement easier.  
+ - Add a debug option to show some infos before uploading (thanks to @zykino)  
+ - Now uploading to Peertube before Youtube (thanks to @zykino)
 
 ## v0.7.1
 

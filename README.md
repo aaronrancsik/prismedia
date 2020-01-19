@@ -1,6 +1,6 @@
 # Prismedia
 
-A scripting way to upload videos to Peertube and Youtube written in python3.
+Scripting your way to upload videos to peertube and youtube. Works with Python 3.5+.
 
 ## Dependencies
 Search in your package manager, or with `pip` use ``pip install -r requirements.txt``
@@ -14,7 +14,7 @@ Search in your package manager, or with `pip` use ``pip install -r requirements.
  - httplib2
  - oauthlib
  - python-magic
- - python-magic-bin
+ - python-magic-bin (Windows only)
  - requests
  - requests-oauthlib
  - requests-toolbelt
@@ -92,11 +92,11 @@ Use --help to get all available options:
 Options:
   -f, --file=STRING Path to the video file to upload in mp4
   --name=NAME  Name of the video to upload. (default to video filename)
+  --debug  Trigger some debug information like options used (default: no)
   -d, --description=STRING  Description of the video. (default: default description)
   -t, --tags=STRING  Tags for the video. comma separated.
-                     WARN: tags with space and special characters (!, ', ", ?, ...)
+                     WARN: tags with punctuation (!, ', ", ?, ...)
                            are not supported by Mastodon to be published from Peertube
-                           use mastodon compatibility below
   -c, --category=STRING  Category for the videos, see below. (default: Films)
   --cca  License should be CreativeCommon Attribution (affects Youtube upload only)
   -p, --privacy=STRING  Choose between public, unlisted or private. (default: private)
@@ -112,7 +112,6 @@ Options:
   --publishAt=DATE  Publish the video at the given DATE using local server timezone.
                     DATE should be on the form YYYY-MM-DDThh:mm:ss eg: 2018-03-12T19:00:00
                     DATE should be in the future
-                    For Peertube, requires the "atd" and "curl utilities installed on the system
   --thumbnail=STRING    Path to a file to use as a thumbnail for the video.
                         Supported types are jpg and jpeg.
                         By default, prismedia search for an image based on video name followed by .jpg or .jpeg
@@ -120,7 +119,7 @@ Options:
                     If the channel is not found, spawn an error except if --channelCreate is set.
   --channelCreate  Create the channel if not exists. (Peertube only, default do not create)
                    Only relevant if --channel is set.
-  --playlist=STRING Set the playlist to use for the video. Also known as Channel for Peertube.
+  --playlist=STRING Set the playlist to use for the video.
                     If the playlist is not found, spawn an error except if --playlistCreate is set.
   --playlistCreate  Create the playlist if not exists. (default do not create)
                     Only relevant if --playlist is set.
@@ -173,3 +172,6 @@ Languages:
 
 ## Sources
 inspired by [peeror](https://git.rigelk.eu/rigelk/peeror) and [youtube-upload](https://github.com/tokland/youtube-upload)
+
+## Contributors
+Thanks to: @Zykino, @meewan, @rigelk 😘

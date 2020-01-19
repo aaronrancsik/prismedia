@@ -8,7 +8,7 @@ google-auth-oauthlib
 httplib2
 oauthlib
 python-magic
-python-magic-bin
+python-magic-bin; platform_system == "Windows"
 requests
 requests-oauthlib
 requests-toolbelt
