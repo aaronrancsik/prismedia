@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # coding: utf-8
 
 """
@@ -63,8 +63,11 @@ Languages:
     Japanese, Korean, Mandarin, Portuguese, Punjabi, Russian, Spanish
 
 """
-from os.path import dirname, realpath
 import sys
+if sys.version_info[0] < 3:
+    raise Exception("Python 3 or a more recent version is required.")
+
+from os.path import dirname, realpath
 import datetime
 import locale
 import logging
@@ -95,9 +98,6 @@ except ImportError:
                   ' is installed, NOT the Python bindings to libmagic API \n'
                   'see https://github.com/ahupp/python-magic\n')
     exit(1)
-
-if sys.version_info[0] < 3:
-    raise Exception("Python 3 or a more recent version is required.")
 
 VERSION = "prismedia v0.7.1"
 
