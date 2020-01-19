@@ -239,7 +239,7 @@ if __name__ == '__main__':
         print(sys.version)
         print(options)
 
-    #if options.get('--platform') is None or "peertube" in options.get('--platform'):
-    #    pt_upload.run(options)
-    #if options.get('--platform') is None or "youtube" in options.get('--platform'):
-    #    yt_upload.run(options)
+    if options.get('--platform') is None or "peertube" in options.get('--platform'):
+        pt_upload.run(options)
+    if options.get('--platform') is None or "youtube" in options.get('--platform'):
+        yt_upload.run(options)
