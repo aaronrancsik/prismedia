@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.8.1
+
+### Features
+ - Add two new options to schedule video by platform. You may now use youtubeAt and peertubeAt to prepare previews
+
 ## v0.8.0
 
 ### Breaking changes

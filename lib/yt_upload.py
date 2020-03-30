@@ -124,9 +124,15 @@ def initialize_upload(youtube, options):
         }
     }
 
-    if options.get('--publishAt'):
+    # If peertubeAt exists, use instead of publishAt
+    if options.get('--youtubeAt'):
+        publishAt = options.get('--youtubeAt')
+    elif options.get('--publishAt'):
+        publishAt = options.get('--publishAt')
+
+    if 'publishAt' in locals():
         # Youtube needs microsecond and the local timezone from ISO 8601
-        publishAt = options.get('--publishAt') + ".000001"
+        publishAt = publishAt + ".000001"
         publishAt = datetime.datetime.strptime(publishAt, '%Y-%m-%dT%H:%M:%S.%f')
         tz = get_localzone()
         tz = pytz.timezone(str(tz))

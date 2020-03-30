@@ -112,6 +112,8 @@ Options:
   --publishAt=DATE  Publish the video at the given DATE using local server timezone.
                     DATE should be on the form YYYY-MM-DDThh:mm:ss eg: 2018-03-12T19:00:00
                     DATE should be in the future
+  --peertubeAt=DATE
+  --youtubeAt=DATE  Override publishAt for the corresponding platform. Allow to create preview on specific platform
   --thumbnail=STRING    Path to a file to use as a thumbnail for the video.
                         Supported types are jpg and jpeg.
                         By default, prismedia search for an image based on video name followed by .jpg or .jpeg
