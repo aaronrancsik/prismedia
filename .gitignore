@@ -62,3 +62,6 @@ target/
 youtube_secret.json
 peertube_secret
 .youtube_credentials.json
+nfo_example.txt
+peertube_secret.sample
+youtube_secret.json.sample
