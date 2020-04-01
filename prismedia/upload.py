@@ -69,20 +69,15 @@ import sys
 if sys.version_info[0] < 3:
     raise Exception("Python 3 or a more recent version is required.")
 
-from os.path import dirname, realpath
 import datetime
-import locale
 import logging
 logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
 
 from docopt import docopt
 
-# Allows a relative import from the parent folder
-sys.path.insert(0, dirname(realpath(__file__)) + "/lib")
-
-import yt_upload
-import pt_upload
-import utils
+from . import yt_upload
+from . import pt_upload
+from . import utils
 
 try:
     # noinspection PyUnresolvedReferences
@@ -101,7 +96,7 @@ except ImportError:
                   'see https://github.com/ahupp/python-magic\n')
     exit(1)
 
-VERSION = "prismedia v0.8.0"
+VERSION = "prismedia v0.9.0"
 
 VALID_PRIVACY_STATUSES = ('public', 'private', 'unlisted')
 VALID_CATEGORIES = (
@@ -117,6 +112,7 @@ VALID_LANGUAGES = ('arabic', 'english', 'french',
                    'japanese', 'korean', 'mandarin',
                    'portuguese', 'punjabi', 'russian', 'spanish')
 
+
 def validateVideo(path):
     supported_types = ['video/mp4']
     if magic.from_file(path, mime=True) in supported_types:
@@ -124,17 +120,20 @@ def validateVideo(path):
     else:
         return False
 
+
 def validateCategory(category):
     if category.lower() in VALID_CATEGORIES:
         return True
     else:
         return False
 
+
 def validatePrivacy(privacy):
     if privacy.lower() in VALID_PRIVACY_STATUSES:
         return True
     else:
         return False
+
 
 def validatePlatform(platform):
     for plfrm in platform.split(','):
@@ -143,11 +142,13 @@ def validatePlatform(platform):
 
     return True
 
+
 def validateLanguage(language):
     if language.lower() in VALID_LANGUAGES:
         return True
     else:
         return False
+
 
 def validatePublish(publish):
     # Check date format and if date is future
@@ -160,6 +161,7 @@ def validatePublish(publish):
         return False
     return True
 
+
 def validateThumbnail(thumbnail):
     supported_types = ['image/jpg', 'image/jpeg']
     if magic.from_file(thumbnail, mime=True) in supported_types:
@@ -167,8 +169,8 @@ def validateThumbnail(thumbnail):
     else:
         return False
 
-if __name__ == '__main__':
 
+def main():
     options = docopt(__doc__, version=VERSION)
 
     schema = Schema({
@@ -253,3 +255,9 @@ if __name__ == '__main__':
         pt_upload.run(options)
     if options.get('--platform') is None or "youtube" in options.get('--platform'):
         yt_upload.run(options)
+
+
+if __name__ == '__main__':
+    import warnings
+    warnings.warn("use 'python -m prismedia', not 'python -m prismedia.upload'", DeprecationWarning)
+    main()

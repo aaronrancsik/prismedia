@@ -22,7 +22,7 @@ from googleapiclient.http import MediaFileUpload
 from google_auth_oauthlib.flow import InstalledAppFlow
 
 
-import utils
+from . import utils
 
 logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
 
