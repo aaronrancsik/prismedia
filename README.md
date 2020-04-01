@@ -2,35 +2,41 @@
 
 Scripting your way to upload videos to peertube and youtube. Works with Python 3.5+.
 
-## Dependencies
-Search in your package manager, or with `pip` use ``pip install -r requirements.txt``
- - configparser
- - docopt
- - future
- - google-api-python-client
- - google-auth
- - google-auth-httplib2
- - google-auth-oauthlib
- - httplib2
- - oauthlib
- - python-magic
- - python-magic-bin (Windows only)
- - requests
- - requests-oauthlib
- - requests-toolbelt
- - schema
- - tzlocal
- - Unidecode
- - uritemplate
- - urllib3
+[TOC]: #
+
+## Table of Contents
+- [Installation](#installation)
+- [Configuration](#configuration)
+  - [Peertube](#peertube)
+  - [Youtube](#youtube)
+- [Usage](#usage)
+- [Features](#features)
+- [Compatibility](#compatibility)
+- [Sources](#sources)
+- [Contributors](#contributors)
+
+## Installation
+
+You may use pip to install requirements: `pip install -r requirements.txt`  
+(*note:* requirements are generated via `poetry export -f requirements.txt`)
+
+Otherwise, you can use [poetry](https://python-poetry.org):
+
+```
+poetry install # installs the dependency in the current virtualenv, 
+or creates one specific to the project if no virtualenv is currently active
+```
+
 
 ## Configuration
 
-Edit peertube_secret and youtube_secret.json with your credentials.
+Generate sample files with `python -m prismedia.genconfig`.  
+Then edit `peertube_secret` and `youtube_secret.json` with your credentials.
 
 ### Peertube
 Set your credentials, peertube server URL.  
-You can get client_id and client_secret by logging in your peertube website and reaching the URL: https://domain.example/api/v1/oauth-clients/local
+You can get client_id and client_secret by logging in your peertube website and reaching the URL:  
+https://domain.example/api/v1/oauth-clients/local  
 You can set ``OAUTHLIB_INSECURE_TRANSPORT`` to 1 if you do not use https (not recommended)
 
 ### Youtube
@@ -56,33 +62,32 @@ If you plan an larger usage, please consider creating your own youtube_secret fi
  - Download JSON: Under the section "OAuth 2.0 client IDs". Save the file to your local system.
  - Save this JSON as your youtube_secret.json file.
 
-## How To
+## Usage
 Support only mp4 for cross compatibility between Youtube and Peertube
 
-Simply upload a video:
+Upload a video:
 
 ```
-./prismedia_upload.py --file="yourvideo.mp4"
+python -m prismedia --file="yourvideo.mp4"
 ```
-
 
 Specify description and tags:
 
 ```
-./prismedia_upload.py --file="yourvideo.mp4" -d "My supa description" -t "tag1,tag2,foo"
+python -m prismedia --file="yourvideo.mp4" -d "My supa description" -t "tag1,tag2,foo"
 ```
 
 Provide a thumbnail:
 
 ```
-./prismedia_upload.py --file="yourvideo.mp4" -d "Video with thumbnail" --thumbnail="/path/to/your/thumbnail.jpg"
+python -m prismedia --file="yourvideo.mp4" -d "Video with thumbnail" --thumbnail="/path/to/your/thumbnail.jpg"
 ```
 
 
-Use a NFO file to specify your video options:
-
+Use a NFO file to specify your video options:  
+(See nfo_example.txt for more precise example)
 ```
-./prismedia_upload.py --file="yourvideo.mp4" --nfo /path/to/your/nfo.txt
+python -m prismedia --file="yourvideo.mp4" --nfo /path/to/your/nfo.txt
 ```
 
 
@@ -166,6 +171,7 @@ Languages:
 - [x] Use a config file (NFO) file to retrieve videos arguments
 - [x] Allow to choose peertube or youtube upload (to resume failed upload for example)
 - [x] Usable on Desktop (Linux and/or Windows and/or MacOS)
+- [x] Different schedules on platforms to prepare preview
 
 ## Compatibility
 

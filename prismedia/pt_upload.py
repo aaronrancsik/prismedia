@@ -15,7 +15,7 @@ from requests_oauthlib import OAuth2Session
 from oauthlib.oauth2 import LegacyApplicationClient
 from requests_toolbelt.multipart.encoder import MultipartEncoder
 
-import utils
+from . import utils
 
 PEERTUBE_SECRETS_FILE = 'peertube_secret'
 PEERTUBE_PRIVACY = {

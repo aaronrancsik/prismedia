@@ -1,8 +1,9 @@
 # Changelog
 
-## v0.8.1
+## v0.9.0
 
 ### Features
+ - Prismedia now uses [poetry](https://python-poetry.org) to allow easier installation usage and build, see the README
  - Add two new options to schedule video by platform. You may now use youtubeAt and peertubeAt to prepare previews
 
 ## v0.8.0
