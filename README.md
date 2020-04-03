@@ -10,6 +10,7 @@ Scripting your way to upload videos to peertube and youtube. Works with Python 3
   - [Peertube](#peertube)
   - [Youtube](#youtube)
 - [Usage](#usage)
+- [Enhanced use of NFO](#enhanced-use-of-nfo)
 - [Features](#features)
 - [Compatibility](#compatibility)
 - [Sources](#sources)
@@ -148,6 +149,44 @@ Languages:
     Arabic, English, French, German, Hindi, Italian,
     Japanese, Korean, Mandarin, Portuguese, Punjabi, Russian, Spanish
 ```
+
+## Enhanced use of NFO
+Since Prismedia v0.9.0, the NFO system has been improved to allow hierarchical loading.
+First of all, if you already used nfo, either with `--nfo` or by using `videoname.txt`, nothing changes :-)
+
+But you are now able to use a more flexible NFO system, by using priorities.
+You'll find a complete set of samples in the [prismedia/samples](prismedia/samples) directory.
+
+Let's take the following directory as an example:
+```
+$ tree Recipes/
+Recipes/
+├── cli_nfo.txt
+├── nfo.txt
+├── samples.txt
+├── yourvideo1.mp4
+├── yourvideo1.txt
+├── yourvideo1.jpg
+├── yourvideo2.mp4
+└── yourvideo2.txt
+```
+
+By using 
+```
+prismedia --file=/path/to/Recipes/yourvideo1.mp4 --nfo=/path/to/Recipes/cli_nfo.txt --cca
+```
+
+Prismedia will:
+- look for options in `nfo.txt`
+- look for options in `samples.txt` (from directory name) and erase any previous conflicting options
+- look for options in `yourvideo1.txt` (from video name) and erase any previous conflicting options
+- look for options in `cli_nfo.txt` (from the `--nfo` in command line) and erase any previous conflicting options
+- erase any previous option regarding CCA as it's specified in cli with `--cca`
+- take `yourvideo1.jpg` as thumbnail if no other files has been specified in previous NFO
+
+In other word, Prismedia will now use nfo.txt, then directory_name.txt, then videoname.txt, then cli_nfo.txt, and finally the option directly passed in cli.
+
+It allows to specify more easily default options for an entire set of video, directory, playlist and so on.
 
 ## Features
 
