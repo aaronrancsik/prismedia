@@ -1,0 +1,26 @@
+### This NFO example show how to construct a NFO for your video ###
+### All fields are optionals, but you need at least one field (otherwise NFO is useless :-p) ###
+### See --help for options explanation
+[video]
+name = videoname
+description = Your complete video description
+ Multilines description
+ should be wrote with a blank space
+ at the beginning of the line :-)
+tags = list of tags, comma separated
+category = Films
+cca = True
+privacy = private
+disable-comments = True
+#thumbnail = /path/to/your/thumbnail.jpg # Set the absolute path to your thumbnail
+channel = CookingTest
+channelCreate = True
+playlist = Desserts Recipes playlist
+playlistCreate = True
+nsfw = False
+platform = youtube, peertube
+language = French
+publishAt = 2034-05-07T19:00:00
+# platformAt overrides the default publishAt for the corresponding platform
+#peertubeAt = 2034-05-14T19:00:00
+#youtubeAt = 2034-05-21T19:00:00

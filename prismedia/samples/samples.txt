@@ -1,0 +1,14 @@
+### This NFO is named from the directory where your video are. ###
+### While more specific than nfo.txt, it's less priority than other NFO ###
+### You may use it for options specific to videos in this directory, but still globals ###
+[video]
+channel = MyMoreSpecificChannel
+disable-comments = False
+channelCreate = True
+category = Films
+playlist = Desserts Recipes playlist
+playlistCreate = True
+nsfw = False
+platform = youtube, peertube
+language = French
+tags = list of tags, comma separated
