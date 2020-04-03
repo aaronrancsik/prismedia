@@ -31,7 +31,7 @@ or creates one specific to the project if no virtualenv is currently active
 ## Configuration
 
 Generate sample files with `python -m prismedia.genconfig`.  
-Then edit `peertube_secret` and `youtube_secret.json` with your credentials.
+Then edit `peertube_secret` and `youtube_secret.json` with your credentials. (see below)
 
 ### Peertube
 Set your credentials, peertube server URL.  
@@ -162,7 +162,7 @@ Languages:
   - [x] enabling/disabling comment (Peertube only as Youtube API does not support it)
   - [x] nsfw (Peertube only as Youtube API does not support it)
   - [x] set default language
-  - [x] thumbnail/preview
+  - [x] thumbnail
   - [x] multiple lines description (see [issue 4](https://git.lecygnenoir.info/LecygneNoir/prismedia/issues/4))
   - [x] add videos to playlist
   - [x] create playlist
