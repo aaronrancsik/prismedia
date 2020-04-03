@@ -107,6 +107,7 @@ def remove_empty_kwargs(**kwargs):
                 good_kwargs[key] = value
     return good_kwargs
 
+
 def searchThumbnail(options):
     video_directory = dirname(options.get('--file')) + "/"
     # First, check for thumbnail based on videoname
@@ -124,72 +125,75 @@ def searchThumbnail(options):
             options['--thumbnail'] = video_directory + video_file + ".jpeg"
     return options
 
-# return the nfo as a RawConfigParser object
-def loadNFO(options):
-    video_directory = dirname(options.get('--file')) + "/"
-    if options.get('--nfo'):
-        try:
-            logging.info("Using " + options.get('--nfo') + " as NFO, loading...")
-            if isfile(options.get('--nfo')):
-                nfo = RawConfigParser()
-                nfo.read(options.get('--nfo'), encoding='utf-8')
-                return nfo
-            else:
-                logging.error("Given NFO file does not exist, please check your path.")
-                exit(1)
-        except Exception as e:
-            logging.error("Problem with NFO file: " + str(e))
-            exit(1)
-    else:
-        if options.get('--name'):
-            nfo_file = video_directory + options.get('--name') + ".txt"
-            if isfile(nfo_file):
-                try:
-                    logging.info("Using " + nfo_file + " as NFO, loading...")
-                    nfo = RawConfigParser()
-                    nfo.read(nfo_file, encoding='utf-8')
-                    return nfo
-                except Exception as e:
-                    logging.error("Problem with NFO file: " + str(e))
-                    exit(1)
 
-    # if --nfo and --name does not exist, use --file as default
-    video_file = splitext(basename(options.get('--file')))[0]
-    nfo_file = video_directory + video_file + ".txt"
-    if isfile(nfo_file):
-        try:
-            logging.info("Using " + nfo_file + " as NFO, loading...")
-            nfo = RawConfigParser()
-            nfo.read(nfo_file, encoding='utf-8')
-            return nfo
-        except Exception as e:
-            logging.error("Problem with nfo file: " + str(e))
-            exit(1)
-    logging.info("No suitable NFO found, skipping.")
+# return the nfo as a RawConfigParser object
+def loadNFO(filename):
+    try:
+        logging.info("Loading " + filename + " as NFO")
+        nfo = RawConfigParser()
+        nfo.read(filename, encoding='utf-8')
+        return nfo
+    except Exception as e:
+        logging.error("Problem loading NFO file " + filename + ": " + str(e))
+        exit(1)
     return False
 
+
 def parseNFO(options):
-    nfo = loadNFO(options)
-    if nfo:
-        # We need to check all options and replace it with the nfo value if not defined (None or False)
-        for key, value in options.items():
-            key = key.replace("-", "")
-            try:
-                # get string options
-                if value is None and nfo.get('video', key):
-                    options['--' + key] = nfo.get('video', key)
-                # get boolean options
-                elif value is False and nfo.getboolean('video', key):
-                    options['--' + key] = nfo.getboolean('video', key)
-            except NoOptionError:
-                continue
-            except NoSectionError:
-                logging.error("Given NFO file miss section [video], please check syntax of your NFO.")
-                exit(1)
+    video_directory = dirname(options.get('--file'))
+    directory_name = basename(video_directory)
+    nfo_txt = False
+    nfo_directory = False
+    nfo_videoname = False
+    nfo_file = False
+    nfo_cli = False
+
+    if isfile(video_directory + "/" + "nfo.txt"):
+        nfo_txt = loadNFO(video_directory + "/" + "nfo.txt")
+
+    if isfile(video_directory + "/" + directory_name+ ".txt"):
+        nfo_directory = loadNFO(video_directory + "/" + directory_name+ ".txt")
+
+    if options.get('--name'):
+        if isfile(video_directory + "/" + options.get('--name')):
+            nfo_videoname = loadNFO(video_directory + "/" + options.get('--name') + ".txt")
+
+    video_file = splitext(basename(options.get('--file')))[0]
+    if isfile(video_directory + "/" + video_file + ".txt"):
+        nfo_file = loadNFO(video_directory + "/" + video_file + ".txt")
+
+    if options.get('--nfo'):
+        if isfile(options.get('--nfo')):
+            nfo_cli = loadNFO(options.get('--nfo'))
+        else:
+            logging.error("Given NFO file does not exist, please check your path.")
+            exit(1)
+
+    # We need to load NFO in this exact order to keep the priorities
+    # options in cli > nfo_cli > nfo_file > nfo_videoname > nfo_directory > nfo_txt
+    for nfo in [nfo_cli, nfo_file, nfo_videoname, nfo_directory, nfo_txt]:
+        if nfo:
+            # We need to check all options and replace it with the nfo value if not defined (None or False)
+            for key, value in options.items():
+                key = key.replace("-", "")
+                try:
+                    # get string options
+                    if value is None and nfo.get('video', key):
+                        options['--' + key] = nfo.get('video', key)
+                    # get boolean options
+                    elif value is False and nfo.getboolean('video', key):
+                        options['--' + key] = nfo.getboolean('video', key)
+                except NoOptionError:
+                    continue
+                except NoSectionError:
+                    logging.error(nfo + " misses section [video], please check syntax of your NFO.")
+                    exit(1)
     return options
+
 
 def upcaseFirstLetter(s):
     return s[0].upper() + s[1:]
+
 
 def cleanString(toclean):
     toclean = unidecode.unidecode(toclean)
