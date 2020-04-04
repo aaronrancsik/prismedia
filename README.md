@@ -152,12 +152,14 @@ Languages:
 
 ## Enhanced use of NFO
 Since Prismedia v0.9.0, the NFO system has been improved to allow hierarchical loading.
-First of all, if you already used nfo, either with `--nfo` or by using `videoname.txt`, nothing changes :-)
+First of all, **if you already used nfo**, either with `--nfo` or by using `videoname.txt`, nothing changes :-)
 
-But you are now able to use a more flexible NFO system, by using priorities.
-You'll find a complete set of samples in the [prismedia/samples](prismedia/samples) directory.
+But you are now able to use a more flexible NFO system, by using priorities. This allow you to set some defaults to avoid recreating a full nfo for each video
 
-Let's take the following directory as an example:
+Basically, Prismedia will now load options in this order, using the last value found in case of conflict:  
+`nfo.txt < directory_name.txt < video_name.txt < command line NFO < command line argument`
+
+You'll find a complete set of samples in the [prismedia/samples](prismedia/samples) directory so let's take it as an example:
 ```
 $ tree Recipes/
 Recipes/
@@ -184,7 +186,7 @@ Prismedia will:
 - erase any previous option regarding CCA as it's specified in cli with `--cca`
 - take `yourvideo1.jpg` as thumbnail if no other files has been specified in previous NFO
 
-In other word, Prismedia will now use nfo.txt, then directory_name.txt, then videoname.txt, then cli_nfo.txt, and finally the option directly passed in cli.
+In other word, Prismedia will now use option given in cli, then look for option in cli_nfo.txt, then complete with video_name.txt, then directory_name.txt, and finally complete with nfo.txt
 
 It allows to specify more easily default options for an entire set of video, directory, playlist and so on.
 
