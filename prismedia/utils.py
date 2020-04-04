@@ -150,6 +150,8 @@ def parseNFO(options):
 
     if isfile(video_directory + "/" + "nfo.txt"):
         nfo_txt = loadNFO(video_directory + "/" + "nfo.txt")
+    elif isfile(video_directory + "/" + "NFO.txt"):
+        nfo_txt = loadNFO(video_directory + "/" + "NFO.txt")
 
     if isfile(video_directory + "/" + directory_name+ ".txt"):
         nfo_directory = loadNFO(video_directory + "/" + directory_name+ ".txt")
