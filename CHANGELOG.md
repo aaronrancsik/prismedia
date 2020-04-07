@@ -2,9 +2,30 @@
 
 ## v0.9.0
 
-## Breaking changes
-Now using poetry for packaging and installing! It's easier to maintain and publish package, but means changes when using prismedia from command line.  
-Prismedia is now seen as a python module, so you need to use `python -m prismedia` (or even directly `prismedia` if you install with poetry) instead of `./prismedia_upload.py`.
+### Upgrade from v0.8.0
+Now using [poetry](https://python-poetry.org/) for packaging and installing! It's easier to maintain and publish package, but means changes when using prismedia from command line.  
+
+**Using poetry** (recommanded)
+
+- [install poetry](https://python-poetry.org/docs/#installation)
+- git pull the repo
+- install prismedia:
+```bash
+poetry install
+```
+- use prismedia from the command line directly from your path:
+```bash
+prismedia -h
+```
+
+**From source**  
+Prismedia is now seen as a python module, so you need to use `python -m prismedia` instead of `./prismedia_upload.py`.  
+Once you have pulled the new v0.9.0, you may update by using:
+```
+pip install -r requirements.txt
+# Then use prismedia through python command line:
+python -m prismedia -h
+```
 
 ### Features
  - Prismedia now uses [poetry](https://python-poetry.org) to allow easier installation usage and build, see the README (fix #34)
