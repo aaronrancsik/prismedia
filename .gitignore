@@ -65,3 +65,4 @@ peertube_secret
 nfo_example.txt
 peertube_secret.sample
 youtube_secret.json.sample
+*.mp4

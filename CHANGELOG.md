@@ -3,12 +3,13 @@
 ## v0.9.0
 
 ## Breaking changes
-Now using poetry for packaging and installing! It's now easier to maintain and publish package, but means changes to use prismedia.  
-Prismedia is now seen as a python module, so you may now use `python -m prismedia` (or even directly `prismedia` if you install with poetry) instead of `./prismedia_upload.py`.
+Now using poetry for packaging and installing! It's easier to maintain and publish package, but means changes when using prismedia from command line.  
+Prismedia is now seen as a python module, so you need to use `python -m prismedia` (or even directly `prismedia` if you install with poetry) instead of `./prismedia_upload.py`.
 
 ### Features
- - Prismedia now uses [poetry](https://python-poetry.org) to allow easier installation usage and build, see the README
- - Add two new options to schedule video by platform. You may now use youtubeAt and peertubeAt to prepare previews
+ - Prismedia now uses [poetry](https://python-poetry.org) to allow easier installation usage and build, see the README (fix #34)
+ - Add two new options to schedule video by platform. You may now use youtubeAt and peertubeAt to prepare previews (fix #43)
+ - Enhance the NFO system to allow a hierarchical loading of multiple NFO, with priorities. See README and [prismedia/samples](prismedia/samples) for details (fix #11)
 
 ## v0.8.0
 

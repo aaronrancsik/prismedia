@@ -1,0 +1,9 @@
+### This NFO is named nfo.txt and is stored in the directory of your videos ###
+### This is the less priority NFO, you may use it to set default generic options ###
+[video]
+# Some generic options for your videos
+cca = True
+privacy = private
+disable-comments = True
+channel = DefaultChannel
+channelCreate = True
