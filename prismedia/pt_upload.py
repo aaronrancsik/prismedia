@@ -15,7 +15,7 @@ from requests_oauthlib import OAuth2Session
 from oauthlib.oauth2 import LegacyApplicationClient
 from requests_toolbelt.multipart.encoder import MultipartEncoder
 
-import utils
+from . import utils
 
 PEERTUBE_SECRETS_FILE = 'peertube_secret'
 PEERTUBE_PRIVACY = {
@@ -230,8 +230,13 @@ def upload_video(oauth, secret, options):
     if options.get('--privacy'):
         privacy = options.get('--privacy').lower()
 
-    if options.get('--publishAt'):
+    # If peertubeAt exists, use instead of publishAt
+    if options.get('--peertubeAt'):
+        publishAt = options.get('--peertubeAt')
+    elif options.get('--publishAt'):
         publishAt = options.get('--publishAt')
+
+    if 'publishAt' in locals():
         publishAt = datetime.datetime.strptime(publishAt, '%Y-%m-%dT%H:%M:%S')
         tz = get_localzone()
         tz = pytz.timezone(str(tz))

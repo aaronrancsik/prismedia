@@ -1,0 +1,12 @@
+### This NFO is aimed to be passed to prismedia through the --nfo cli option ###
+### eg:
+### python -m prismedia --file=/path/to/yourvideo.mp4 --nfo=/path/to/cli_nfo.txt ###
+### It's the more priority NFO, only erased by direct cli options ###
+[video]
+disable-comments = False
+nsfw = True
+# Publish on Peertube at a specific date
+peertubeAt = 2034-05-14T19:00:00
+platform = peertube
+# debug to display all loaded options
+debug = True

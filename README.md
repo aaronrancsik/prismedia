@@ -2,35 +2,42 @@
 
 Scripting your way to upload videos to peertube and youtube. Works with Python 3.5+.
 
-## Dependencies
-Search in your package manager, or with `pip` use ``pip install -r requirements.txt``
- - configparser
- - docopt
- - future
- - google-api-python-client
- - google-auth
- - google-auth-httplib2
- - google-auth-oauthlib
- - httplib2
- - oauthlib
- - python-magic
- - python-magic-bin (Windows only)
- - requests
- - requests-oauthlib
- - requests-toolbelt
- - schema
- - tzlocal
- - Unidecode
- - uritemplate
- - urllib3
+[TOC]: #
+
+## Table of Contents
+- [Installation](#installation)
+- [Configuration](#configuration)
+  - [Peertube](#peertube)
+  - [Youtube](#youtube)
+- [Usage](#usage)
+- [Enhanced use of NFO](#enhanced-use-of-nfo)
+- [Features](#features)
+- [Compatibility](#compatibility)
+- [Sources](#sources)
+- [Contributors](#contributors)
+
+## Installation
+
+You may use pip to install requirements: `pip install -r requirements.txt`  
+(*note:* requirements are generated via `poetry export -f requirements.txt`)
+
+Otherwise, you can use [poetry](https://python-poetry.org):
+
+```
+poetry install # installs the dependency in the current virtualenv, 
+or creates one specific to the project if no virtualenv is currently active
+```
+
 
 ## Configuration
 
-Edit peertube_secret and youtube_secret.json with your credentials.
+Generate sample files with `python -m prismedia.genconfig`.  
+Then edit `peertube_secret` and `youtube_secret.json` with your credentials. (see below)
 
 ### Peertube
 Set your credentials, peertube server URL.  
-You can get client_id and client_secret by logging in your peertube website and reaching the URL: https://domain.example/api/v1/oauth-clients/local
+You can get client_id and client_secret by logging in your peertube website and reaching the URL:  
+https://domain.example/api/v1/oauth-clients/local  
 You can set ``OAUTHLIB_INSECURE_TRANSPORT`` to 1 if you do not use https (not recommended)
 
 ### Youtube
@@ -56,33 +63,32 @@ If you plan an larger usage, please consider creating your own youtube_secret fi
  - Download JSON: Under the section "OAuth 2.0 client IDs". Save the file to your local system.
  - Save this JSON as your youtube_secret.json file.
 
-## How To
+## Usage
 Support only mp4 for cross compatibility between Youtube and Peertube
 
-Simply upload a video:
+Upload a video:
 
 ```
-./prismedia_upload.py --file="yourvideo.mp4"
+python -m prismedia --file="yourvideo.mp4"
 ```
-
 
 Specify description and tags:
 
 ```
-./prismedia_upload.py --file="yourvideo.mp4" -d "My supa description" -t "tag1,tag2,foo"
+python -m prismedia --file="yourvideo.mp4" -d "My supa description" -t "tag1,tag2,foo"
 ```
 
 Provide a thumbnail:
 
 ```
-./prismedia_upload.py --file="yourvideo.mp4" -d "Video with thumbnail" --thumbnail="/path/to/your/thumbnail.jpg"
+python -m prismedia --file="yourvideo.mp4" -d "Video with thumbnail" --thumbnail="/path/to/your/thumbnail.jpg"
 ```
 
 
-Use a NFO file to specify your video options:
-
+Use a NFO file to specify your video options:  
+(See nfo_example.txt for more precise example)
 ```
-./prismedia_upload.py --file="yourvideo.mp4" --nfo /path/to/your/nfo.txt
+python -m prismedia --file="yourvideo.mp4" --nfo /path/to/your/nfo.txt
 ```
 
 
@@ -112,6 +118,8 @@ Options:
   --publishAt=DATE  Publish the video at the given DATE using local server timezone.
                     DATE should be on the form YYYY-MM-DDThh:mm:ss eg: 2018-03-12T19:00:00
                     DATE should be in the future
+  --peertubeAt=DATE
+  --youtubeAt=DATE  Override publishAt for the corresponding platform. Allow to create preview on specific platform
   --thumbnail=STRING    Path to a file to use as a thumbnail for the video.
                         Supported types are jpg and jpeg.
                         By default, prismedia search for an image based on video name followed by .jpg or .jpeg
@@ -142,6 +150,46 @@ Languages:
     Japanese, Korean, Mandarin, Portuguese, Punjabi, Russian, Spanish
 ```
 
+## Enhanced use of NFO
+Since Prismedia v0.9.0, the NFO system has been improved to allow hierarchical loading.
+First of all, **if you already used nfo**, either with `--nfo` or by using `videoname.txt`, nothing changes :-)
+
+But you are now able to use a more flexible NFO system, by using priorities. This allow you to set some defaults to avoid recreating a full nfo for each video
+
+Basically, Prismedia will now load options in this order, using the last value found in case of conflict:  
+`nfo.txt < directory_name.txt < video_name.txt < command line NFO < command line argument`
+
+You'll find a complete set of samples in the [prismedia/samples](prismedia/samples) directory so let's take it as an example:
+```
+$ tree Recipes/
+Recipes/
+├── cli_nfo.txt
+├── nfo.txt
+├── samples.txt
+├── yourvideo1.mp4
+├── yourvideo1.txt
+├── yourvideo1.jpg
+├── yourvideo2.mp4
+└── yourvideo2.txt
+```
+
+By using 
+```
+prismedia --file=/path/to/Recipes/yourvideo1.mp4 --nfo=/path/to/Recipes/cli_nfo.txt --cca
+```
+
+Prismedia will:
+- look for options in `nfo.txt`
+- look for options in `samples.txt` (from directory name) and erase any previous conflicting options
+- look for options in `yourvideo1.txt` (from video name) and erase any previous conflicting options
+- look for options in `cli_nfo.txt` (from the `--nfo` in command line) and erase any previous conflicting options
+- erase any previous option regarding CCA as it's specified in cli with `--cca`
+- take `yourvideo1.jpg` as thumbnail if no other files has been specified in previous NFO
+
+In other word, Prismedia will now use option given in cli, then look for option in cli_nfo.txt, then complete with video_name.txt, then directory_name.txt, and finally complete with nfo.txt
+
+It allows to specify more easily default options for an entire set of video, directory, playlist and so on.
+
 ## Features
 
 - [x] Youtube upload
@@ -155,7 +203,7 @@ Languages:
   - [x] enabling/disabling comment (Peertube only as Youtube API does not support it)
   - [x] nsfw (Peertube only as Youtube API does not support it)
   - [x] set default language
-  - [x] thumbnail/preview
+  - [x] thumbnail
   - [x] multiple lines description (see [issue 4](https://git.lecygnenoir.info/LecygneNoir/prismedia/issues/4))
   - [x] add videos to playlist
   - [x] create playlist
@@ -164,6 +212,7 @@ Languages:
 - [x] Use a config file (NFO) file to retrieve videos arguments
 - [x] Allow to choose peertube or youtube upload (to resume failed upload for example)
 - [x] Usable on Desktop (Linux and/or Windows and/or MacOS)
+- [x] Different schedules on platforms to prepare preview
 
 ## Compatibility
 
