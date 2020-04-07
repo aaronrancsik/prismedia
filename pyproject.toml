@@ -27,7 +27,7 @@ google-auth-httplib2 = "^0.0.3"
 google-auth-oauthlib = "^0.2.0"
 httplib2 = "^0.12.1"
 oauthlib = "^2.1.0"
-python-magic = { version = "^0.4.15", markers = "platform_system == 'Linux'" }
+python-magic = "^0.4.15"
 python-magic-bin = { version = "^0.4.14", markers = "platform_system == 'Windows'" }
 requests = "^2.18.4"
 requests-oauthlib = "^0.8.0"
