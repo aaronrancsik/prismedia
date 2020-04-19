@@ -115,10 +115,16 @@ VALID_LANGUAGES = ('arabic', 'english', 'french',
 
 def validateVideo(path):
     supported_types = ['video/mp4']
-    if magic.from_file(path, mime=True) in supported_types:
-        return path
-    else:
-        return False
+    detected_type = magic.from_file(path, mime=True)
+    if detected_type not in supported_types:
+        print("File", path, "detected type is", detected_type, "which is not one of", supported_types)
+
+        force_file = ['y', 'yes']
+        is_forcing = input("Are you sure you selected the correct file? (y/N)")
+        if is_forcing.lower() not in force_file:
+            return False
+
+    return path
 
 
 def validateCategory(category):
