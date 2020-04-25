@@ -6,6 +6,8 @@ Scripting your way to upload videos to peertube and youtube. Works with Python 3
 
 ## Table of Contents
 - [Installation](#installation)
+  - [From pip](#from-pip)
+  - [From source](#from-source)
 - [Configuration](#configuration)
   - [Peertube](#peertube)
   - [Youtube](#youtube)
@@ -16,23 +18,45 @@ Scripting your way to upload videos to peertube and youtube. Works with Python 3
 - [Sources](#sources)
 - [Contributors](#contributors)
 
-## Installation
+## Installation an upgrade
 
-You may use pip to install requirements: `pip install -r requirements.txt`  
+### From pip
+
+Simply install with 
+
+```bash
+pip install prismedia
+```
+
+Upgrade with 
+
+```bash
+pip install --upgrade prismedia
+```
+
+### From source
+
+Get the source: 
+
+```bash
+git clone https://git.lecygnenoir.info/LecygneNoir/prismedia.git prismedia
+```
+
+You may use pip to install requirements: `pip install -r requirements.txt` if you want to use the script directly.  
 (*note:* requirements are generated via `poetry export -f requirements.txt`)
 
-Otherwise, you can use [poetry](https://python-poetry.org):
+Otherwise, you can use [poetry](https://python-poetry.org), which create a virtualenv for the project directly  
+(Or use the existing virtualenv if one is activated)
 
 ```
-poetry install # installs the dependency in the current virtualenv, 
-or creates one specific to the project if no virtualenv is currently active
+poetry install
 ```
 
 
 ## Configuration
 
 Generate sample files with `python -m prismedia.genconfig`.  
-Then edit `peertube_secret` and `youtube_secret.json` with your credentials. (see below)
+Then rename and edit `peertube_secret` and `youtube_secret.json` with your credentials. (see below)
 
 ### Peertube
 Set your credentials, peertube server URL.  
@@ -44,7 +68,7 @@ You can set ``OAUTHLIB_INSECURE_TRANSPORT`` to 1 if you do not use https (not re
 Youtube uses combination of oauth and API access to identify.
 
 **Credentials**
-The first time you connect, prismedia will open your browser to as you to authenticate to
+The first time you connect, prismedia will open your browser to ask you to authenticate to
 Youtube and allow the app to use your Youtube channel.  
 **It is here you choose which channel you will upload to**.  
 Once authenticated, the token is stored inside the file ``.youtube_credentials.json``.  
@@ -52,7 +76,7 @@ Prismedia will try to use this file at each launch, and re-ask for authenticatio
 
 **Oauth**:  
 The default youtube_secret.json should allow you to upload some videos.  
-If you plan an larger usage, please consider creating your own youtube_secret file:
+If you plan a larger usage, please consider creating your own youtube_secret file:
 
  - Go to the [Google console](https://console.developers.google.com/).
  - Create project.
@@ -64,31 +88,32 @@ If you plan an larger usage, please consider creating your own youtube_secret fi
  - Save this JSON as your youtube_secret.json file.
 
 ## Usage
-Support only mp4 for cross compatibility between Youtube and Peertube
+Support only mp4 for cross compatibility between Youtube and Peertube.  
+**Note that all options may be specified in a NFO file!** (see [Enhanced NFO](#enhanced-use-of-nfo))
 
 Upload a video:
 
 ```
-python -m prismedia --file="yourvideo.mp4"
+prismedia --file="yourvideo.mp4"
 ```
 
 Specify description and tags:
 
 ```
-python -m prismedia --file="yourvideo.mp4" -d "My supa description" -t "tag1,tag2,foo"
+prismedia --file="yourvideo.mp4" -d "My supa description" -t "tag1,tag2,foo"
 ```
 
 Provide a thumbnail:
 
 ```
-python -m prismedia --file="yourvideo.mp4" -d "Video with thumbnail" --thumbnail="/path/to/your/thumbnail.jpg"
+prismedia --file="yourvideo.mp4" -d "Video with thumbnail" --thumbnail="/path/to/your/thumbnail.jpg"
 ```
 
 
 Use a NFO file to specify your video options:  
-(See nfo_example.txt for more precise example)
+(See [Enhanced NFO](#enhanced-use-of-nfo) for more precise example)
 ```
-python -m prismedia --file="yourvideo.mp4" --nfo /path/to/your/nfo.txt
+prismedia --file="yourvideo.mp4" --nfo /path/to/your/nfo.txt
 ```
 
 
@@ -213,11 +238,12 @@ It allows to specify more easily default options for an entire set of video, dir
 - [x] Allow to choose peertube or youtube upload (to resume failed upload for example)
 - [x] Usable on Desktop (Linux and/or Windows and/or MacOS)
 - [x] Different schedules on platforms to prepare preview
+- [ ] A usable graphical interface
 
 ## Compatibility
 
  - If you still use python2, use the version 0.7.1 (no more updated)
- - peertube before 1.0.0-beta4, use the version inside tag 1.0.0-beta3
+ - If you use peertube before 1.0.0-beta4, use the version inside tag 1.0.0-beta3
 
 ## Sources
 inspired by [peeror](https://git.rigelk.eu/rigelk/peeror) and [youtube-upload](https://github.com/tokland/youtube-upload)

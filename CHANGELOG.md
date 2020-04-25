@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.9.1
+
+### Features
+ - Possibility to bypass the MIME check for .mp4 when the user is sure of its video (#46 , thanks to @zykino)
+ - Now **available with pip** for installation! (See the README for doc)
+
+
 ## v0.9.0
 
 ### Upgrade from v0.8.0
