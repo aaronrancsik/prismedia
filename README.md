@@ -5,7 +5,7 @@ Scripting your way to upload videos to peertube and youtube. Works with Python 3
 [TOC]: #
 
 ## Table of Contents
-- [Installation](#installation)
+- [Installation](#installation-and-upgrade)
   - [From pip](#from-pip)
   - [From source](#from-source)
 - [Configuration](#configuration)
@@ -19,7 +19,7 @@ Scripting your way to upload videos to peertube and youtube. Works with Python 3
 - [Inspirations](#inspirations)
 - [Contributors](#contributors)
 
-## Installation an upgrade
+## Installation and upgrade
 
 ### From pip
 

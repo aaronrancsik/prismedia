@@ -50,8 +50,8 @@ Options:
   --version  Show version.
 
 Strict options:
-  Strict options allow you to force some option to be present when uploading a video. It's useful to be sue you do not
-  forget something when uploading a vidéo, for example if you use multiples NFO. You may force the presence of description,
+  Strict options allow you to force some option to be present when uploading a video. It's useful to be sure you do not
+  forget something when uploading a video, for example if you use multiples NFO. You may force the presence of description,
   tags, thumbnail, ...
   All strict option are optionals and are provided only to avoid errors when uploading :-)
   All strict options can be specified in NFO directly, the only strict option mandatory on cli is --withNFO
