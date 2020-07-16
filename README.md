@@ -5,7 +5,7 @@ Scripting your way to upload videos to peertube and youtube. Works with Python 3
 [TOC]: #
 
 ## Table of Contents
-- [Installation](#installation)
+- [Installation](#installation-and-upgrade)
   - [From pip](#from-pip)
   - [From source](#from-source)
 - [Configuration](#configuration)
@@ -13,12 +13,13 @@ Scripting your way to upload videos to peertube and youtube. Works with Python 3
   - [Youtube](#youtube)
 - [Usage](#usage)
 - [Enhanced use of NFO](#enhanced-use-of-nfo)
+- [Strict check options](#strict-check-options)
 - [Features](#features)
 - [Compatibility](#compatibility)
-- [Sources](#sources)
+- [Inspirations](#inspirations)
 - [Contributors](#contributors)
 
-## Installation an upgrade
+## Installation and upgrade
 
 ### From pip
 
@@ -215,6 +216,28 @@ In other word, Prismedia will now use option given in cli, then look for option 
 
 It allows to specify more easily default options for an entire set of video, directory, playlist and so on.
 
+## Strict check options
+Since prismedia v0.10.0, a bunch of special options have been added to force the presence of parameters before uploading.
+Strict options allow you to force some option to be present when uploading a video. It's useful to be sure you do not
+forget something when uploading a video, for example if you use multiples NFO. You may force the presence of description,
+tags, thumbnail, ...
+All strict option are optionals and are provided only to avoid errors when uploading :-)
+All strict options can be specified in NFO directly, the only strict option mandatory on cli is --withNFO
+All strict options are off by default.
+
+Available strict options:
+  - --withNFO         Prevent the upload without a NFO, either specified via cli or found in the directory
+  - --withThumbnail       Prevent the upload without a thumbnail
+  - --withName        Prevent the upload if no name are found
+  - --withDescription     Prevent the upload without description
+  - --withTags        Prevent the upload without tags
+  - --withPlaylist    Prevent the upload if no playlist
+  - --withPublishAt    Prevent the upload if no schedule
+  - --withPlatform    Prevent the upload if at least one platform is not specified
+  - --withCategory    Prevent the upload if no category
+  - --withLanguage    Prevent upload if no language
+  - --withChannel     Prevent upload if no channel 
+
 ## Features
 
 - [x] Youtube upload
@@ -235,9 +258,11 @@ It allows to specify more easily default options for an entire set of video, dir
   - [x] schedule your video with publishAt
   - [x] combine channel and playlist (Peertube only as channel is Peertube feature). See [issue 40](https://git.lecygnenoir.info/LecygneNoir/prismedia/issues/40) for detailed usage.
 - [x] Use a config file (NFO) file to retrieve videos arguments
-- [x] Allow to choose peertube or youtube upload (to resume failed upload for example)
+- [x] Allow choosing peertube or youtube upload (to retry a failed upload for example)
 - [x] Usable on Desktop (Linux and/or Windows and/or MacOS)
 - [x] Different schedules on platforms to prepare preview
+- [x] Possibility to force the presence of upload options
+- [ ] Copy and forget, eg possibility to copy video in a directory, and prismedia uploads itself (Discussions in [issue 27](https://git.lecygnenoir.info/LecygneNoir/prismedia/issues/27))  
 - [ ] A usable graphical interface
 
 ## Compatibility
@@ -245,8 +270,8 @@ It allows to specify more easily default options for an entire set of video, dir
  - If you still use python2, use the version 0.7.1 (no more updated)
  - If you use peertube before 1.0.0-beta4, use the version inside tag 1.0.0-beta3
 
-## Sources
-inspired by [peeror](https://git.rigelk.eu/rigelk/peeror) and [youtube-upload](https://github.com/tokland/youtube-upload)
+## Inspirations
+Inspired by [peeror](https://git.rigelk.eu/rigelk/peeror) and [youtube-upload](https://github.com/tokland/youtube-upload)
 
 ## Contributors
 Thanks to: @Zykino, @meewan, @rigelk 😘

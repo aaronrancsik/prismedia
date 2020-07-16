@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.10.0
+
+## Features
+ - Add the possibility to specify strict checks option to never forgot parameters when uploading (see #36)
+
 ## v0.9.1
 
 ### Features

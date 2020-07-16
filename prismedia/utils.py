@@ -171,6 +171,16 @@ def parseNFO(options):
             logging.error("Given NFO file does not exist, please check your path.")
             exit(1)
 
+    # If there is no NFO and strict option is enabled, then stop there
+    if options.get('--withNFO'):
+        if not isinstance(nfo_cli, RawConfigParser) and \
+                not isinstance(nfo_file, RawConfigParser) and \
+                not isinstance(nfo_videoname, RawConfigParser) and \
+                not isinstance(nfo_directory, RawConfigParser) and \
+                not isinstance(nfo_txt, RawConfigParser):
+            logging.error("Prismedia: you have required the strict presence of NFO but none is found, please use a NFO.")
+            exit(1)
+
     # We need to load NFO in this exact order to keep the priorities
     # options in cli > nfo_cli > nfo_file > nfo_videoname > nfo_directory > nfo_txt
     for nfo in [nfo_cli, nfo_file, nfo_videoname, nfo_directory, nfo_txt]:
@@ -188,7 +198,7 @@ def parseNFO(options):
                 except NoOptionError:
                     continue
                 except NoSectionError:
-                    logging.error(nfo + " misses section [video], please check syntax of your NFO.")
+                    logging.error("Prismedia: " + nfo + " misses section [video], please check syntax of your NFO.")
                     exit(1)
     return options
 

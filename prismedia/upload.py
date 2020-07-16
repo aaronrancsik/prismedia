@@ -49,6 +49,26 @@ Options:
   -h --help  Show this help.
   --version  Show version.
 
+Strict options:
+  Strict options allow you to force some option to be present when uploading a video. It's useful to be sure you do not
+  forget something when uploading a video, for example if you use multiples NFO. You may force the presence of description,
+  tags, thumbnail, ...
+  All strict option are optionals and are provided only to avoid errors when uploading :-)
+  All strict options can be specified in NFO directly, the only strict option mandatory on cli is --withNFO
+  All strict options are off by default
+
+  --withNFO         Prevent the upload without a NFO, either specified via cli or found in the directory
+  --withThumbnail       Prevent the upload without a thumbnail
+  --withName        Prevent the upload if no name are found
+  --withDescription     Prevent the upload without description
+  --withTags        Prevent the upload without tags
+  --withPlaylist    Prevent the upload if no playlist
+  --withPublishAt    Prevent the upload if no schedule
+  --withPlatform    Prevent the upload if at least one platform is not specified
+  --withCategory    Prevent the upload if no category
+  --withLanguage    Prevent upload if no language
+  --withChannel     Prevent upload if no channel
+
 Categories:
   Category is the type of video you upload. Default is films.
   Here are available categories from Peertube and Youtube:
@@ -69,6 +89,7 @@ import sys
 if sys.version_info[0] < 3:
     raise Exception("Python 3 or a more recent version is required.")
 
+import os
 import datetime
 import logging
 logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
@@ -81,7 +102,7 @@ from . import utils
 
 try:
     # noinspection PyUnresolvedReferences
-    from schema import Schema, And, Or, Optional, SchemaError
+    from schema import Schema, And, Or, Optional, SchemaError, Hook
 except ImportError:
     logging.error('This program requires that the `schema` data-validation library'
                   ' is installed: \n'
@@ -170,17 +191,54 @@ def validatePublish(publish):
 
 def validateThumbnail(thumbnail):
     supported_types = ['image/jpg', 'image/jpeg']
-    if magic.from_file(thumbnail, mime=True) in supported_types:
+    if os.path.exists(thumbnail) and \
+            magic.from_file(thumbnail, mime=True) in supported_types:
         return thumbnail
     else:
         return False
 
 
+def _optionnalOrStrict(key, scope, error):
+    option = key.replace('-', '')
+    option = option[0].upper() + option[1:]
+    if scope["--with" + option] is True and scope[key] is None:
+        logging.error("Prismedia: you have required the strict presence of " + key + " but none is found")
+        exit(1)
+    return True
+
+
 def main():
     options = docopt(__doc__, version=VERSION)
 
+    strictoptionSchema = Schema({
+        Optional('--withNFO', default=False): bool,
+        Optional('--withThumbnail', default=False): bool,
+        Optional('--withName', default=False): bool,
+        Optional('--withDescription', default=False): bool,
+        Optional('--withTags', default=False): bool,
+        Optional('--withPlaylist', default=False): bool,
+        Optional('--withPublishAt', default=False): bool,
+        Optional('--withPlatform', default=False): bool,
+        Optional('--withCategory', default=False): bool,
+        Optional('--withLanguage', default=False): bool,
+        Optional('--withChannel', default=False): bool,
+        object: object # This allow to return all other options for further use: https://github.com/keleshev/schema#extra-keys
+    })
+
     schema = Schema({
-        '--file': And(str, validateVideo, error='file is not supported, please use mp4'),
+        '--file': And(str, os.path.exists, validateVideo, error='file is not supported, please use mp4'),
+        # Strict option checks - at the moment Schema needs to check Hook and Optional separately #
+        Hook('--name', handler=_optionnalOrStrict): object,
+        Hook('--description', handler=_optionnalOrStrict): object,
+        Hook('--tags', handler=_optionnalOrStrict): object,
+        Hook('--category', handler=_optionnalOrStrict): object,
+        Hook('--language', handler=_optionnalOrStrict): object,
+        Hook('--platform', handler=_optionnalOrStrict): object,
+        Hook('--publishAt', handler=_optionnalOrStrict): object,
+        Hook('--thumbnail', handler=_optionnalOrStrict): object,
+        Hook('--channel', handler=_optionnalOrStrict): object,
+        Hook('--playlist', handler=_optionnalOrStrict): object,
+        # Validate checks #
         Optional('--name'): Or(None, And(
                                 str,
                                 lambda x: not x.isdigit(),
@@ -240,10 +298,23 @@ def main():
         Optional('--playlist'): Or(None, str),
         Optional('--playlistCreate'): bool,
         '--help': bool,
-        '--version': bool
+        '--version': bool,
+        object: object # This allow to return all other options for further use: https://github.com/keleshev/schema#extra-keys
     })
 
+    # We need to validate strict options first as withNFO should be validated before NFO parsing
+    try:
+        options = strictoptionSchema.validate(options)
+    except SchemaError as e:
+        exit(e)
+
     options = utils.parseNFO(options)
+
+    # Once NFO are loaded, we need to revalidate strict options in case some were in NFO
+    try:
+        options = strictoptionSchema.validate(options)
+    except SchemaError as e:
+        exit(e)
 
     if not options.get('--thumbnail'):
         options = utils.searchThumbnail(options)
@@ -254,7 +325,7 @@ def main():
         exit(e)
 
     if options.get('--debug'):
-        print(sys.version)
+        print("Python " + sys.version)
         print(options)
 
     if options.get('--platform') is None or "peertube" in options.get('--platform'):
