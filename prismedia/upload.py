@@ -11,7 +11,7 @@ Usage:
   prismedia --version
 
 Options:
-  -f, --file=STRING Path to the video file to upload in mp4
+  -f, --file=STRING Path to the video file to upload in mp4. This is the only mandatory option.
   --name=NAME  Name of the video to upload. (default to video filename)
   -d, --description=STRING  Description of the video. (default: default description)
   -t, --tags=STRING  Tags for the video. comma separated.
@@ -45,10 +45,15 @@ Options:
                     If the playlist is not found, spawn an error except if --playlistCreate is set.
   --playlistCreate  Create the playlist if not exists. (default do not create)
                     Only relevant if --playlist is set.
-  --log=STRING      Log level, between debug, info, warning, error, critical (default to info)
-  --debug           (Deprecated) Alias for --log=DEBUG. Ignored if --log is set
   -h --help  Show this help.
   --version  Show version.
+
+Logging options
+  -q --quiet        Suppress any log except Critical (alias for --log=critical).
+  --log=STRING      Log level, between debug, info, warning, error, critical. Ignored if --quiet is set (default to info)
+  -u --print-url    Display generated URL after upload directly on stdout in addition to the usual logging.
+                    May be used in conjunction with --quiet for batch scripting
+  --debug           (Deprecated) Alias for --log=debug. Ignored if --log is set
 
 Strict options:
   Strict options allow you to force some option to be present when uploading a video. It's useful to be sure you do not
@@ -220,6 +225,32 @@ def _optionnalOrStrict(key, scope, error):
     return True
 
 
+def configureLogs(options):
+    if options.get('--quiet'):
+        # We need to set both log level in the same time
+        logger.setLevel(50)
+        ch.setLevel(50)
+    elif options.get('--log'):
+        numeric_level = getattr(logging, options["--log"], None)
+        # We need to set both log level in the same time
+        logger.setLevel(numeric_level)
+        ch.setLevel(numeric_level)
+    elif options.get('--debug'):
+        logger.warning("DEPRECATION: --debug is deprecated, please use --log=debug instead")
+        logger.setLevel(10)
+        ch.setLevel(10)
+
+
+def configureStdoutLogs():
+    logger_stdout = logging.getLogger('stdoutlogs')
+    logger_stdout.setLevel(logging.INFO)
+    ch_stdout = logging.StreamHandler(stream=sys.stdout)
+    ch_stdout.setLevel(logging.INFO)
+    formatter_stdout = logging.Formatter('%(message)s')
+    ch_stdout.setFormatter(formatter_stdout)
+    logger_stdout.addHandler(ch_stdout)
+
+
 def main():
     options = docopt(__doc__, version=VERSION)
 
@@ -230,6 +261,8 @@ def main():
                                 validateLogLevel,
                                 error="Log level not recognized")
                               ),
+        Optional('--quiet', default=False): bool,
+        Optional('--debug'): bool,
         Optional('--withNFO', default=False): bool,
         Optional('--withThumbnail', default=False): bool,
         Optional('--withName', default=False): bool,
@@ -306,7 +339,6 @@ def main():
                                     validatePublish,
                                     error="DATE should be the form YYYY-MM-DDThh:mm:ss and has to be in the future")
                                     ),
-        Optional('--debug'): bool,
         Optional('--cca'): bool,
         Optional('--disable-comments'): bool,
         Optional('--nsfw'): bool,
@@ -317,6 +349,7 @@ def main():
         Optional('--channelCreate'): bool,
         Optional('--playlist'): Or(None, str),
         Optional('--playlistCreate'): bool,
+        Optional('--print-url', default=False): bool,
         '--help': bool,
         '--version': bool,
         # This allow to return all other options for further use: https://github.com/keleshev/schema#extra-keys
@@ -325,19 +358,10 @@ def main():
     # We need to validate early options first as withNFO and logs options should be prioritized
     try:
         options = earlyoptionSchema.validate(options)
+        configureLogs(options)
     except SchemaError as e:
         logger.critical(e)
         exit(1)
-
-    if options.get('--log'):
-        numeric_level = getattr(logging, options["--log"], None)
-        # We need to set both log level in the same time
-        logger.setLevel(numeric_level)
-        ch.setLevel(numeric_level)
-    elif options.get('--debug'):
-        logger.warning("DEPRECATION: --debug is deprecated, please use --log=debug instead")
-        logger.setLevel(10)
-        ch.setLevel(10)
 
     options = utils.parseNFO(options)
 
@@ -356,6 +380,9 @@ def main():
     except SchemaError as e:
         logger.critical(e)
         exit(1)
+
+    if options.get('--print-url'):
+        configureStdoutLogs()
 
     logger.debug("Python " + sys.version)
     logger.debug(options)

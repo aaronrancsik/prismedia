@@ -274,6 +274,10 @@ def upload_video(oauth, secret, options):
                             " if you want to create it")
             exit(1)
 
+    logger_stdout = None
+    if options.get('--print-url'):
+        logger_stdout = logging.getLogger('stdoutlogs')
+
     multipart_data = MultipartEncoder(fields)
 
     headers = {
@@ -291,6 +295,9 @@ def upload_video(oauth, secret, options):
             logger.info('Peertube : Video was successfully uploaded.')
             template = 'Peertube: Watch it at %s/videos/watch/%s.'
             logger.info(template % (url, uuid))
+            if logger_stdout:
+                template_stdout = '%s/videos/watch/%s'
+                logger_stdout.info(template_stdout % (url, uuid))
             # Upload is successful we may set playlist
             if options.get('--playlist'):
                 set_playlist(oauth, url, video_id, playlist_id)
