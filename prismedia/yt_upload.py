@@ -23,9 +23,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 
 
 from . import utils
-
-logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
-
+logger = logging.getLogger('Prismedia')
 
 # Explicitly tell the underlying HTTP transport library not to retry, since
 # we are handling retry logic ourselves.
@@ -87,7 +85,7 @@ def check_authenticated_scopes():
             credential_params = json.load(f)
             # Check if all scopes are present
             if credential_params["_scopes"] != SCOPES:
-                logging.warning("Youtube: Credentials are obsolete, need to re-authenticate.")
+                logger.warning("Youtube: Credentials are obsolete, need to re-authenticate.")
                 os.remove(CREDENTIALS_PATH)
 
 
@@ -144,8 +142,8 @@ def initialize_upload(youtube, options):
         if not playlist_id and options.get('--playlistCreate'):
             playlist_id = create_playlist(youtube, options.get('--playlist'))
         elif not playlist_id:
-            logging.warning("Youtube: Playlist `" + options.get('--playlist') + "` is unknown.")
-            logging.warning("If you want to create it, set the --playlistCreate option.")
+            logger.warning("Youtube: Playlist `" + options.get('--playlist') + "` is unknown.")
+            logger.warning("Youtube: If you want to create it, set the --playlistCreate option.")
             playlist_id = ""
     else:
         playlist_id = ""
@@ -156,7 +154,7 @@ def initialize_upload(youtube, options):
         body=body,
         media_body=MediaFileUpload(path, chunksize=-1, resumable=True)
     )
-    video_id = resumable_upload(insert_request, 'video', 'insert')
+    video_id = resumable_upload(insert_request, 'video', 'insert', options)
 
     # If we get a video_id, upload is successful and we are able to set thumbnail
     if video_id and options.get('--thumbnail'):
@@ -179,8 +177,8 @@ def get_playlist_by_name(youtube, playlist_name):
 
 
 def create_playlist(youtube, playlist_name):
-    template = ('Youtube: Playlist %s does not exist, creating it.')
-    logging.info(template % (str(playlist_name)))
+    template = 'Youtube: Playlist %s does not exist, creating it.'
+    logger.info(template % (str(playlist_name)))
     resources = build_resource({'snippet.title': playlist_name,
                                 'snippet.description': '',
                                 'status.privacyStatus': 'public'})
@@ -244,7 +242,7 @@ def set_thumbnail(youtube, media_file, **kwargs):
 
 
 def set_playlist(youtube, playlist_id, video_id):
-    logging.info('Youtube: Configuring playlist...')
+    logger.info('Youtube: Configuring playlist...')
     resource = build_resource({'snippet.playlistId': playlist_id,
                                'snippet.resourceId.kind': 'youtube#video',
                                'snippet.resourceId.videoId': video_id,
@@ -257,37 +255,45 @@ def set_playlist(youtube, playlist_id, video_id):
         ).execute()
     except Exception as e:
         if hasattr(e, 'message'):
-            logging.error("Youtube: Error: " + str(e.message))
+            logger.critical("Youtube: " + str(e.message))
             exit(1)
         else:
-            logging.error("Youtube: Error: " + str(e))
+            logger.critical("Youtube: " + str(e))
             exit(1)
-    logging.info('Youtube: Video is correctly added to the playlist.')
+    logger.info('Youtube: Video is correctly added to the playlist.')
 
 
 # This method implements an exponential backoff strategy to resume a
 # failed upload.
-def resumable_upload(request, resource, method):
+def resumable_upload(request, resource, method, options):
     response = None
     error = None
     retry = 0
+    logger_stdout = None
+    if options.get('--url-only') or options.get('--batch'):
+        logger_stdout = logging.getLogger('stdoutlogs')
     while response is None:
         try:
             template = 'Youtube: Uploading %s...'
-            logging.info(template % resource)
+            logger.info(template % resource)
             status, response = request.next_chunk()
             if response is not None:
                 if method == 'insert' and 'id' in response:
-                    logging.info('Youtube : Video was successfully uploaded.')
+                    logger.info('Youtube : Video was successfully uploaded.')
                     template = 'Youtube: Watch it at https://youtu.be/%s (post-encoding could take some time)'
-                    logging.info(template % response['id'])
+                    logger.info(template % response['id'])
+                    template_stdout = 'https://youtu.be/%s'
+                    if options.get('--url-only'):
+                        logger_stdout.info(template_stdout % response['id'])
+                    elif options.get('--batch'):
+                        logger_stdout.info("Youtube: " + template_stdout % response['id'])
                     return response['id']
                 elif method != 'insert' or "id" not in response:
-                    logging.info('Youtube: Thumbnail was successfully set.')
+                    logger.info('Youtube: Thumbnail was successfully set.')
                 else:
                     template = ('Youtube : The upload failed with an '
                                 'unexpected response: %s')
-                    logging.error(template % response)
+                    logger.critical(template % response)
                     exit(1)
         except HttpError as e:
             if e.resp.status in RETRIABLE_STATUS_CODES:
@@ -299,15 +305,14 @@ def resumable_upload(request, resource, method):
             error = 'Youtube : A retriable error occurred: %s' % e
 
     if error is not None:
-        logging.warning(error)
+        logger.warning(error)
         retry += 1
         if retry > MAX_RETRIES:
-            logging.error('Youtube : No longer attempting to retry.')
-            exit(1)
+            logger.error('Youtube : No longer attempting to retry.')
 
         max_sleep = 2 ** retry
         sleep_seconds = random.random() * max_sleep
-        logging.warning('Youtube : Sleeping %f seconds and then retrying...'
+        logger.warning('Youtube : Sleeping %f seconds and then retrying...'
               % sleep_seconds)
         time.sleep(sleep_seconds)
 
@@ -317,5 +322,5 @@ def run(options):
     try:
         initialize_upload(youtube, options)
     except HttpError as e:
-        logging.error('Youtube : An HTTP error %d occurred:\n%s' % (e.resp.status,
+        logger.error('Youtube : An HTTP error %d occurred:\n%s' % (e.resp.status,
                                                             e.content))

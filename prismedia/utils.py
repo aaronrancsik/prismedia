@@ -9,6 +9,8 @@ from subprocess import check_call, CalledProcessError, STDOUT
 import unidecode
 import logging
 
+logger = logging.getLogger('Prismedia')
+
 ### CATEGORIES ###
 YOUTUBE_CATEGORY = {
     "music": 10,
@@ -123,18 +125,25 @@ def searchThumbnail(options):
             options['--thumbnail'] = video_directory + video_file + ".jpg"
         elif isfile(video_directory + video_file + ".jpeg"):
             options['--thumbnail'] = video_directory + video_file + ".jpeg"
+
+    # Display some info after research
+    if not options.get('--thumbnail'):
+        logger.debug("No thumbnail has been found, continuing")
+    else:
+        logger.info("Using " + options.get('--thumbnail') + "as thumbnail")
+
     return options
 
 
 # return the nfo as a RawConfigParser object
 def loadNFO(filename):
     try:
-        logging.info("Loading " + filename + " as NFO")
+        logger.info("Loading " + filename + " as NFO")
         nfo = RawConfigParser()
         nfo.read(filename, encoding='utf-8')
         return nfo
     except Exception as e:
-        logging.error("Problem loading NFO file " + filename + ": " + str(e))
+        logger.critical("Problem loading NFO file " + filename + ": " + str(e))
         exit(1)
     return False
 
@@ -168,7 +177,7 @@ def parseNFO(options):
         if isfile(options.get('--nfo')):
             nfo_cli = loadNFO(options.get('--nfo'))
         else:
-            logging.error("Given NFO file does not exist, please check your path.")
+            logger.critical("Given NFO file does not exist, please check your path.")
             exit(1)
 
     # If there is no NFO and strict option is enabled, then stop there
@@ -178,7 +187,7 @@ def parseNFO(options):
                 not isinstance(nfo_videoname, RawConfigParser) and \
                 not isinstance(nfo_directory, RawConfigParser) and \
                 not isinstance(nfo_txt, RawConfigParser):
-            logging.error("Prismedia: you have required the strict presence of NFO but none is found, please use a NFO.")
+            logger.critical("You have required the strict presence of NFO but none is found, please use a NFO.")
             exit(1)
 
     # We need to load NFO in this exact order to keep the priorities
@@ -198,7 +207,7 @@ def parseNFO(options):
                 except NoOptionError:
                     continue
                 except NoSectionError:
-                    logging.error("Prismedia: " + nfo + " misses section [video], please check syntax of your NFO.")
+                    logger.critical(nfo + " misses section [video], please check syntax of your NFO.")
                     exit(1)
     return options
 
