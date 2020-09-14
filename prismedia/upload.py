@@ -51,8 +51,9 @@ Options:
 Logging options
   -q --quiet        Suppress any log except Critical (alias for --log=critical).
   --log=STRING      Log level, between debug, info, warning, error, critical. Ignored if --quiet is set (default to info)
-  -u --print-url    Display generated URL after upload directly on stdout in addition to the usual logging.
-                    May be used in conjunction with --quiet for batch scripting
+  -u --url-only     Display generated URL after upload directly on stdout, implies --quiet
+  --batch           Display generated URL after upload with platform information for easier parsing. Implies --quiet
+                    Be careful --batch and --url-only are mutually exclusives.
   --debug           (Deprecated) Alias for --log=debug. Ignored if --log is set
 
 Strict options:
@@ -226,6 +227,13 @@ def _optionnalOrStrict(key, scope, error):
 
 
 def configureLogs(options):
+    if options.get('--batch') and options.get('--url-only'):
+        logger.critical("Prismedia: Please use either --batch OR --url-only, not both.")
+        exit(1)
+    # batch and url-only implies quiet
+    if options.get('--batch') or options.get('--url-only'):
+        options['--quiet'] = True
+
     if options.get('--quiet'):
         # We need to set both log level in the same time
         logger.setLevel(50)
@@ -246,10 +254,10 @@ def configureStdoutLogs():
     logger_stdout.setLevel(logging.INFO)
     ch_stdout = logging.StreamHandler(stream=sys.stdout)
     ch_stdout.setLevel(logging.INFO)
+    # Default stdout logs is url only
     formatter_stdout = logging.Formatter('%(message)s')
     ch_stdout.setFormatter(formatter_stdout)
     logger_stdout.addHandler(ch_stdout)
-
 
 def main():
     options = docopt(__doc__, version=VERSION)
@@ -263,6 +271,8 @@ def main():
                               ),
         Optional('--quiet', default=False): bool,
         Optional('--debug'): bool,
+        Optional('--url-only', default=False): bool,
+        Optional('--batch', default=False): bool,
         Optional('--withNFO', default=False): bool,
         Optional('--withThumbnail', default=False): bool,
         Optional('--withName', default=False): bool,
@@ -349,7 +359,6 @@ def main():
         Optional('--channelCreate'): bool,
         Optional('--playlist'): Or(None, str),
         Optional('--playlistCreate'): bool,
-        Optional('--print-url', default=False): bool,
         '--help': bool,
         '--version': bool,
         # This allow to return all other options for further use: https://github.com/keleshev/schema#extra-keys
@@ -362,6 +371,9 @@ def main():
     except SchemaError as e:
         logger.critical(e)
         exit(1)
+
+    if options.get('--url-only') or options.get('--batch'):
+        configureStdoutLogs()
 
     options = utils.parseNFO(options)
 
@@ -381,9 +393,6 @@ def main():
         logger.critical(e)
         exit(1)
 
-    if options.get('--print-url'):
-        configureStdoutLogs()
-
     logger.debug("Python " + sys.version)
     logger.debug(options)
 
@@ -394,6 +403,5 @@ def main():
 
 
 if __name__ == '__main__':
-    import warnings
     logger.warning("DEPRECATION: use 'python -m prismedia', not 'python -m prismedia.upload'")
     main()

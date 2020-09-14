@@ -148,17 +148,13 @@ def initialize_upload(youtube, options):
     else:
         playlist_id = ""
 
-    logger_stdout = None
-    if options.get('--print-url'):
-        logger_stdout = logging.getLogger('stdoutlogs')
-
     # Call the API's videos.insert method to create and upload the video.
     insert_request = youtube.videos().insert(
         part=','.join(list(body.keys())),
         body=body,
         media_body=MediaFileUpload(path, chunksize=-1, resumable=True)
     )
-    video_id = resumable_upload(insert_request, 'video', 'insert', logger_stdout)
+    video_id = resumable_upload(insert_request, 'video', 'insert', options)
 
     # If we get a video_id, upload is successful and we are able to set thumbnail
     if video_id and options.get('--thumbnail'):
@@ -269,10 +265,13 @@ def set_playlist(youtube, playlist_id, video_id):
 
 # This method implements an exponential backoff strategy to resume a
 # failed upload.
-def resumable_upload(request, resource, method, logger_stdout=None):
+def resumable_upload(request, resource, method, options):
     response = None
     error = None
     retry = 0
+    logger_stdout = None
+    if options.get('--url-only') or options.get('--batch'):
+        logger_stdout = logging.getLogger('stdoutlogs')
     while response is None:
         try:
             template = 'Youtube: Uploading %s...'
@@ -283,9 +282,11 @@ def resumable_upload(request, resource, method, logger_stdout=None):
                     logger.info('Youtube : Video was successfully uploaded.')
                     template = 'Youtube: Watch it at https://youtu.be/%s (post-encoding could take some time)'
                     logger.info(template % response['id'])
-                    if logger_stdout:
-                        template_stdout = 'https://youtu.be/%s'
+                    template_stdout = 'https://youtu.be/%s'
+                    if options.get('--url-only'):
                         logger_stdout.info(template_stdout % response['id'])
+                    elif options.get('--batch'):
+                        logger_stdout.info("Youtube: " + template_stdout % response['id'])
                     return response['id']
                 elif method != 'insert' or "id" not in response:
                     logger.info('Youtube: Thumbnail was successfully set.')

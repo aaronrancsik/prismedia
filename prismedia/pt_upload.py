@@ -5,6 +5,7 @@ import os
 import mimetypes
 import json
 import logging
+import sys
 import datetime
 import pytz
 from os.path import splitext, basename, abspath
@@ -275,7 +276,7 @@ def upload_video(oauth, secret, options):
             exit(1)
 
     logger_stdout = None
-    if options.get('--print-url'):
+    if options.get('--url-only') or options.get('--batch'):
         logger_stdout = logging.getLogger('stdoutlogs')
 
     multipart_data = MultipartEncoder(fields)
@@ -295,9 +296,11 @@ def upload_video(oauth, secret, options):
             logger.info('Peertube : Video was successfully uploaded.')
             template = 'Peertube: Watch it at %s/videos/watch/%s.'
             logger.info(template % (url, uuid))
-            if logger_stdout:
-                template_stdout = '%s/videos/watch/%s'
+            template_stdout = '%s/videos/watch/%s'
+            if options.get('--url-only'):
                 logger_stdout.info(template_stdout % (url, uuid))
+            elif options.get('--batch'):
+                logger_stdout.info("Peertube: " + template_stdout % (url, uuid))
             # Upload is successful we may set playlist
             if options.get('--playlist'):
                 set_playlist(oauth, url, video_id, playlist_id)

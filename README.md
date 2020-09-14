@@ -122,9 +122,8 @@ Use --help to get all available options:
 
 ```
 Options:
-  -f, --file=STRING Path to the video file to upload in mp4
+  -f, --file=STRING Path to the video file to upload in mp4. This is the only mandatory option.
   --name=NAME  Name of the video to upload. (default to video filename)
-  --debug  Trigger some debug information like options used (default: no)
   -d, --description=STRING  Description of the video. (default: default description)
   -t, --tags=STRING  Tags for the video. comma separated.
                      WARN: tags with punctuation (!, ', ", ?, ...)
@@ -160,6 +159,34 @@ Options:
   -h --help  Show this help.
   --version  Show version.
 
+Logging options
+  -q --quiet        Suppress any log except Critical (alias for --log=critical).
+  --log=STRING      Log level, between debug, info, warning, error, critical. Ignored if --quiet is set (default to info)
+  -u --url-only     Display generated URL after upload directly on stdout, implies --quiet
+  --batch           Display generated URL after upload with platform information for easier parsing. Implies --quiet
+                    Be careful --batch and --url-only are mutually exclusives.
+  --debug           (Deprecated) Alias for --log=debug. Ignored if --log is set
+
+Strict options:
+  Strict options allow you to force some option to be present when uploading a video. It's useful to be sure you do not
+  forget something when uploading a video, for example if you use multiples NFO. You may force the presence of description,
+  tags, thumbnail, ...
+  All strict option are optionals and are provided only to avoid errors when uploading :-)
+  All strict options can be specified in NFO directly, the only strict option mandatory on cli is --withNFO
+  All strict options are off by default
+
+  --withNFO         Prevent the upload without a NFO, either specified via cli or found in the directory
+  --withThumbnail       Prevent the upload without a thumbnail
+  --withName        Prevent the upload if no name are found
+  --withDescription     Prevent the upload without description
+  --withTags        Prevent the upload without tags
+  --withPlaylist    Prevent the upload if no playlist
+  --withPublishAt    Prevent the upload if no schedule
+  --withPlatform    Prevent the upload if at least one platform is not specified
+  --withCategory    Prevent the upload if no category
+  --withLanguage    Prevent upload if no language
+  --withChannel     Prevent upload if no channel
+
 Categories:
   Category is the type of video you upload. Default is films.
   Here are available categories from Peertube and Youtube:
@@ -174,6 +201,7 @@ Languages:
   Here are available languages from Peertube and Youtube:
     Arabic, English, French, German, Hindi, Italian,
     Japanese, Korean, Mandarin, Portuguese, Punjabi, Russian, Spanish
+
 ```
 
 ## Enhanced use of NFO
