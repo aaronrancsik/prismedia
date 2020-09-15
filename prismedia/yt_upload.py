@@ -254,12 +254,14 @@ def set_playlist(youtube, playlist_id, video_id):
             part='snippet'
         ).execute()
     except Exception as e:
-        if hasattr(e, 'message'):
-            logger.critical("Youtube: " + str(e.message))
-            exit(1)
-        else:
-            logger.critical("Youtube: " + str(e))
-            exit(1)
+        # Workaround while youtube API is broken, see issue #47 for details
+        if e.resp.status != 404 and "Video not found" not in str(e):
+            if hasattr(e, 'message'):
+                logger.critical("Youtube: " + str(e.message))
+                exit(1)
+            else:
+                logger.critical("Youtube: " + str(e))
+                exit(1)
     logger.info('Youtube: Video is correctly added to the playlist.')
 
 
