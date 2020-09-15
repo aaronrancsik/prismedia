@@ -240,7 +240,7 @@ Prismedia will:
 - erase any previous option regarding CCA as it's specified in cli with `--cca`
 - take `yourvideo1.jpg` as thumbnail if no other files has been specified in previous NFO
 
-In other word, Prismedia will now use option given in cli, then look for option in cli_nfo.txt, then complete with video_name.txt, then directory_name.txt, and finally complete with nfo.txt
+In other word, Prismedia will use option given in cli, then look for option in cli_nfo.txt, then complete with video_name.txt, then directory_name.txt, and finally complete with nfo.txt
 
 It allows to specify more easily default options for an entire set of video, directory, playlist and so on.
 
@@ -290,7 +290,7 @@ Available strict options:
 - [x] Usable on Desktop (Linux and/or Windows and/or MacOS)
 - [x] Different schedules on platforms to prepare preview
 - [x] Possibility to force the presence of upload options
-- [ ] Copy and forget, eg possibility to copy video in a directory, and prismedia uploads itself (Discussions in [issue 27](https://git.lecygnenoir.info/LecygneNoir/prismedia/issues/27))  
+- [ ] Copy and forget, eg possibility to copy video in a directory, and prismedia uploads itself: [Work in progress](https://git.lecygnenoir.info/Zykino/prismedia-autoupload) thanks to @Zykino 🎉 (Discussions in [issue 27](https://git.lecygnenoir.info/LecygneNoir/prismedia/issues/27))  
 - [ ] A usable graphical interface
 
 ## Compatibility
