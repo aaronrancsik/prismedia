@@ -130,7 +130,7 @@ except ImportError:
                   'see https://github.com/ahupp/python-magic\n')
     exit(1)
 
-VERSION = "prismedia v0.9.1"
+VERSION = "prismedia v0.10.0"
 
 VALID_PRIVACY_STATUSES = ('public', 'private', 'unlisted')
 VALID_CATEGORIES = (
