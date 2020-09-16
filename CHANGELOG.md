@@ -1,13 +1,18 @@
 # Changelog
 
+## v0.10.1
+
+### Fix
+ - fix a bug introduced with v0.10.0 that broke thumbnail on youtube upload.
+
 ## v0.10.0
 
-## Features
+### Features
  - Add the possibility to specify strict checks option to never forgot parameters when uploading (see #36)
  - Improve logging system, add options for batch upload and print url-only in the stdout (see #29)
  - --debug option is now deprecated in favor of --log=debug 
  
-## Fixes
+### Fixes
  - Workaround against the Youtube API breakdown while adding video in playlist. See #47 for details. Should be removed once Google fix their bugs.
 
 
