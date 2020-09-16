@@ -158,7 +158,7 @@ def initialize_upload(youtube, options):
 
     # If we get a video_id, upload is successful and we are able to set thumbnail
     if video_id and options.get('--thumbnail'):
-        set_thumbnail(youtube, options.get('--thumbnail'), videoId=video_id)
+        set_thumbnail(options, youtube, options.get('--thumbnail'), videoId=video_id)
 
     # If we get a video_id and a playlist_id, upload is successful and we are able to set playlist
     if video_id and playlist_id != "":
@@ -229,7 +229,7 @@ def build_resource(properties):
     return resource
 
 
-def set_thumbnail(youtube, media_file, **kwargs):
+def set_thumbnail(options, youtube, media_file, **kwargs):
     kwargs = utils.remove_empty_kwargs(**kwargs)
     request = youtube.thumbnails().set(
         media_body=MediaFileUpload(media_file, chunksize=-1,
@@ -237,8 +237,7 @@ def set_thumbnail(youtube, media_file, **kwargs):
         **kwargs
     )
 
-    # See full sample for function
-    return resumable_upload(request, 'thumbnail', 'set')
+    return resumable_upload(request, 'thumbnail', 'set', options)
 
 
 def set_playlist(youtube, playlist_id, video_id):
